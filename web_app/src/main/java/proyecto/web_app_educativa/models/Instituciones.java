@@ -1,6 +1,4 @@
 package proyecto.web_app_educativa.models;
 
-public class Profesor extends Personas{
-
-
+public class Instituciones extends Personas{
 }
