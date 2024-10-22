@@ -23,7 +23,7 @@ public class PersonasController {
     }
 
     @GetMapping("")
-    public List<PersonasDTO> listadoClientes() {
+    public List<PersonasDTO> listadoPersonas() {
         return personasRepository.findByEstadoTrue().stream().map(PersonasDTO::new).collect(Collectors.toList());
     }
 

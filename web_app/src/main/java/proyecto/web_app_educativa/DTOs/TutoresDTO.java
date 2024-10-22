@@ -19,7 +19,7 @@ public class TutoresDTO extends PersonasDTO {
         super(tutor);
         this.id = tutor.getId();
         this.perfil = tutor.getPerfil();
-        this.tutorias = tutor.getTutorias().stream().map(tutoria -> new TutoriasDTO(tutoria))
+        this.tutorias = tutor.getTutorias().stream().map(tutoria -> new TutoriasDTO(tutoria)).collect(Collectors.toList());
     }
 
     public TutoresDTO() {
@@ -35,7 +35,7 @@ public class TutoresDTO extends PersonasDTO {
         return perfil;
     }
 
-    public List<Tutorias> getTutorias() {
+    public List<TutoriasDTO> getTutorias() {
         return tutorias;
     }
 }
