@@ -17,6 +17,8 @@ public class Tutorias {
     @GenericGenerator(name = "native", strategy = "native")
     private int id;
     private int edadMinima;
+    //cambiar a LocalDateTime va a ser mas claro y me ahorro tener dos atributos ya que uno
+    // la fecha con la hora en uno solo
     private LocalTime horarioDesde;
     private LocalTime horarioHasta;
     private Boolean estado;
@@ -66,7 +68,10 @@ public class Tutorias {
 
     }
 
-    public Tutorias(double arancel, String descripcion, String dias, String disciplina, int edadMinima, Boolean estado, LocalDate fechaDesde, LocalDate fechaHasta, LocalTime horarioDesde, LocalTime horarioHasta, String materiales, Modalidades modalidad, Pagos modoPago, Tipos tipo, String ubicacion){
+    public Tutorias(double arancel, String descripcion, String dias, String disciplina, int edadMinima,
+                    LocalDate fechaDesde, LocalDate fechaHasta, LocalTime horarioDesde,
+                    LocalTime horarioHasta, String materiales, Modalidades modalidad, Pagos modoPago,
+                    Tipos tipo, String ubicacion){
         this.estado = true;
         this.fechaDesde = LocalDate.now();
         this.fechaHasta = null;
@@ -74,10 +79,6 @@ public class Tutorias {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getEdadMinima() {
@@ -210,6 +211,10 @@ public class Tutorias {
 
     public List<Alumnos> getAlumnos() {
         return alumnos;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setAlumnos(List<Alumnos> alumnos) {

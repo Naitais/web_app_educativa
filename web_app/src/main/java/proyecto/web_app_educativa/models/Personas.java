@@ -22,7 +22,10 @@ public class Personas {
     private int numCelular;
     private Boolean estado;
 
-    public Personas(String nombre, String apellido, int numCelular, Boolean estado) {
+    @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
+    private Usuarios usuario;
+
+    public Personas(String nombre, String apellido, int numCelular) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.numCelular = numCelular;
@@ -42,7 +45,9 @@ public class Personas {
         this.id = id;
     }
 
-
+    public void setNumCelular(int numCelular) {
+        this.numCelular = numCelular;
+    }
 
     public String getNombre() {
         return nombre;

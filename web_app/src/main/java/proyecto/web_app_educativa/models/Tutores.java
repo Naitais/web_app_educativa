@@ -17,19 +17,19 @@ public class Tutores extends Personas{
     @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tutorias> tutorias = new ArrayList<Tutorias>();
 
-    public Tutores(String nombre, String apellido, int numCelular, Boolean estado, Perfiles perfil) {
-        super(nombre, apellido, numCelular, estado);
+    public Tutores(String nombre, String apellido, int numCelular, Perfiles perfil) {
+        super(nombre, apellido, numCelular);
         nombre = nombre;
         apellido = apellido;
         numCelular = numCelular;
-        estado = true;
+
         //this.perfil = perfil;
 
     }
 
-    public Tutores(String nombre, String apellido, int numCelular, Boolean estado){
-        super(nombre, apellido, numCelular, estado);
-        estado = true;
+    public Tutores(String nombre, String apellido, int numCelular){
+        super(nombre, apellido, numCelular);
+
     }
 
     @Override
@@ -37,7 +37,6 @@ public class Tutores extends Personas{
         return id;
     }
 
-    @Override
     public void setId(int id) {
         this.id = id;
     }

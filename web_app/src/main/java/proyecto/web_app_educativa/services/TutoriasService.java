@@ -34,7 +34,7 @@ public class TutoriasService {
     public Tutorias crearTutoria(TutoriasDTO tutoriaDTO) {
         Tutorias tutoria = new Tutorias(
                 tutoriaDTO.getArancel(),tutoriaDTO.getDescripcion(),tutoriaDTO.getDias(),
-                tutoriaDTO.getDisciplina(),tutoriaDTO.getEdadMinima(),tutoriaDTO.getEstado(),
+                tutoriaDTO.getDisciplina(),tutoriaDTO.getEdadMinima(),
                 tutoriaDTO.getFechaDesde(),tutoriaDTO.getFechaHasta(),tutoriaDTO.getHorarioDesde(),
                 tutoriaDTO.getHorarioHasta(), tutoriaDTO.getMateriales(), tutoriaDTO.getModalidad(),
                 tutoriaDTO.getModoPago(), tutoriaDTO.getTipo(),tutoriaDTO.getUbicacion()
@@ -45,7 +45,7 @@ public class TutoriasService {
     public Tutorias actualizarTutoria(int id,TutoriasDTO tutoriaDTO){
         Tutorias tutoria = new Tutorias(
                 tutoriaDTO.getArancel(),tutoriaDTO.getDescripcion(),tutoriaDTO.getDias(),
-                tutoriaDTO.getDisciplina(),tutoriaDTO.getEdadMinima(),tutoriaDTO.getEstado(),
+                tutoriaDTO.getDisciplina(),tutoriaDTO.getEdadMinima(),
                 tutoriaDTO.getFechaDesde(),tutoriaDTO.getFechaHasta(),tutoriaDTO.getHorarioDesde(),
                 tutoriaDTO.getHorarioHasta(), tutoriaDTO.getMateriales(), tutoriaDTO.getModalidad(),
                 tutoriaDTO.getModoPago(), tutoriaDTO.getTipo(),tutoriaDTO.getUbicacion()

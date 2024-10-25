@@ -14,17 +14,17 @@ public class Alumnos extends Personas{
     @JoinColumn(name = "tutoria_id")
     private Tutorias tutoria;
 
-    public Alumnos(String nombre, String apellido, int numCelular, Boolean estado, int id) {
-        super(nombre, apellido, numCelular, estado);
+    public Alumnos(String nombre, String apellido, int numCelular,  int id) {
+        super(nombre, apellido, numCelular);
         nombre = nombre;
         apellido = apellido;
         numCelular = numCelular;
-        estado = true;
+
     }
 
-    public Alumnos(String nombre, String apellido, int numCelular, Boolean estado) {
-        super(nombre, apellido, numCelular, estado);
-        estado = true;
+    public Alumnos(String nombre, String apellido, int numCelular) {
+        super(nombre, apellido, numCelular);
+
     }
 
 }

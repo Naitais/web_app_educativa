@@ -31,12 +31,14 @@ public class PersonasService {
     }
 
     public Personas crearPersona(PersonasDTO personaDTO) {
-        Personas persona = new Personas(personaDTO.getNombre(), personaDTO.getApellido(), personaDTO.getNumCelular(), personaDTO.getEstado());
+        Personas persona = new Personas(personaDTO.getNombre(), personaDTO.getApellido(),
+                personaDTO.getNumCelular());
         return personasRepository.save(persona);
     }
 
     public Personas actualizarPersona(int id,PersonasDTO personaDTO){
-        Personas persona = new Personas(personaDTO.getNombre(), personaDTO.getApellido(), personaDTO.getNumCelular(), personaDTO.getEstado());
+        Personas persona = new Personas(personaDTO.getNombre(), personaDTO.getApellido(),
+                personaDTO.getNumCelular());
         persona.setId(id);
         return personasRepository.save(persona);
     }
