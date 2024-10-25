@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 public class TutoresDTO extends PersonasDTO {
 
     private int id;
-    private Perfiles perfil;
+    //private Perfiles perfil;
     private List<TutoriasDTO> tutorias;
 
     public TutoresDTO(Tutores tutor) {
         super(tutor);
         this.id = tutor.getId();
-        this.perfil = tutor.getPerfil();
+        //this.perfil = tutor.getPerfil();
         this.tutorias = tutor.getTutorias().stream().map(tutoria -> new TutoriasDTO(tutoria)).collect(Collectors.toList());
     }
 
@@ -30,11 +30,11 @@ public class TutoresDTO extends PersonasDTO {
     public int getId() {
         return id;
     }
-
+/*
     public Perfiles getPerfil() {
         return perfil;
     }
-
+*/
     public List<TutoriasDTO> getTutorias() {
         return tutorias;
     }

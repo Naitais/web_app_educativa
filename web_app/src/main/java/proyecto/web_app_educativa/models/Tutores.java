@@ -1,19 +1,20 @@
 package proyecto.web_app_educativa.models;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Tutores extends Personas{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private int id;
-    private Perfiles perfil;
+    //private Perfiles perfil;
+
+    @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tutorias> tutorias = new ArrayList<Tutorias>();
 
     public Tutores(String nombre, String apellido, int numCelular, Boolean estado, Perfiles perfil) {
@@ -22,7 +23,7 @@ public class Tutores extends Personas{
         apellido = apellido;
         numCelular = numCelular;
         estado = true;
-        this.perfil = perfil;
+        //this.perfil = perfil;
 
     }
 
@@ -41,6 +42,7 @@ public class Tutores extends Personas{
         this.id = id;
     }
 
+    /*
     public Perfiles getPerfil() {
         return perfil;
     }
@@ -48,6 +50,7 @@ public class Tutores extends Personas{
     public void setPerfil(Perfiles perfil) {
         this.perfil = perfil;
     }
+    */
 
     public List<Tutorias> getTutorias() {
         return tutorias;

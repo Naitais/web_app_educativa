@@ -1,12 +1,20 @@
 package proyecto.web_app_educativa.models;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class Tutorias {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int id;
     private int edadMinima;
     private LocalTime horarioDesde;
@@ -19,10 +27,16 @@ public class Tutorias {
     private String disciplina;
     private String materiales;
     private String ubicacion;
-    private Alumnos alumno;
     private String descripcion;
     private Pagos modoPago;
+
+    @OneToMany(mappedBy = "tutoria", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Alumnos> alumnos = new ArrayList<Alumnos>();
+
+    @ManyToOne
+    @JoinColumn(name = "tutor_id")
     private Tutores tutor;
+
     private Modalidades modalidad;
     private double arancel;
 
@@ -43,15 +57,16 @@ public class Tutorias {
         this.disciplina = disciplina;
         this.materiales = materiales;
         this.ubicacion = ubicacion;
-        this.alumno = alumno;
         this.descripcion = descripcion;
         this.modoPago = modoPago;
         this.tutor = tutor;
         this.modalidad = modalidad;
         this.arancel = arancel;
+
+
     }
 
-    public Tutorias(){
+    public Tutorias(double arancel, String descripcion, String dias, String disciplina, int edadMinima, Boolean estado, LocalDate fechaDesde, LocalDate fechaHasta, LocalTime horarioDesde, LocalTime horarioHasta, String materiales, Modalidades modalidad, Pagos modoPago, Tipos tipo, String ubicacion){
         this.estado = true;
         this.fechaDesde = LocalDate.now();
         this.fechaHasta = null;
@@ -153,14 +168,6 @@ public class Tutorias {
         this.ubicacion = ubicacion;
     }
 
-    public Alumnos getAlumno() {
-        return alumno;
-    }
-
-    public void setAlumno(Alumnos alumno) {
-        this.alumno = alumno;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -201,7 +208,14 @@ public class Tutorias {
         this.arancel = arancel;
     }
 
-    //este metodo tiene que recibir un string en el siguiente formato 0000000
+    public List<Alumnos> getAlumnos() {
+        return alumnos;
+    }
+
+    public void setAlumnos(List<Alumnos> alumnos) {
+        this.alumnos = alumnos;
+    }
+//este metodo tiene que recibir un string en el siguiente formato 0000000
     // cada 0 en el string representa un dia de la semana, si en la priemra posicion
     // hay un 1 en lugar de un 0, quiere decir que esa tutoria es los lunes
     //y asi para cada dia dependiendo de si hay 0 o 1 representa los dias de la tutoria

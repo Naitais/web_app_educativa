@@ -14,7 +14,7 @@ public class PersonasDTO {
         this.id = persona.getId();
         this.nombre = persona.getNombre();
         this.apellido = persona.getApellido();
-        this.numCelular = persona.getNum_celular();
+        this.numCelular = persona.getNumCelular();
         this.estado = persona.getEstado();
     }
 

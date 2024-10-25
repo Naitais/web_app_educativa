@@ -1,14 +1,16 @@
 package proyecto.web_app_educativa.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 
 @Entity
+
+//con esto hago que personas y sus subclases tenga cada una su propia tabla y que personas
+//tenga los campos comunos a las subclases pero cada hijo sus campos especificos
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "person_type")
 public class Personas {
 
     @Id

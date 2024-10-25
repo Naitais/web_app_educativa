@@ -4,6 +4,8 @@ import proyecto.web_app_educativa.models.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TutoriasDTO {
 
@@ -19,7 +21,7 @@ public class TutoriasDTO {
     private String disciplina;
     private String materiales;
     private String ubicacion;
-    private Alumnos alumno;
+    private List<AlumnosDTO> alumnos;
     private String descripcion;
     private Pagos modoPago;
     private Tutores tutor;
@@ -40,12 +42,12 @@ public class TutoriasDTO {
         this.disciplina = tutoria.getDisciplina();
         this.materiales = tutoria.getMateriales();
         this.ubicacion = tutoria.getUbicacion();
-        this.alumno = tutoria.getAlumno();
         this.descripcion = tutoria.getDescripcion();
         this.modoPago = tutoria.getModoPago();
         this.tutor = tutoria.getTutor();
         this.modalidad = tutoria.getModalidad();
         this.arancel = tutoria.getArancel();
+        this.alumnos = tutoria.getAlumnos().stream().map(alumno -> new AlumnosDTO(alumno)).collect(Collectors.toList());
     }
 
     public TutoriasDTO(){
@@ -96,8 +98,8 @@ public class TutoriasDTO {
         return ubicacion;
     }
 
-    public Alumnos getAlumno() {
-        return alumno;
+    public List<AlumnosDTO> getAlumnos() {
+        return alumnos;
     }
 
     public String getDescripcion() {
