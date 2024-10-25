@@ -24,7 +24,7 @@ public class TutoresController {
         }
 
         @GetMapping("/{id}")
-        public ResponseEntity<Object> getTutor(@PathVariable Integer id){
+        public ResponseEntity<Object> getTutor(@PathVariable int id){
             try{
                 TutoresDTO tutor = tutoresService.findTutorById(id);
                 return new ResponseEntity<>(tutor, HttpStatus.OK);
@@ -43,7 +43,7 @@ public class TutoresController {
 
         @ResponseStatus(HttpStatus.NO_CONTENT)
         @PutMapping("/{id}")
-        void actualizarTutor(@RequestBody TutoresDTO tutorDTO, @PathVariable Integer id) {
+        void actualizarTutor(@RequestBody TutoresDTO tutorDTO, @PathVariable int id) {
 
             tutoresService.actualizarTutor(id,tutorDTO);
         }

@@ -1,11 +1,5 @@
 package proyecto.web_app_educativa.DTOs;
-
-import proyecto.web_app_educativa.models.Perfiles;
-import proyecto.web_app_educativa.models.Personas;
 import proyecto.web_app_educativa.models.Tutores;
-import proyecto.web_app_educativa.models.Tutorias;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

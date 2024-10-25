@@ -25,7 +25,7 @@ public class TutoresService {
                 .collect(Collectors.toList());
     }
 
-    public TutoresDTO findTutorById(Integer id){
+    public TutoresDTO findTutorById(int id){
         Tutores tutor =  tutoresRepository.findById(id).orElse(null);
         return new TutoresDTO(tutor);
     }
@@ -35,7 +35,7 @@ public class TutoresService {
         return tutoresRepository.save(tutor);
     }
 
-    public Tutores actualizarTutor(Integer id,TutoresDTO tutorDTO){
+    public Tutores actualizarTutor(int id,TutoresDTO tutorDTO){
         Tutores tutor = new Tutores(tutorDTO.getNombre(), tutorDTO.getApellido(), tutorDTO.getNumCelular(), tutorDTO.getEstado());
         tutor.setId(id);
         return tutoresRepository.save(tutor);

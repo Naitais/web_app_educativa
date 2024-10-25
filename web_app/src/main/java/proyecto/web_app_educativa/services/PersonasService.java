@@ -25,7 +25,7 @@ public class PersonasService {
                 .collect(Collectors.toList());
     }
 
-    public PersonasDTO findPersonaById(Integer id){
+    public PersonasDTO findPersonaById(int id){
         Personas persona =  personasRepository.findById(id).orElse(null);
         return new PersonasDTO(persona);
     }
@@ -35,7 +35,7 @@ public class PersonasService {
         return personasRepository.save(persona);
     }
 
-    public Personas actualizarPersona(Integer id,PersonasDTO personaDTO){
+    public Personas actualizarPersona(int id,PersonasDTO personaDTO){
         Personas persona = new Personas(personaDTO.getNombre(), personaDTO.getApellido(), personaDTO.getNumCelular(), personaDTO.getEstado());
         persona.setId(id);
         return personasRepository.save(persona);

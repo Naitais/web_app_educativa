@@ -10,7 +10,7 @@ import java.time.LocalDate;
 //con esto hago que personas y sus subclases tenga cada una su propia tabla y que personas
 //tenga los campos comunos a las subclases pero cada hijo sus campos especificos
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "person_type")
+@DiscriminatorColumn(name = "tipo_persona")
 public class Personas {
 
     @Id
