@@ -42,6 +42,7 @@ public class TutoriasDTO {
         this.disciplina = tutoria.getDisciplina();
         this.materiales = tutoria.getMateriales();
         this.ubicacion = tutoria.getUbicacion();
+        this.estado = tutoria.getEstado();
         this.descripcion = tutoria.getDescripcion();
         this.modoPago = tutoria.getModoPago();
         this.tutor = tutoria.getTutor();

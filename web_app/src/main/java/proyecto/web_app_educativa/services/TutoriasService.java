@@ -16,8 +16,8 @@ public class TutoriasService {
 
     @Autowired
 
-    public TutoriasService(TutoriasRepository tutoresRepository) {
-        this.tutoriasRepository = tutoresRepository;
+    public TutoriasService(TutoriasRepository tutoriasRepository) {
+        this.tutoriasRepository = tutoriasRepository;
     }
 
     public List<TutoriasDTO> getTutoriasActivas(){
@@ -32,23 +32,53 @@ public class TutoriasService {
     }
 
     public Tutorias crearTutoria(TutoriasDTO tutoriaDTO) {
+
+
         Tutorias tutoria = new Tutorias(
-                tutoriaDTO.getArancel(),tutoriaDTO.getDescripcion(),tutoriaDTO.getDias(),
-                tutoriaDTO.getDisciplina(),tutoriaDTO.getEdadMinima(),
-                tutoriaDTO.getFechaDesde(),tutoriaDTO.getFechaHasta(),tutoriaDTO.getHorarioDesde(),
-                tutoriaDTO.getHorarioHasta(), tutoriaDTO.getMateriales(), tutoriaDTO.getModalidad(),
-                tutoriaDTO.getModoPago(), tutoriaDTO.getTipo(),tutoriaDTO.getUbicacion()
-        );
+
+
+                        tutoriaDTO.getEdadMinima(),
+                        tutoriaDTO.getHorarioDesde(),
+                        tutoriaDTO.getHorarioHasta(),
+                        tutoriaDTO.getFechaDesde(),
+                        tutoriaDTO.getFechaHasta(),
+                        tutoriaDTO.getDias(),
+                        tutoriaDTO.getTipo(),
+                        tutoriaDTO.getDisciplina(),
+                        tutoriaDTO.getMateriales(),
+                        tutoriaDTO.getUbicacion(),
+                        tutoriaDTO.getEstado(),
+                        tutoriaDTO.getDescripcion(),
+                        tutoriaDTO.getModoPago(),
+                        tutoriaDTO.getTutor(),
+                        tutoriaDTO.getModalidad(),
+                        tutoriaDTO.getArancel()
+
+                );
+
+
         return tutoriasRepository.save(tutoria);
     }
 
     public Tutorias actualizarTutoria(int id,TutoriasDTO tutoriaDTO){
+        System.out.println("DTO RECIBIDODDDDDDD: " + tutoriaDTO.getEstado());
         Tutorias tutoria = new Tutorias(
-                tutoriaDTO.getArancel(),tutoriaDTO.getDescripcion(),tutoriaDTO.getDias(),
-                tutoriaDTO.getDisciplina(),tutoriaDTO.getEdadMinima(),
-                tutoriaDTO.getFechaDesde(),tutoriaDTO.getFechaHasta(),tutoriaDTO.getHorarioDesde(),
-                tutoriaDTO.getHorarioHasta(), tutoriaDTO.getMateriales(), tutoriaDTO.getModalidad(),
-                tutoriaDTO.getModoPago(), tutoriaDTO.getTipo(),tutoriaDTO.getUbicacion()
+                tutoriaDTO.getEdadMinima(),
+                tutoriaDTO.getHorarioDesde(),
+                tutoriaDTO.getHorarioHasta(),
+                tutoriaDTO.getFechaDesde(),
+                tutoriaDTO.getFechaHasta(),
+                tutoriaDTO.getDias(),
+                tutoriaDTO.getTipo(),
+                tutoriaDTO.getDisciplina(),
+                tutoriaDTO.getMateriales(),
+                tutoriaDTO.getUbicacion(),
+                tutoriaDTO.getEstado(),
+                tutoriaDTO.getDescripcion(),
+                tutoriaDTO.getModoPago(),
+                tutoriaDTO.getTutor(),
+                tutoriaDTO.getModalidad(),
+                tutoriaDTO.getArancel()
         );
         tutoria.setId(id);
         return tutoriasRepository.save(tutoria);

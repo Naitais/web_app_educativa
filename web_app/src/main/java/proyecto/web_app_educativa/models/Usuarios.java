@@ -21,9 +21,9 @@ public class Usuarios {
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
     private Personas persona;
 
-    public Usuarios(int id, LocalDateTime ultimaSesion, String email, String contraseña) {
+    public Usuarios(int id, LocalDateTime ultimaSesion, String email, String contraseña, Boolean estado) {
         this.id = id;
-        this.estado = true;
+        this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
         this.ultimaSesion = ultimaSesion;
         this.email = email;
         this.contraseña = contraseña;
@@ -31,8 +31,8 @@ public class Usuarios {
     }
 
     public Usuarios(){
-        this.estado = true;
-        this.fechaRegistro = LocalDateTime.now();
+        //this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
+        //this.fechaRegistro = LocalDateTime.now();
     }
 
 

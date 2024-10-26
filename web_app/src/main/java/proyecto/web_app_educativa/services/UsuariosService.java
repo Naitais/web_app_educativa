@@ -33,14 +33,23 @@ public class UsuariosService {
     }
 
     public Usuarios crearUsuario(UsuariosDTO usuariosDTO) {
-        Usuarios usuario = new Usuarios(usuariosDTO.getId(),usuariosDTO.getUltimaSesion(),
-                usuariosDTO.getEmail(),usuariosDTO.getContraseña()
+        Usuarios usuario = new Usuarios(
+                usuariosDTO.getId(),
+                usuariosDTO.getUltimaSesion(),
+                usuariosDTO.getEmail(),
+                usuariosDTO.getContraseña(),
+                usuariosDTO.getEstado()
         );
         return usuariosRepository.save(usuario);
     }
 
-    public Usuarios actualizarUsuario(int id,UsuariosDTO usuarioDTO){
+    public Usuarios actualizarUsuario(int id,UsuariosDTO usuariosDTO){
         Usuarios usuario = new Usuarios(
+                usuariosDTO.getId(),
+                usuariosDTO.getUltimaSesion(),
+                usuariosDTO.getEmail(),
+                usuariosDTO.getContraseña(),
+                usuariosDTO.getEstado()
         );
         usuario.setId(id);
         return usuariosRepository.save(usuario);

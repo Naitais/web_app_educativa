@@ -9,6 +9,8 @@ import proyecto.web_app_educativa.services.UsuariosService;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("api/usuarios")
 public class UsuariosController {
 
     private UsuariosService usuariosService;

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 //tenga los campos comunos a las subclases pero cada hijo sus campos especificos
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo_persona")
-public class Personas {
+public class  Personas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -25,15 +25,15 @@ public class Personas {
     @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
     private Usuarios usuario;
 
-    public Personas(String nombre, String apellido, int numCelular) {
+    public Personas(String nombre, String apellido, int numCelular, Boolean estado) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.numCelular = numCelular;
-        this.estado = true;
+        this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
     }
 
     public Personas(){
-        this.estado = true;
+        //this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
     }
 
 

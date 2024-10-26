@@ -19,6 +19,7 @@ public class Tutorias {
     private int edadMinima;
     //cambiar a LocalDateTime va a ser mas claro y me ahorro tener dos atributos ya que uno
     // la fecha con la hora en uno solo
+
     private LocalTime horarioDesde;
     private LocalTime horarioHasta;
     private Boolean estado;
@@ -31,6 +32,8 @@ public class Tutorias {
     private String ubicacion;
     private String descripcion;
     private Pagos modoPago;
+    private Modalidades modalidad;
+    private double arancel;
 
     @OneToMany(mappedBy = "tutoria", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Alumnos> alumnos = new ArrayList<Alumnos>();
@@ -39,21 +42,20 @@ public class Tutorias {
     @JoinColumn(name = "tutor_id")
     private Tutores tutor;
 
-    private Modalidades modalidad;
-    private double arancel;
 
-    public Tutorias(int id, int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,
-                    Boolean estado, Date fechaDesde, Date fechaHasta, String dias, Tipos tipo,
-                    String disciplina, String materiales, String ubicacion, Alumnos alumno,
+
+    public Tutorias(int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,
+                    LocalDate fechaDesde, LocalDate fechaHasta, String dias, Tipos tipo,
+                    String disciplina, String materiales, String ubicacion, Boolean estado,
                     String descripcion, Pagos modoPago, Tutores tutor, Modalidades modalidad, double arancel) {
 
-        this.id = id;
+
         this.edadMinima = edadMinima;
         this.horarioDesde = horarioDesde;
         this.horarioHasta = horarioHasta;
-        this.estado = true;
+        this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
         this.fechaDesde = LocalDate.now();
-        this.fechaHasta = null;
+        this.fechaHasta = (fechaHasta != null) ? fechaHasta:null; // si esta null, pongo true sino entra estado
         this.dias = dias;
         this.tipo = tipo;
         this.disciplina = disciplina;
@@ -68,14 +70,12 @@ public class Tutorias {
 
     }
 
-    public Tutorias(double arancel, String descripcion, String dias, String disciplina, int edadMinima,
-                    LocalDate fechaDesde, LocalDate fechaHasta, LocalTime horarioDesde,
-                    LocalTime horarioHasta, String materiales, Modalidades modalidad, Pagos modoPago,
-                    Tipos tipo, String ubicacion){
-        this.estado = true;
-        this.fechaDesde = LocalDate.now();
-        this.fechaHasta = null;
+
+    public Tutorias() {
+
     }
+
+
 
     public int getId() {
         return id;
@@ -220,6 +220,9 @@ public class Tutorias {
     public void setAlumnos(List<Alumnos> alumnos) {
         this.alumnos = alumnos;
     }
+
+
+
 //este metodo tiene que recibir un string en el siguiente formato 0000000
     // cada 0 en el string representa un dia de la semana, si en la priemra posicion
     // hay un 1 en lugar de un 0, quiere decir que esa tutoria es los lunes
