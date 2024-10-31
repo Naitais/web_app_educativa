@@ -28,6 +28,7 @@ public class Usuarios {
         this.ultimaSesion = (ultimaSesion != null) ? ultimaSesion:LocalDateTime.now();
         this.email = email;
         this.contraseña = contraseña;
+
         this.fechaRegistro = LocalDateTime.now();
         this.rol = rol;
     }

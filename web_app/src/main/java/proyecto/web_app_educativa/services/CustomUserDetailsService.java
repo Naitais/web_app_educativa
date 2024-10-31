@@ -25,9 +25,9 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     //sobreescribe el metodo por default para poder usar un usuario custom
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuarios usuario = usuariosRepository.findByUsernameAndEstado(username, true)
-                .orElseThrow(() -> new UsernameNotFoundException("usuario no encontrado: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Usuarios usuario = usuariosRepository.findByEmailAndEstado(email, true)
+                .orElseThrow(() -> new UsernameNotFoundException("usuario no encontrado: " + email));
 
         return new org.springframework.security.core.userdetails.User(
                 usuario.getEmail(),

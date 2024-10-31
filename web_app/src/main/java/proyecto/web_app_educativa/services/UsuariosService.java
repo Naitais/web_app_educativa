@@ -1,6 +1,7 @@
 package proyecto.web_app_educativa.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.UsuariosDTO;
 import proyecto.web_app_educativa.repositories.UsuariosRepository;
@@ -12,12 +13,12 @@ import java.util.stream.Collectors;
 public class UsuariosService {
 
     private UsuariosRepository usuariosRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    UsuariosService (UsuariosRepository usauriosRepository){
-
+    UsuariosService (UsuariosRepository usauriosRepository, PasswordEncoder passwordEncoder){
         this.usuariosRepository = usauriosRepository;
-
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -33,11 +34,13 @@ public class UsuariosService {
     }
 
     public Usuarios crearUsuario(UsuariosDTO usuariosDTO) {
+        String contraseñaCodificada = passwordEncoder.encode(usuariosDTO.getContraseña());
+
         Usuarios usuario = new Usuarios(
                 usuariosDTO.getId(),
                 usuariosDTO.getUltimaSesion(),
                 usuariosDTO.getEmail(),
-                usuariosDTO.getContraseña(),
+                contraseñaCodificada,
                 usuariosDTO.getEstado(),
                 usuariosDTO.getRol()
         );
@@ -45,6 +48,7 @@ public class UsuariosService {
     }
 
     public Usuarios actualizarUsuario(int id,UsuariosDTO usuariosDTO){
+
         Usuarios usuario = new Usuarios(
                 usuariosDTO.getId(),
                 usuariosDTO.getUltimaSesion(),
