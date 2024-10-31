@@ -1,5 +1,6 @@
 package proyecto.web_app_educativa.DTOs;
 
+import proyecto.web_app_educativa.models.Roles;
 import proyecto.web_app_educativa.models.Usuarios;
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ public class UsuariosDTO {
     private String email;
     private String contraseña;
     private LocalDateTime fechaRegistro;
+    private Roles rol;
 
     public UsuariosDTO(Usuarios usuario){
         this.id = usuario.getId();
@@ -18,6 +20,7 @@ public class UsuariosDTO {
         this.email = usuario.getEmail();
         this.contraseña = usuario.getContraseña();
         this.fechaRegistro = usuario.getFechaRegistro();
+        this.rol = usuario.getRol();
     }
 
     public UsuariosDTO(){
@@ -46,5 +49,9 @@ public class UsuariosDTO {
 
     public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
+    }
+
+    public Roles getRol() {
+        return rol;
     }
 }

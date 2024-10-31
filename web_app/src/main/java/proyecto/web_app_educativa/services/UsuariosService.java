@@ -38,7 +38,8 @@ public class UsuariosService {
                 usuariosDTO.getUltimaSesion(),
                 usuariosDTO.getEmail(),
                 usuariosDTO.getContraseña(),
-                usuariosDTO.getEstado()
+                usuariosDTO.getEstado(),
+                usuariosDTO.getRol()
         );
         return usuariosRepository.save(usuario);
     }
@@ -49,7 +50,8 @@ public class UsuariosService {
                 usuariosDTO.getUltimaSesion(),
                 usuariosDTO.getEmail(),
                 usuariosDTO.getContraseña(),
-                usuariosDTO.getEstado()
+                usuariosDTO.getEstado(),
+                usuariosDTO.getRol()
         );
         usuario.setId(id);
         return usuariosRepository.save(usuario);

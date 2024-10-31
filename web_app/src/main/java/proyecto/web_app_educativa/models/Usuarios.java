@@ -16,18 +16,20 @@ public class Usuarios {
     private String email;
     private String contraseña;
     private LocalDateTime fechaRegistro;
+    private Roles rol;
 
     @OneToOne
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
     private Personas persona;
 
-    public Usuarios(int id, LocalDateTime ultimaSesion, String email, String contraseña, Boolean estado) {
+    public Usuarios(int id, LocalDateTime ultimaSesion, String email, String contraseña, Boolean estado, Roles rol) {
         this.id = id;
         this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
-        this.ultimaSesion = ultimaSesion;
+        this.ultimaSesion = (ultimaSesion != null) ? ultimaSesion:LocalDateTime.now();
         this.email = email;
         this.contraseña = contraseña;
         this.fechaRegistro = LocalDateTime.now();
+        this.rol = rol;
     }
 
     public Usuarios(){
@@ -83,5 +85,25 @@ public class Usuarios {
 
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public void setUltimaSesion(LocalDateTime ultimaSesion) {
+        this.ultimaSesion = ultimaSesion;
+    }
+
+    public Roles getRol() {
+        return rol;
+    }
+
+    public void setRol(Roles rol) {
+        this.rol = rol;
+    }
+
+    public Personas getPersona() {
+        return persona;
+    }
+
+    public void setPersona(Personas persona) {
+        this.persona = persona;
     }
 }
