@@ -1,18 +1,16 @@
 package proyecto.web_app_educativa.config;
 
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import proyecto.web_app_educativa.services.CustomUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
 public class SeguridadConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -23,30 +21,28 @@ public class SeguridadConfig {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Configure the SecurityFilterChain for HTTP security
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/login", "/register", "/public/**").permitAll() //endpoints publicos
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login", "/register", "/public/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        //.anyRequest().authenticated() // debe estar logeado para acceder al resto de end points
+                        .anyRequest().authenticated()
                 )
-
-                .formLogin((form) -> form
-                        //.loginPage("/login") // redirecciona al login
-                        .defaultSuccessUrl("/api/usuarios", true) // redirecciona despues de login
+                .httpBasic(httpBasic -> {}) // Replaces httpBasic() with the latest API
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/api/usuarios", true)
                         .permitAll()
                 )
-                .logout((logout) -> logout
-                        .logoutUrl("/logout")
+                .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
-                );
+                )
+                .csrf(csrf -> csrf.disable()); // Disables CSRF for testing purposes
+
         return http.build();
     }
 
-    // repasar que hace codigo de abajo
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -54,12 +50,4 @@ public class SeguridadConfig {
         authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
-
-    // Optional: Customize AuthenticationManagerBuilder if you want to configure additional providers
-    /*@Bean
-    public AuthenticationManagerBuilder authenticationManagerBuilder(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
-        return auth;
-    }*/
 }
-

@@ -23,16 +23,18 @@ import static proyecto.web_app_educativa.models.Roles.ROL_ADMIN;
 public class UsuariosController {
 
     //  todo eliminar lo que tenga que ver con encriptacion de contraseña y login despues de testear
-    private final PasswordEncoder passwordEncoder;
+    //private final PasswordEncoder passwordEncoder;
     private UsuariosService usuariosService;
 
-    public UsuariosController (UsuariosService usuariosService, PasswordEncoder passwordEncoder){
+    //public UsuariosController (UsuariosService usuariosService, PasswordEncoder passwordEncoder){
+    public UsuariosController (UsuariosService usuariosService){
         this.usuariosService = usuariosService;
-        this.passwordEncoder = passwordEncoder;
+        //this.passwordEncoder = passwordEncoder;
 
     }
 
     // todo eliminar esto
+    /*
     @Bean
     public CommandLineRunner initData(UsuariosRepository usuariosRepository) {
         return (args) -> {
@@ -42,7 +44,7 @@ public class UsuariosController {
             }
         };
     }
-
+*/
 
     @GetMapping("")
     public List<UsuariosDTO> listadoUsuarios() {
