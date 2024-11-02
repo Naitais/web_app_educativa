@@ -31,7 +31,7 @@ public class SeguridadConfig {
                 )
                 .httpBasic(httpBasic -> {}) // Replaces httpBasic() with the latest API
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/api/usuarios", true)
+                        .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
