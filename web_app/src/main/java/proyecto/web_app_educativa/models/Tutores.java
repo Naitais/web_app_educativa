@@ -49,4 +49,9 @@ public class Tutores extends Personas{
     public void setTutorias(List<Tutorias> tutorias) {
         this.tutorias = tutorias;
     }
+
+    public void agregarTutoria(Tutorias tutoria){
+        tutoria.setTutor(this);
+        tutorias.add(tutoria);
+    }
 }

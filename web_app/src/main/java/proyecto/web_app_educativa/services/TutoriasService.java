@@ -3,21 +3,26 @@ package proyecto.web_app_educativa.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.TutoriasDTO;
+import proyecto.web_app_educativa.models.Tutores;
 import proyecto.web_app_educativa.models.Tutorias;
+import proyecto.web_app_educativa.repositories.TutoresRepository;
 import proyecto.web_app_educativa.repositories.TutoriasRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TutoriasService {
 
     private final TutoriasRepository tutoriasRepository;
+    private final TutoresRepository tutoresRepository;
 
     @Autowired
 
-    public TutoriasService(TutoriasRepository tutoriasRepository) {
+    public TutoriasService(TutoriasRepository tutoriasRepository, TutoresRepository tutoresRepository) {
         this.tutoriasRepository = tutoriasRepository;
+        this.tutoresRepository = tutoresRepository;
     }
 
     public List<TutoriasDTO> getTutoriasActivas(){
@@ -31,11 +36,11 @@ public class TutoriasService {
         return new TutoriasDTO(tutorias);
     }
 
-    public Tutorias crearTutoria(TutoriasDTO tutoriaDTO) {
-
+    public Tutorias crearTutoria(TutoriasDTO tutoriaDTO, int id) {
+        //busco por id tutor al cual le agrego la tutoria
+        Tutores tutor =  tutoresRepository.findById(id).orElse(null);
 
         Tutorias tutoria = new Tutorias(
-
 
                         tutoriaDTO.getEdadMinima(),
                         tutoriaDTO.getHorarioDesde(),
@@ -43,25 +48,22 @@ public class TutoriasService {
                         tutoriaDTO.getFechaDesde(),
                         tutoriaDTO.getFechaHasta(),
                         tutoriaDTO.getDias(),
-                        tutoriaDTO.getTipo(),
+                        tutoriaDTO.getTipoUbicaciones(),
                         tutoriaDTO.getDisciplina(),
                         tutoriaDTO.getMateriales(),
                         tutoriaDTO.getUbicacion(),
                         tutoriaDTO.getEstado(),
                         tutoriaDTO.getDescripcion(),
-                        tutoriaDTO.getModoPago(),
-                        tutoriaDTO.getTutor(),
+                        tutoriaDTO.getTipoPago(),
                         tutoriaDTO.getModalidad(),
                         tutoriaDTO.getArancel()
-
                 );
-
-
+        //agrego la tutoria
+        tutor.agregarTutoria(tutoria);
         return tutoriasRepository.save(tutoria);
     }
 
     public Tutorias actualizarTutoria(int id,TutoriasDTO tutoriaDTO){
-        System.out.println("DTO RECIBIDODDDDDDD: " + tutoriaDTO.getEstado());
         Tutorias tutoria = new Tutorias(
                 tutoriaDTO.getEdadMinima(),
                 tutoriaDTO.getHorarioDesde(),
@@ -69,14 +71,13 @@ public class TutoriasService {
                 tutoriaDTO.getFechaDesde(),
                 tutoriaDTO.getFechaHasta(),
                 tutoriaDTO.getDias(),
-                tutoriaDTO.getTipo(),
+                tutoriaDTO.getTipoUbicaciones(),
                 tutoriaDTO.getDisciplina(),
                 tutoriaDTO.getMateriales(),
                 tutoriaDTO.getUbicacion(),
                 tutoriaDTO.getEstado(),
                 tutoriaDTO.getDescripcion(),
-                tutoriaDTO.getModoPago(),
-                tutoriaDTO.getTutor(),
+                tutoriaDTO.getTipoPago(),
                 tutoriaDTO.getModalidad(),
                 tutoriaDTO.getArancel()
         );

@@ -42,9 +42,9 @@ public class TutoriasController {
     }
 
     @ResponseStatus(HttpStatus.CREATED) // para tener una respuesta despues de haber creado el post
-    @PostMapping("") //vacio porque asi comparte la misma ruta que los demas
-    void crearTutoria(@RequestBody TutoriasDTO tutoriaDTO) {
-        tutoriasService.crearTutoria(tutoriaDTO);
+    @PostMapping("/{id}") //vacio porque asi comparte la misma ruta que los demas
+    void crearTutoria(@RequestBody TutoriasDTO tutoriaDTO, @PathVariable int id) {
+        tutoriasService.crearTutoria(tutoriaDTO, id);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

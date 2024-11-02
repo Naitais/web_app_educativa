@@ -6,7 +6,6 @@ import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -26,12 +25,12 @@ public class Tutorias {
     private LocalDate fechaDesde;
     private LocalDate fechaHasta;
     private String dias;
-    private Tipos tipo;
+    private TiposUbicaciones tipoUbicaciones;
     private String disciplina;
     private String materiales;
     private String ubicacion;
     private String descripcion;
-    private Pagos modoPago;
+    private TiposPagos tipoPago;
     private Modalidades modalidad;
     private double arancel;
 
@@ -45,9 +44,9 @@ public class Tutorias {
 
 
     public Tutorias(int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,
-                    LocalDate fechaDesde, LocalDate fechaHasta, String dias, Tipos tipo,
+                    LocalDate fechaDesde, LocalDate fechaHasta, String dias, TiposUbicaciones tipoUbicaciones,
                     String disciplina, String materiales, String ubicacion, Boolean estado,
-                    String descripcion, Pagos modoPago, Tutores tutor, Modalidades modalidad, double arancel) {
+                    String descripcion, TiposPagos tipoPago, Modalidades modalidad, double arancel) {
 
 
         this.edadMinima = edadMinima;
@@ -57,13 +56,12 @@ public class Tutorias {
         this.fechaDesde = LocalDate.now();
         this.fechaHasta = (fechaHasta != null) ? fechaHasta:null; // si esta null, pongo true sino entra estado
         this.dias = dias;
-        this.tipo = tipo;
+        this.tipoUbicaciones = tipoUbicaciones;
         this.disciplina = disciplina;
         this.materiales = materiales;
         this.ubicacion = ubicacion;
         this.descripcion = descripcion;
-        this.modoPago = modoPago;
-        this.tutor = tutor;
+        this.tipoPago = tipoPago;
         this.modalidad = modalidad;
         this.arancel = arancel;
 
@@ -137,12 +135,12 @@ public class Tutorias {
         this.dias = dias;
     }
 
-    public Tipos getTipo() {
-        return tipo;
+    public TiposUbicaciones getTipoUbicaciones() {
+        return tipoUbicaciones;
     }
 
-    public void setTipo(Tipos tipo) {
-        this.tipo = tipo;
+    public void setTipo(TiposUbicaciones tipo) {
+        this.tipoUbicaciones = tipo;
     }
 
     public String getDisciplina() {
@@ -177,12 +175,12 @@ public class Tutorias {
         this.descripcion = descripcion;
     }
 
-    public Pagos getModoPago() {
-        return modoPago;
+    public TiposPagos getTipoPago() {
+        return tipoPago;
     }
 
-    public void setModoPago(Pagos modoPago) {
-        this.modoPago = modoPago;
+    public void setTipoPago(TiposPagos tipoPago) {
+        this.tipoPago = tipoPago;
     }
 
     public Tutores getTutor() {

@@ -17,13 +17,13 @@ public class TutoriasDTO {
     private LocalDate fechaDesde;
     private LocalDate fechaHasta;
     private String dias;
-    private Tipos tipo;
+    private TiposUbicaciones tipoUbicaciones;
     private String disciplina;
     private String materiales;
     private String ubicacion;
     private List<AlumnosDTO> alumnos;
     private String descripcion;
-    private Pagos modoPago;
+    private TiposPagos tipoPago;
     private Tutores tutor;
     private Modalidades modalidad;
     private double arancel;
@@ -38,14 +38,13 @@ public class TutoriasDTO {
         this.fechaDesde = tutoria.getFechaDesde();
         this.fechaHasta = tutoria.getFechaHasta();
         this.dias = tutoria.getDias();
-        this.tipo = tutoria.getTipo();
+        this.tipoUbicaciones = tutoria.getTipoUbicaciones();
         this.disciplina = tutoria.getDisciplina();
         this.materiales = tutoria.getMateriales();
         this.ubicacion = tutoria.getUbicacion();
         this.estado = tutoria.getEstado();
         this.descripcion = tutoria.getDescripcion();
-        this.modoPago = tutoria.getModoPago();
-        this.tutor = tutoria.getTutor();
+        this.tipoPago = tutoria.getTipoPago();
         this.modalidad = tutoria.getModalidad();
         this.arancel = tutoria.getArancel();
         this.alumnos = tutoria.getAlumnos().stream().map(alumno -> new AlumnosDTO(alumno)).collect(Collectors.toList());
@@ -83,8 +82,8 @@ public class TutoriasDTO {
         return dias;
     }
 
-    public Tipos getTipo() {
-        return tipo;
+    public TiposUbicaciones getTipoUbicaciones() {
+        return tipoUbicaciones;
     }
 
     public String getDisciplina() {
@@ -107,8 +106,8 @@ public class TutoriasDTO {
         return descripcion;
     }
 
-    public Pagos getModoPago() {
-        return modoPago;
+    public TiposPagos getTipoPago() {
+        return tipoPago;
     }
 
     public Tutores getTutor() {

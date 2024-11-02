@@ -33,7 +33,7 @@ public class  Personas {
     }
 
     public Personas(){
-        //this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
+
     }
 
 
