@@ -22,8 +22,8 @@ public class Usuarios {
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
     private Personas persona;
 
-    public Usuarios(int id, LocalDateTime ultimaSesion, String email, String contraseña, Boolean estado, Roles rol) {
-        this.id = id;
+    public Usuarios(LocalDateTime ultimaSesion, String email, String contraseña, Boolean estado, Roles rol) {
+
         this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
         this.ultimaSesion = (ultimaSesion != null) ? ultimaSesion:LocalDateTime.now();
         this.email = email;

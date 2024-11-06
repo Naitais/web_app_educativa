@@ -12,7 +12,7 @@ public class Tutores extends Personas{
 
     //private Perfiles perfil;
 
-    @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tutorias> tutorias = new ArrayList<Tutorias>();
 
     public Tutores(String nombre, String apellido, int numCelular, Boolean estado) {

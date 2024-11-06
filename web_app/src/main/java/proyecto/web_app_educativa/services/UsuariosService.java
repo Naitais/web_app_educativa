@@ -37,7 +37,6 @@ public class UsuariosService {
         String contraseñaCodificada = passwordEncoder.encode(usuariosDTO.getContraseña());
 
         Usuarios usuario = new Usuarios(
-                usuariosDTO.getId(),
                 usuariosDTO.getUltimaSesion(),
                 usuariosDTO.getEmail(),
                 contraseñaCodificada,
@@ -50,7 +49,6 @@ public class UsuariosService {
     public Usuarios actualizarUsuario(int id,UsuariosDTO usuariosDTO){
 
         Usuarios usuario = new Usuarios(
-                usuariosDTO.getId(),
                 usuariosDTO.getUltimaSesion(),
                 usuariosDTO.getEmail(),
                 usuariosDTO.getContraseña(),

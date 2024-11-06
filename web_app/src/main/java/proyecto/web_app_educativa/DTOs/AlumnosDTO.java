@@ -8,7 +8,7 @@ public class AlumnosDTO extends PersonasDTO{
 
     public AlumnosDTO(Alumnos alumno) {
         super(alumno);
-        this.id = alumno.getId();
+
     }
 
     @Override

@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Home</title>
 </head>
 <body>
-<h1>texto</h1>
+<header>
+    <h1>Welcome, <span th:text="${username}">User</span>!</h1>
+</header>
+
+<main>
+    <p>Here’s some additional information about your profile:</p>
+    <!-- Example of displaying more information -->
+    <p>User Role: <span th:text="${userRole}">Role</span></p>
+</main>
+
 <footer>
     <p>&copy; 2024 Tatutor. All rights reserved.</p>
 </footer>
 </body>
 </html>
-

@@ -25,8 +25,8 @@ public class SeguridadConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/public/**").permitAll()
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/login", "/register", "/public/**", "/api/**").permitAll()
+                        //.requestMatchers("").authenticated()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(httpBasic -> {}) // Replaces httpBasic() with the latest API
