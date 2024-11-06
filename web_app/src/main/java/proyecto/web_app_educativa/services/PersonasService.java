@@ -51,7 +51,7 @@ public class PersonasService {
         return personasRepository.save(persona);
     }
 
-
+//TODO agregar metodo delete pero que haga update
 }
 
 

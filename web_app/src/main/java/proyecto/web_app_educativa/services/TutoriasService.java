@@ -9,7 +9,6 @@ import proyecto.web_app_educativa.repositories.TutoresRepository;
 import proyecto.web_app_educativa.repositories.TutoriasRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +33,15 @@ public class TutoriasService {
     public TutoriasDTO findTutoriaById(int id){
         Tutorias tutorias =  tutoriasRepository.findById(id).orElse(null);
         return new TutoriasDTO(tutorias);
+    }
+
+    //filtro con palabra clave solo funciona con una sola palabra
+    //todo en un futuro modificar metodo para que pueda incluir busquedas booleanas
+    public List<TutoriasDTO> buscarTutoriasPorPalabra(String palabra) {
+        List<Tutorias> tutorias = tutoriasRepository.buscarPorPalabra(palabra);
+        return tutorias.stream()
+                .map(TutoriasDTO::new) // Convert each Tutorias entity into a DTO
+                .collect(Collectors.toList());
     }
 
     public Tutorias crearTutoria(TutoriasDTO tutoriaDTO, int id) {
@@ -65,26 +73,26 @@ public class TutoriasService {
 
     public Tutorias actualizarTutoria(int id,TutoriasDTO tutoriaDTO){
         Tutorias tutoria = new Tutorias(
-                tutoriaDTO.getEdadMinima(),
+                tutoriaDTO.getEdadMinima(), //
                 tutoriaDTO.getHorarioDesde(),
                 tutoriaDTO.getHorarioHasta(),
                 tutoriaDTO.getFechaDesde(),
                 tutoriaDTO.getFechaHasta(),
                 tutoriaDTO.getDias(),
-                tutoriaDTO.getTipoUbicaciones(),
-                tutoriaDTO.getDisciplina(),
-                tutoriaDTO.getMateriales(),
-                tutoriaDTO.getUbicacion(),
+                tutoriaDTO.getTipoUbicaciones(), //
+                tutoriaDTO.getDisciplina(), //
+                tutoriaDTO.getMateriales(), //
+                tutoriaDTO.getUbicacion(), //
                 tutoriaDTO.getEstado(),
                 tutoriaDTO.getDescripcion(),
-                tutoriaDTO.getTipoPago(),
-                tutoriaDTO.getModalidad(),
-                tutoriaDTO.getArancel()
+                tutoriaDTO.getTipoPago(), //
+                tutoriaDTO.getModalidad(), //
+                tutoriaDTO.getArancel() //
         );
         tutoria.setId(id);
         return tutoriasRepository.save(tutoria);
     }
-
+    //TODO agregar metodo delete pero que haga update
 
 
 }
