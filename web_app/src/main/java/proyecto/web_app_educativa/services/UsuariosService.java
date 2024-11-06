@@ -1,6 +1,7 @@
 package proyecto.web_app_educativa.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.UsuariosDTO;
@@ -28,10 +29,12 @@ public class UsuariosService {
                 .collect(Collectors.toList());
     }
 
-    public UsuariosDTO findUsuarioById(int id){
+    public UsuariosDTO getUsuarioPorId(int id){
         Usuarios usuario =  usuariosRepository.findById(id).orElse(null);
         return new UsuariosDTO(usuario);
     }
+
+
 
     public Usuarios crearUsuario(UsuariosDTO usuariosDTO) {
         String contraseñaCodificada = passwordEncoder.encode(usuariosDTO.getContraseña());
@@ -61,6 +64,10 @@ public class UsuariosService {
 
 
 
+    public Usuarios getUsuarioPorEmail(String email) {
+        return usuariosRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No se encontro ningun usuario con el email: " + email));
+    }
 
 
 }

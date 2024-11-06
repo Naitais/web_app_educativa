@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+    <nav class="menuNav">
+        <ul>
+            <li><a href="#">LOGO</a></li>
+            <li><a href="#">BUSQUEDA</a></li>
+            <li><a href="#">PERFIL</a></li> <!-- solo tutores deberian poder ver este boton -->
+        </ul>
+    </nav>
+
+<header>
+    <h1>Bienvenido, <span th:text="${usuario}">User</span>!</h1>
+</header>
+
+<main>
+    <p>Informacion adicional del usuario:</p>
+    <p>Rol de usuario: <span th:text="${rol}">Role</span></p>
+    <p>Ultima sesion: <span th:text="${ultimaSesion}">Role</span></p>
+
+    <h2>Available Tutorias</h2>
+    <ul>
+        <li th:each="tutoria : ${tutorias}">
+            <h3 th:text="${tutoria.disciplina}">Disciplina</h3>
+
+            <p th:text="'Horario: ' + ${tutoria.horarioDesde} + ' - ' + ${tutoria.horarioHasta}">Horario</p>
+            <p th:text="${tutoria.descripcion}">Description</p>
+
+        </li>
+    </ul>
+
+</main>
+
+<footer>
+    <p>&copy; 2024 Tatutor. All rights reserved.</p>
+</footer>
+
+    <script th:src="@{/javascript/home.js}"></script>
+</body>
+</html>

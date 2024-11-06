@@ -1,22 +1,13 @@
 package proyecto.web_app_educativa.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proyecto.web_app_educativa.DTOs.UsuariosDTO;
-import proyecto.web_app_educativa.models.Usuarios;
-import proyecto.web_app_educativa.repositories.UsuariosRepository;
 import proyecto.web_app_educativa.services.UsuariosService;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.List;
-
-import static proyecto.web_app_educativa.models.Roles.ROL_ADMIN;
 
 @RestController
 @RequestMapping("api/usuarios")
@@ -54,7 +45,7 @@ public class UsuariosController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUsuario(@PathVariable int id){
         try{
-            UsuariosDTO tutoria = usuariosService.findUsuarioById(id);
+            UsuariosDTO tutoria = usuariosService.getUsuarioPorId(id);
             return new ResponseEntity<>(tutoria, HttpStatus.OK);
         } catch(EntityNotFoundException e){
 

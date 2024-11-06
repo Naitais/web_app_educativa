@@ -4,7 +4,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.transaction.annotation.Transactional;
 import proyecto.web_app_educativa.DTOs.TutoresDTO;
 import proyecto.web_app_educativa.DTOs.TutoriasDTO;
 import proyecto.web_app_educativa.DTOs.UsuariosDTO;
@@ -28,7 +27,6 @@ public class WebAppEducativaApplication {
 	}
 
 	@Bean
-	//@Transactional
 	public CommandLineRunner initData(
 			UsuariosService usuariosService,
 			UsuariosRepository usuariosRepository,
