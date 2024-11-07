@@ -24,7 +24,7 @@ public class TutoriasDTO {
     private List<AlumnosDTO> alumnos;
     private String descripcion;
     private TiposPagos tipoPago;
-    private Tutores tutor;
+    private Perfiles perfil;
     private Modalidades modalidad;
     private double arancel;
 
@@ -110,8 +110,8 @@ public class TutoriasDTO {
         return tipoPago;
     }
 
-    public Tutores getTutor() {
-        return tutor;
+    public Perfiles getPerfil() {
+        return perfil;
     }
 
     public Modalidades getModalidad() {

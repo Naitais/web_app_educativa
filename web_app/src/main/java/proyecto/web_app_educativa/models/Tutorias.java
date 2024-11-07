@@ -38,10 +38,8 @@ public class Tutorias {
     private List<Alumnos> alumnos = new ArrayList<Alumnos>();
 
     @ManyToOne
-    @JoinColumn(name = "tutor_id")
-    private Tutores tutor;
-
-
+    @JoinColumn(name = "perfil_id")
+    private Perfiles perfil;
 
     public Tutorias(int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,
                     LocalDate fechaDesde, LocalDate fechaHasta, String dias, TiposUbicaciones tipoUbicaciones,
@@ -65,15 +63,11 @@ public class Tutorias {
         this.modalidad = modalidad;
         this.arancel = arancel;
 
-
     }
-
 
     public Tutorias() {
 
     }
-
-
 
     public int getId() {
         return id;
@@ -183,12 +177,16 @@ public class Tutorias {
         this.tipoPago = tipoPago;
     }
 
-    public Tutores getTutor() {
-        return tutor;
+    public void setTipoUbicaciones(TiposUbicaciones tipoUbicaciones) {
+        this.tipoUbicaciones = tipoUbicaciones;
     }
 
-    public void setTutor(Tutores tutor) {
-        this.tutor = tutor;
+    public Perfiles getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Perfiles perfil) {
+        this.perfil = perfil;
     }
 
     public Modalidades getModalidad() {

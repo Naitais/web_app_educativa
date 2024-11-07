@@ -3,9 +3,9 @@ package proyecto.web_app_educativa.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.TutoriasDTO;
-import proyecto.web_app_educativa.models.Tutores;
+import proyecto.web_app_educativa.models.Perfiles;
 import proyecto.web_app_educativa.models.Tutorias;
-import proyecto.web_app_educativa.repositories.TutoresRepository;
+import proyecto.web_app_educativa.repositories.PerfilesRepository;
 import proyecto.web_app_educativa.repositories.TutoriasRepository;
 
 import java.util.List;
@@ -15,14 +15,15 @@ import java.util.stream.Collectors;
 public class TutoriasService {
 
     private final TutoriasRepository tutoriasRepository;
-    private final TutoresRepository tutoresRepository;
+    private final PerfilesRepository perfilesRepository;
 
     @Autowired
 
-    public TutoriasService(TutoriasRepository tutoriasRepository, TutoresRepository tutoresRepository) {
+    public TutoriasService(TutoriasRepository tutoriasRepository, PerfilesRepository perfilesRepository) {
         this.tutoriasRepository = tutoriasRepository;
-        this.tutoresRepository = tutoresRepository;
+        this.perfilesRepository = perfilesRepository;
     }
+
 
     public List<TutoriasDTO> getTutoriasActivas(){
         return tutoriasRepository.findByEstadoTrue().stream()
@@ -40,13 +41,13 @@ public class TutoriasService {
     public List<TutoriasDTO> buscarTutoriasPorPalabra(String palabra) {
         List<Tutorias> tutorias = tutoriasRepository.buscarPorPalabra(palabra);
         return tutorias.stream()
-                .map(TutoriasDTO::new) // Convert each Tutorias entity into a DTO
+                .map(TutoriasDTO::new)
                 .collect(Collectors.toList());
     }
 
     public Tutorias crearTutoria(TutoriasDTO tutoriaDTO, int id) {
         //busco por id tutor al cual le agrego la tutoria
-        Tutores tutor =  tutoresRepository.findById(id).orElse(null);
+        Perfiles perfil =  perfilesRepository.findById(id).orElse(null);
 
         Tutorias tutoria = new Tutorias(
 
@@ -65,9 +66,11 @@ public class TutoriasService {
                         tutoriaDTO.getTipoPago(),
                         tutoriaDTO.getModalidad(),
                         tutoriaDTO.getArancel()
+
                 );
         //agrego la tutoria
-        tutor.agregarTutoria(tutoria);
+        perfil.agregarTutoria(tutoria);
+
         return tutoriasRepository.save(tutoria);
     }
 

@@ -35,7 +35,8 @@ public class TutoresService {
                 tutorDTO.getNombre(),
                 tutorDTO.getApellido(),
                 tutorDTO.getNumCelular(),
-                tutorDTO.getEstado()
+                tutorDTO.getEstado(),
+                tutorDTO.getPerfil()
         );
         return tutoresRepository.save(tutor);
     }
@@ -45,7 +46,8 @@ public class TutoresService {
                 tutorDTO.getNombre(),
                 tutorDTO.getApellido(),
                 tutorDTO.getNumCelular(),
-                tutorDTO.getEstado()
+                tutorDTO.getEstado(),
+                tutorDTO.getPerfil()
         );
         tutor.setId(id);
         return tutoresRepository.save(tutor);

@@ -3,6 +3,7 @@ package proyecto.web_app_educativa.models;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,10 @@ public class Perfiles {
     private List<String> certificados; //por ahora solo son strings
     @ElementCollection
     private List<String> experiencia;
+
+
+    @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tutorias> tutorias = new ArrayList<>();
     //private List<Reseñas> reseñas;
 
     @OneToOne
@@ -27,7 +32,7 @@ public class Perfiles {
     private Tutores tutor;
 
     public Perfiles(
-            boolean estado,
+            Boolean estado,
             double rating,
             String biografia,
             String foto,
@@ -35,13 +40,15 @@ public class Perfiles {
             List<String> experiencia,
             Tutores tutor) {
 
-        this.estado = estado;
+
         this.rating = rating;
         this.biografia = biografia;
         this.foto = foto;
         this.certificados = certificados;
         this.experiencia = experiencia;
         this.tutor = tutor;
+        this.tutorias = tutorias;
+        this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
     }
 
     public Perfiles(){}
@@ -54,7 +61,7 @@ public class Perfiles {
         this.id = id;
     }
 
-    public boolean isEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
@@ -109,4 +116,19 @@ public class Perfiles {
     public void setTutor(Tutores tutor) {
         this.tutor = tutor;
     }
+
+
+    public List<Tutorias> getTutorias() {
+        return tutorias;
+    }
+
+    public void setTutorias(List<Tutorias> tutorias) {
+        this.tutorias = tutorias;
+    }
+
+    public void agregarTutoria(Tutorias tutoria){
+        tutoria.setPerfil(this);
+        tutorias.add(tutoria);
+    }
+
 }
