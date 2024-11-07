@@ -1,11 +1,6 @@
 package proyecto.web_app_educativa.models;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
-import proyecto.web_app_educativa.DTOs.TutoriasDTO;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Tutores extends Personas{
@@ -15,9 +10,9 @@ public class Tutores extends Personas{
     private Perfiles perfil;
 
 
-    public Tutores(String nombre, String apellido, int numCelular, Boolean estado, Perfiles perfil) {
+    public Tutores(String nombre, String apellido, int numCelular, Boolean estado) {
         super(nombre, apellido, numCelular, estado);
-        this.perfil = perfil;
+
 
     }
 

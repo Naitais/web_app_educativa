@@ -31,23 +31,24 @@ public class TutoresService {
     }
 
     public Tutores crearTutor(TutoresDTO tutorDTO) {
+
         Tutores tutor = new Tutores(
                 tutorDTO.getNombre(),
                 tutorDTO.getApellido(),
                 tutorDTO.getNumCelular(),
-                tutorDTO.getEstado(),
-                tutorDTO.getPerfil()
+                tutorDTO.getEstado()
         );
         return tutoresRepository.save(tutor);
     }
+
+
 
     public Tutores actualizarTutor(int id,TutoresDTO tutorDTO){
         Tutores tutor = new Tutores(
                 tutorDTO.getNombre(),
                 tutorDTO.getApellido(),
                 tutorDTO.getNumCelular(),
-                tutorDTO.getEstado(),
-                tutorDTO.getPerfil()
+                tutorDTO.getEstado()
         );
         tutor.setId(id);
         return tutoresRepository.save(tutor);

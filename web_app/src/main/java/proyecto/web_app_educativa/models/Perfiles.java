@@ -46,8 +46,6 @@ public class Perfiles {
         this.foto = foto;
         this.certificados = certificados;
         this.experiencia = experiencia;
-        this.tutor = tutor;
-        this.tutorias = tutorias;
         this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
     }
 

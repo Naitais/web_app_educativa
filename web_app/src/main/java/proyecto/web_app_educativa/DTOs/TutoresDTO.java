@@ -13,7 +13,6 @@ public class TutoresDTO extends PersonasDTO {
     public TutoresDTO(Tutores tutor) {
         super(tutor);
         this.id = tutor.getId();
-        this.perfil = tutor.getPerfil();
 
     }
 
