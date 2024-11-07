@@ -46,7 +46,7 @@ public class TutoriasService {
     }
 
     public Tutorias crearTutoria(TutoriasDTO tutoriaDTO, int id) {
-        //busco por id tutor al cual le agrego la tutoria
+        //busco por id perfil al cual le agrego la tutoria
         Perfiles perfil =  perfilesRepository.findById(id).orElse(null);
 
         Tutorias tutoria = new Tutorias(
@@ -96,6 +96,13 @@ public class TutoriasService {
         return tutoriasRepository.save(tutoria);
     }
     //TODO agregar metodo delete pero que haga update
+    public Tutorias borrarTutoria(int id) {
+        Tutorias tutoria = tutoriasRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tutoria no encontrada"));
 
+        tutoria.setEstado(false);
+
+        return tutoriasRepository.save(tutoria);
+    }
 
 }

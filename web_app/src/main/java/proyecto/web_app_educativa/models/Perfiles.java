@@ -37,8 +37,8 @@ public class Perfiles {
             String biografia,
             String foto,
             List<String> certificados,
-            List<String> experiencia,
-            Tutores tutor) {
+            List<String> experiencia
+    ) {
 
 
         this.rating = rating;

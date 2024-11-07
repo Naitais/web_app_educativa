@@ -81,4 +81,18 @@ public class  Personas {
     public void setEstado(Boolean estado) {
         this.estado = estado;
     }
+
+    public Usuarios getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuarios usuario) {
+        this.usuario = usuario;
+    }
+
+    public void agregarUsuario(Usuarios usuario){
+        usuario.setPersona(this);
+        setUsuario(usuario);
+    }
+
 }

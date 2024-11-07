@@ -37,9 +37,9 @@ public class PersonasController {
     }
 
     @ResponseStatus(HttpStatus.CREATED) // para tener una respuesta despues de haber creado el post
-    @PostMapping("") //vacio porque asi comparte la misma ruta que los demas
-    void crearPersona(@RequestBody PersonasDTO personaDTO) {
-        personasService.crearPersona(personaDTO);
+    @PostMapping("/{id}") //vacio porque asi comparte la misma ruta que los demas
+    void crearPersona(@RequestBody PersonasDTO personaDTO, @PathVariable int id) {
+        personasService.crearPersona(personaDTO,id);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

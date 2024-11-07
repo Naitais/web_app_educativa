@@ -4,18 +4,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.PersonasDTO;
 import proyecto.web_app_educativa.models.Personas;
+import proyecto.web_app_educativa.models.Usuarios;
 import proyecto.web_app_educativa.repositories.PersonasRepository;
+import proyecto.web_app_educativa.repositories.UsuariosRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class PersonasService {
     PersonasRepository personasRepository;
+    UsuariosRepository usuariosRepository;
 
     @Autowired
-    public PersonasService(PersonasRepository repository){
+    public PersonasService(PersonasRepository repository,
+                           UsuariosRepository usuariosRepository){
 
         this.personasRepository = repository;
+        this.usuariosRepository = usuariosRepository;
 
     }
 
@@ -30,13 +36,17 @@ public class PersonasService {
         return new PersonasDTO(persona);
     }
 
-    public Personas crearPersona(PersonasDTO personaDTO) {
+    public Personas crearPersona(PersonasDTO personaDTO, int id) {
+        Usuarios usuario = usuariosRepository.findById(id).orElse(null);
+
         Personas persona = new Personas(
                 personaDTO.getNombre(),
                 personaDTO.getApellido(),
                 personaDTO.getNumCelular(),
                 personaDTO.getEstado()
         );
+
+        persona.agregarUsuario(usuario);
         return personasRepository.save(persona);
     }
 
