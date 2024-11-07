@@ -11,11 +11,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/perfiles")
-public class PerfilesController {
+public class PerfilesRestController {
 
         private final PerfilesService perfilesService;
 
-        public PerfilesController(PerfilesService perfilesService) {
+        public PerfilesRestController(PerfilesService perfilesService) {
             this.perfilesService = perfilesService;
         }
 

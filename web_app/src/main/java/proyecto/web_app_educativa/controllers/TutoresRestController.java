@@ -10,11 +10,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/tutores")
-public class TutoresController {
+public class TutoresRestController {
 
         private final TutoresService tutoresService;
 
-        public TutoresController(TutoresService tutoresService) {
+        public TutoresRestController(TutoresService tutoresService) {
             this.tutoresService = tutoresService;
         }
 

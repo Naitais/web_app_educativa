@@ -11,14 +11,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/usuarios")
-public class UsuariosController {
+public class UsuariosRestController {
 
     //  todo eliminar lo que tenga que ver con encriptacion de contraseña y login despues de testear
     //private final PasswordEncoder passwordEncoder;
     private UsuariosService usuariosService;
 
     //public UsuariosController (UsuariosService usuariosService, PasswordEncoder passwordEncoder){
-    public UsuariosController (UsuariosService usuariosService){
+    public UsuariosRestController(UsuariosService usuariosService){
         this.usuariosService = usuariosService;
         //this.passwordEncoder = passwordEncoder;
 

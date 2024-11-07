@@ -26,9 +26,7 @@ import java.util.Arrays;
 @SpringBootApplication
 public class WebAppEducativaApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WebAppEducativaApplication.class, args);
-	}
+	public static void main(String[] args) {SpringApplication.run(WebAppEducativaApplication.class, args);}
 
 	@Bean
 	public CommandLineRunner initData(
@@ -42,6 +40,21 @@ public class WebAppEducativaApplication {
 			TutoriasRepository tutoriasRepository
 			) {
 		return (args) -> {
+
+			//hardcodeo el usuario con el tutor hasta que arme bien el proceso de registro
+			//le pongo el id 2 porque ese es el que le corresponde segun la persona
+
+
+			Tutores tutorPame = tutoresRepository.findById(1).get();
+			Usuarios usuarioPame = usuariosRepository.findById(2).get();
+
+			//guardo en la base de datos solo si estan null
+			if (usuarioPame.getPersona() == null && tutorPame.getUsuario() == null){
+				usuarioPame.setPersona(tutorPame);
+				tutorPame.agregarUsuario(usuariosRepository.findById(2).get());
+				usuariosRepository.save(usuarioPame);
+				tutoresRepository.save(tutorPame);
+			}
 
 			//creo usuarios
 			if (usuariosRepository.findAll().isEmpty()) {
@@ -92,6 +105,8 @@ public class WebAppEducativaApplication {
 				tutoresService.crearTutor(new TutoresDTO(tutor8));
 				tutoresService.crearTutor(new TutoresDTO(tutor9));
 				tutoresService.crearTutor(new TutoresDTO(tutor10));
+
+
 			}
 
 			//creo perfiles

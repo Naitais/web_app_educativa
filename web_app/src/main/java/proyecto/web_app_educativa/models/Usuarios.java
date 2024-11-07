@@ -1,5 +1,6 @@
 package proyecto.web_app_educativa.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
@@ -20,22 +21,26 @@ public class Usuarios {
 
     @OneToOne
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
+    @JsonManagedReference
     private Personas persona;
 
-    public Usuarios(LocalDateTime ultimaSesion, String email, String contraseña, Boolean estado, Roles rol) {
+    public Usuarios(
+            LocalDateTime ultimaSesion,
+            String email,
+            String contraseña,
+            Boolean estado,
+            Roles rol) {
 
         this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
         this.ultimaSesion = (ultimaSesion != null) ? ultimaSesion:LocalDateTime.now();
         this.email = email;
         this.contraseña = contraseña;
-
+        this.persona = persona;
         this.fechaRegistro = LocalDateTime.now();
         this.rol = rol;
     }
 
     public Usuarios(){
-        //this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
-        //this.fechaRegistro = LocalDateTime.now();
     }
 
 

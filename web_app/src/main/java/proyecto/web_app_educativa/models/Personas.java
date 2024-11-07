@@ -1,5 +1,6 @@
 package proyecto.web_app_educativa.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,6 +24,7 @@ public class  Personas {
     private Boolean estado;
 
     @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Usuarios usuario;
 
     public Personas(String nombre, String apellido, int numCelular, Boolean estado) {

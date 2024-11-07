@@ -1,12 +1,10 @@
 package proyecto.web_app_educativa.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import proyecto.web_app_educativa.DTOs.TutoriasDTO;
-import proyecto.web_app_educativa.models.Tutorias;
 import proyecto.web_app_educativa.models.Usuarios;
 import proyecto.web_app_educativa.services.TutoresService;
 import proyecto.web_app_educativa.services.TutoriasService;
