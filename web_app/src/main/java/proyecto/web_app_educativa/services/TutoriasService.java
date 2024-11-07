@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.TutoriasDTO;
 import proyecto.web_app_educativa.models.Perfiles;
+import proyecto.web_app_educativa.models.Tutores;
 import proyecto.web_app_educativa.models.Tutorias;
 import proyecto.web_app_educativa.repositories.PerfilesRepository;
 import proyecto.web_app_educativa.repositories.TutoriasRepository;
@@ -45,6 +46,12 @@ public class TutoriasService {
                 .collect(Collectors.toList());
     }
 
+    /*// para filtrar con el nombre del tutor
+    public List<Tutorias> obtenerTutoriasPorTutor(Tutores tutor) {
+
+        return tutoriasRepository.findByTutorAndEstadoTrue(tutor);
+    }
+*/
     public Tutorias crearTutoria(TutoriasDTO tutoriaDTO, int id) {
         //busco por id perfil al cual le agrego la tutoria
         Perfiles perfil =  perfilesRepository.findById(id).orElse(null);
@@ -104,5 +111,7 @@ public class TutoriasService {
 
         return tutoriasRepository.save(tutoria);
     }
+
+
 
 }

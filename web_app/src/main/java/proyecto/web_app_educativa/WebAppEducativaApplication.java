@@ -18,6 +18,7 @@ import proyecto.web_app_educativa.services.TutoresService;
 import proyecto.web_app_educativa.services.TutoriasService;
 import proyecto.web_app_educativa.services.UsuariosService;
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -45,6 +46,8 @@ public class WebAppEducativaApplication {
 			//le pongo el id 2 porque ese es el que le corresponde segun la persona
 
 
+			//despues de crear los datos en la base descomentar esto y volver a correr
+			/*
 			Tutores tutorPame = tutoresRepository.findById(1).get();
 			Usuarios usuarioPame = usuariosRepository.findById(2).get();
 
@@ -55,6 +58,7 @@ public class WebAppEducativaApplication {
 				usuariosRepository.save(usuarioPame);
 				tutoresRepository.save(tutorPame);
 			}
+			*/
 
 			//creo usuarios
 			if (usuariosRepository.findAll().isEmpty()) {

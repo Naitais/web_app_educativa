@@ -93,9 +93,6 @@ public class Usuarios {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public void setUltimaSesion(LocalDateTime ultimaSesion) {
-        this.ultimaSesion = ultimaSesion;
-    }
 
     public Roles getRol() {
         return rol;

@@ -56,7 +56,7 @@ public class TutoriasRestController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    void borrarTutoria(@RequestBody TutoriasDTO tutoriaDTO, @PathVariable int id) {
+    void borrarTutoria( @PathVariable int id) {
         tutoriasService.borrarTutoria(id);
     }
 

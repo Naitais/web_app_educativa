@@ -1,10 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Perfil del Usuario</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<h1>Perfil de Usuario</h1>
 
+<div>
+    <h2>Información Personal</h2>
+    <p><strong>Nombre:</strong> <span th:text="${usuario.persona.nombre}">Nombre</span></p>
+    <p><strong>Correo:</strong> <span th:text="${usuario.email}">Correo</span></p>
+</div>
+
+
+
+<!-- Display Perfil Information Only for Tutors -->
+<div th:if="${perfil != null}">
+    <h2>Perfil</h2>
+    <p><strong>Biografía:</strong> <span th:text="${perfil.biografia}">Biografía</span></p>
+    <p><strong>Rating:</strong> <span th:text="${perfil.rating}">Rating</span></p>
+    <p><strong>Foto:</strong> <img th:src="${perfil.foto}" alt="Foto del perfil"/></p>
+
+    <h2>Certificados</h2>
+    <ul>
+        <li th:each="certificado : ${perfil.certificados}" th:text="${certificado}">Certificado</li>
+    </ul>
+
+    <h2>Experiencia</h2>
+    <ul>
+        <li th:each="exp : ${perfil.experiencia}" th:text="${exp}">Experiencia</li>
+    </ul>
+
+    <h2>Tutorías</h2>
+    <div th:each="tutoria : ${perfil.tutorias}">
+        <!-- por ahora filtro las tutorias aca pero tengo que hacerlo en el controller -->
+        <div th:if="${tutoria.estado}">
+            <p style="display:none"><strong>id:</strong> <span th:text="${tutoria.id}" id="tutoriaID_${tutoria.id}">id</span></p>
+            <p><strong>Disciplina:</strong> <span th:text="${tutoria.disciplina}">Disciplina</span></p>
+            <p><strong>Descripción:</strong> <span th:text="${tutoria.descripcion}">Descripción</span></p>
+            <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
+            <p><strong>Ubicación:</strong> <span th:text="${tutoria.ubicacion}">Ubicación</span></p>
+            <p><strong>Materiales:</strong> <span th:text="${tutoria.materiales}">Materiales</span></p>
+            <p><strong>Arancel:</strong> <span th:text="${tutoria.arancel}">Arancel</span></p>
+            <p><strong>Días:</strong> <span th:text="${tutoria.dias}">Días</span></p>
+            <button class="eliminarTutoriaBtn" data-tutoria-id="${tutoria.id}">Eliminar tutoria</button>
+        </div>
+    </div>
+
+</div>
+<div>
+    <button id="agregarTutoriaBtn">Agregar tutoria</button>
+
+</div>
+
+<div id="ventanaEmergente">
+
+    <form id="tutoriaForm">
+        <label for="edadMinima">Edad Minima:</label>
+        <input type="number" id="edadMinima" name="edadMinima" required><br>
+
+        <label for="horarioDesde">Horario Desde:</label>
+        <input type="time" id="horarioDesde" name="horarioDesde" required><br>
+
+        <label for="horarioHasta">Horario Hasta:</label>
+        <input type="time" id="horarioHasta" name="horarioHasta" required><br>
+
+
+        <label for="fechaDesde">Fecha Desde:</label>
+        <input type="date" id="fechaDesde" name="fechaDesde" required><br>
+
+        <label for="fechaHasta">Fecha Hasta:</label>
+        <input type="date" id="fechaHasta" name="fechaHasta" required><br>
+
+        <label for="dias">Dias:</label>
+        <input type="text" id="dias" name="dias" placeholder="Ej: 1010100" required><br>
+
+        <label for="tipoUbicaciones">Tipo de Ubicaciones:</label>
+        <select id="tipoUbicaciones" name="tipoUbicaciones">
+            <option value="DOMICILIO_DEL_TUTOR">Domicilio del Tutor</option>
+            <option value="DOMICILIO_DEL_ESTUDIANTE">Domicilio del Estudiante</option>
+        </select><br>
+
+        <label for="disciplina">Disciplina:</label>
+        <input type="text" id="disciplina" name="disciplina" required><br>
+
+        <label for="materiales">Materiales:</label>
+        <input type="text" id="materiales" name="materiales" placeholder="Materiales incluidos"><br>
+
+        <label for="ubicacion">Ubicacion:</label>
+        <input type="text" id="ubicacion" name="ubicacion" required><br>
+
+        <label for="descripcion">Descripcion:</label>
+        <textarea id="descripcion" name="descripcion" required></textarea><br>
+
+        <label for="tipoPago">Tipo de Pago:</label>
+        <select id="tipoPago" name="tipoPago">
+            <option value="POR_MES">Por Mes</option>
+            <option value="POR_CLASE">Por Clase</option>
+        </select><br>
+
+        <label for="modalidad">Modalidad:</label>
+        <select id="modalidad" name="modalidad">
+            <option value="PRESENCIAL">Presencial</option>
+            <option value="ONLINE">Online</option>
+        </select><br>
+
+        <label for="arancel">Arancel:</label>
+        <input type="number" id="arancel" name="arancel" step="0.01" required><br>
+
+        <button type="submit">Crear Tutoria</button>
+    </form>
+</div>
+
+<script th:src="@{/javascript/perfil.js}"></script>
 </body>
 </html>

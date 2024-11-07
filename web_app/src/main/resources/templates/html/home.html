@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
@@ -18,32 +18,30 @@
                 <label><input type="checkbox" class="filter-checkbox"> Opción 3</label><br>
             </div>
         </li>
-        <li><a href="#">PERFIL</a></li> <!-- solo tutores deberian poder ver este boton -->
+        <!-- Conditional link for Perfil, only visible to tutors -->
+        <!-- <li th:if="${esTutor}"> -->
+        <li>
+            <a th:href="@{/perfil}">PERFIL</a>
+        </li>
     </ul>
 </nav>
 
-
 <div id="contenedorPrincipal">
-        <h3>Crear publicación</h3>
-        <button >
-            boton
-        </button>
-        <div id="contenedorFeed">
-            <h1>FEED</h1> <!-- por cada publicacion mostrar dentro de este div -->
-        </div>
+    <h3>Crear publicación</h3>
+    <button>boton</button>
+    <div id="contenedorFeed">
+        <h1>FEED</h1> <!-- por cada publicacion mostrar dentro de este div -->
     </div>
-
+</div>
 
 <main>
-    <div id="tutoriasFiltradas">
-
-    </div>
+    <div id="tutoriasFiltradas"></div>
 </main>
 
 <footer id="footer">
     <p>&copy; 2024 Tatutor. All rights reserved.</p>
 </footer>
 
-    <script th:src="@{/javascript/home.js}"></script>
+<script th:src="@{/javascript/home.js}"></script>
 </body>
 </html>
