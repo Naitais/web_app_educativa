@@ -1,5 +1,6 @@
 package proyecto.web_app_educativa.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -39,6 +40,7 @@ public class Tutorias {
 
     @ManyToOne
     @JoinColumn(name = "perfil_id")
+    @JsonIgnore
     private Perfiles perfil;
 
     public Tutorias(int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,

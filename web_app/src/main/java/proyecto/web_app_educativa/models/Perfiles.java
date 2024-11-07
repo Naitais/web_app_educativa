@@ -1,5 +1,7 @@
 package proyecto.web_app_educativa.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,12 +25,15 @@ public class Perfiles {
     private List<String> experiencia;
 
 
-    @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
+    //si no lo pongo para que traiga todo de una con eager me tira error hibernate
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tutorias> tutorias = new ArrayList<>();
     //private List<Reseñas> reseñas;
 
     @OneToOne
     @JoinColumn(name = "tutor_id", referencedColumnName = "id")
+    @JsonBackReference
+    //@JsonIgnore //TODO tuve que incluir jsonignore preguntar al profe sobre la recursion
     private Tutores tutor;
 
     public Perfiles(
@@ -39,7 +44,6 @@ public class Perfiles {
             List<String> certificados,
             List<String> experiencia
     ) {
-
 
         this.rating = rating;
         this.biografia = biografia;

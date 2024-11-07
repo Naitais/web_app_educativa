@@ -1,5 +1,6 @@
 package proyecto.web_app_educativa.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,6 +8,7 @@ public class Tutores extends Personas{
 
 
     @OneToOne(mappedBy = "tutor", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Perfiles perfil;
 
 

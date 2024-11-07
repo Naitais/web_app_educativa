@@ -9,16 +9,13 @@ import proyecto.web_app_educativa.services.PerfilesService;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("api/perfiles")
 public class PerfilesController {
-
-
-    @RestController
-    @RequestMapping("api/perfiles")
-    public class PersonasController {
 
         private final PerfilesService perfilesService;
 
-        public PersonasController(PerfilesService perfilesService) {
+        public PerfilesController(PerfilesService perfilesService) {
             this.perfilesService = perfilesService;
         }
 
@@ -47,9 +44,9 @@ public class PerfilesController {
         @ResponseStatus(HttpStatus.NO_CONTENT)
         @PutMapping("/{id}")
         void actualizarPerfil(@RequestBody PerfilesDTO perfilesDTO, @PathVariable int id) {
-            perfilesService.actualizarPerfil(id, perfilesDTO);
-        }
-
-    }
+        perfilesService.actualizarPerfil(id, perfilesDTO);
+}
 
 }
+
+
