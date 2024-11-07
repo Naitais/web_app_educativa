@@ -37,8 +37,8 @@ public class TutoriasController {
     }
 
     @GetMapping("/busqueda")
-    public List<TutoriasDTO> buscarTutorias(@RequestParam("query") String query) {
-        return tutoriasService.buscarTutoriasPorPalabra(query);
+    public List<TutoriasDTO> buscarTutorias(@RequestParam("palabra") String palabra) {
+        return tutoriasService.buscarTutoriasPorPalabra(palabra);
     }
 
     @ResponseStatus(HttpStatus.CREATED) // para tener una respuesta despues de haber creado el post

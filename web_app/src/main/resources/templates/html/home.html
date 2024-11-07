@@ -35,18 +35,9 @@
 
 
 <main>
+    <div id="tutoriasFiltradas">
 
-    <h2>Available Tutorias</h2>
-    <ul>
-        <li th:each="tutoria : ${tutorias}">
-            <h3 th:text="${tutoria.disciplina}">Disciplina</h3>
-
-            <p th:text="'Horario: ' + ${tutoria.horarioDesde} + ' - ' + ${tutoria.horarioHasta}">Horario</p>
-            <p th:text="${tutoria.descripcion}">Description</p>
-
-        </li>
-    </ul>
-
+    </div>
 </main>
 
 <footer id="footer">

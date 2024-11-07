@@ -127,6 +127,10 @@ body {
 }
 
 
+.main{
+    display: none;
+}
+
 
 #footer {
     margin-top: 70px;
