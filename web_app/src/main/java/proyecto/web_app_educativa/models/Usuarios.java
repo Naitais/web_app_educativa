@@ -2,17 +2,16 @@ package proyecto.web_app_educativa.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDateTime;
 
 @Entity
 public class Usuarios {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private Boolean estado;
+    private UsuarioEstados estado;
     private LocalDateTime ultimaSesion;
     private String email;
     private String contraseña;
@@ -28,11 +27,11 @@ public class Usuarios {
             LocalDateTime ultimaSesion,
             String email,
             String contraseña,
-            Boolean estado,
+            UsuarioEstados estado,
             Roles rol) {
 
-        this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
-        this.ultimaSesion = (ultimaSesion != null) ? ultimaSesion:LocalDateTime.now();
+        this.estado = (estado != null) ? estado : UsuarioEstados.ACTIVO; // default to ACTIVO
+        this.ultimaSesion = (ultimaSesion != null) ? ultimaSesion : LocalDateTime.now();
         this.email = email;
         this.contraseña = contraseña;
         this.persona = persona;
@@ -40,10 +39,8 @@ public class Usuarios {
         this.rol = rol;
     }
 
-    public Usuarios(){
+    public Usuarios() {
     }
-
-
 
     public void setId(int id) {
         this.id = id;
@@ -53,11 +50,11 @@ public class Usuarios {
         return id;
     }
 
-    public Boolean getEstado() {
+    public UsuarioEstados getEstado() {
         return estado;
     }
 
-    public void setEstado(Boolean estado) {
+    public void setEstado(UsuarioEstados estado) {
         this.estado = estado;
     }
 
@@ -92,7 +89,6 @@ public class Usuarios {
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
-
 
     public Roles getRol() {
         return rol;

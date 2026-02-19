@@ -21,7 +21,7 @@ public class TutoriasDTO {
     private String disciplina;
     private String materiales;
     private String ubicacion;
-    private List<AlumnosDTO> alumnos;
+    private List<PersonasDTO> alumnos;
     private String descripcion;
     private TiposPagos tipoPago;
     private Perfiles perfil;
@@ -47,10 +47,11 @@ public class TutoriasDTO {
         this.tipoPago = tutoria.getTipoPago();
         this.modalidad = tutoria.getModalidad();
         this.arancel = tutoria.getArancel();
-        this.alumnos = tutoria.getAlumnos().stream().map(alumno -> new AlumnosDTO(alumno)).collect(Collectors.toList());
+        this.alumnos = tutoria.getAlumnos().stream().map(alumno -> new PersonasDTO(alumno))
+                .collect(Collectors.toList());
     }
 
-    public TutoriasDTO(){
+    public TutoriasDTO() {
 
     }
 
@@ -98,7 +99,7 @@ public class TutoriasDTO {
         return ubicacion;
     }
 
-    public List<AlumnosDTO> getAlumnos() {
+    public List<PersonasDTO> getAlumnos() {
         return alumnos;
     }
 

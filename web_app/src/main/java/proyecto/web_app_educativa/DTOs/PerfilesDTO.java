@@ -10,8 +10,8 @@ public class PerfilesDTO {
     private boolean estado;
     private double rating;
     private String biografia;
-    private String foto; //es un link
-    private List<String> certificados; //por ahora solo son strings
+    private String foto; // es un link
+    private List<String> certificados; // por ahora solo son strings
     private List<String> experiencia;
     private List<TutoriasDTO> tutorias;
 
@@ -23,11 +23,12 @@ public class PerfilesDTO {
         this.foto = perfil.getFoto();
         this.certificados = perfil.getCertificados();
         this.experiencia = perfil.getExperiencia();
-        this.tutorias = perfil.getTutorias().stream().map(tutoria -> new TutoriasDTO(tutoria)).collect(Collectors.toList());
+        this.tutorias = perfil.getTutorias().stream().map(tutoria -> new TutoriasDTO(tutoria))
+                .collect(Collectors.toList());
 
     }
 
-    PerfilesDTO(){
+    public PerfilesDTO() {
 
     }
 
@@ -35,31 +36,63 @@ public class PerfilesDTO {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public boolean getEstado() {
         return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
 
     public double getRating() {
         return rating;
     }
 
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
     public String getBiografia() {
         return biografia;
+    }
+
+    public void setBiografia(String biografia) {
+        this.biografia = biografia;
     }
 
     public String getFoto() {
         return foto;
     }
 
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
     public List<String> getCertificados() {
         return certificados;
+    }
+
+    public void setCertificados(List<String> certificados) {
+        this.certificados = certificados;
     }
 
     public List<String> getExperiencia() {
         return experiencia;
     }
 
+    public void setExperiencia(List<String> experiencia) {
+        this.experiencia = experiencia;
+    }
+
     public List<TutoriasDTO> getTutorias() {
         return tutorias;
+    }
+
+    public void setTutorias(List<TutoriasDTO> tutorias) {
+        this.tutorias = tutorias;
     }
 }

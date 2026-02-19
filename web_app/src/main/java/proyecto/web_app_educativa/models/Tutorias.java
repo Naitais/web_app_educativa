@@ -2,7 +2,6 @@ package proyecto.web_app_educativa.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,11 +12,11 @@ import java.util.List;
 public class Tutorias {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int edadMinima;
-    //cambiar a LocalDateTime va a ser mas claro y me ahorro tener dos atributos ya que uno
+    // cambiar a LocalDateTime va a ser mas claro y me ahorro tener dos atributos ya
+    // que uno
     // la fecha con la hora en uno solo
 
     private LocalTime horarioDesde;
@@ -36,7 +35,7 @@ public class Tutorias {
     private double arancel;
 
     @OneToMany(mappedBy = "tutoria", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Alumnos> alumnos = new ArrayList<Alumnos>();
+    private List<Personas> alumnos = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "perfil_id")
@@ -44,17 +43,16 @@ public class Tutorias {
     private Perfiles perfil;
 
     public Tutorias(int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,
-                    LocalDate fechaDesde, LocalDate fechaHasta, String dias, TiposUbicaciones tipoUbicaciones,
-                    String disciplina, String materiales, String ubicacion, Boolean estado,
-                    String descripcion, TiposPagos tipoPago, Modalidades modalidad, double arancel) {
-
+            LocalDate fechaDesde, LocalDate fechaHasta, String dias, TiposUbicaciones tipoUbicaciones,
+            String disciplina, String materiales, String ubicacion, Boolean estado,
+            String descripcion, TiposPagos tipoPago, Modalidades modalidad, double arancel) {
 
         this.edadMinima = edadMinima;
         this.horarioDesde = horarioDesde;
         this.horarioHasta = horarioHasta;
-        this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
+        this.estado = (estado != null) ? estado : true; // si esta null, pongo true sino entra estado
         this.fechaDesde = LocalDate.now();
-        this.fechaHasta = (fechaHasta != null) ? fechaHasta:null; // si esta null, pongo true sino entra estado
+        this.fechaHasta = (fechaHasta != null) ? fechaHasta : null; // si esta null, pongo true sino entra estado
         this.dias = dias;
         this.tipoUbicaciones = tipoUbicaciones;
         this.disciplina = disciplina;
@@ -207,7 +205,7 @@ public class Tutorias {
         this.arancel = arancel;
     }
 
-    public List<Alumnos> getAlumnos() {
+    public List<Personas> getAlumnos() {
         return alumnos;
     }
 
@@ -215,19 +213,18 @@ public class Tutorias {
         this.id = id;
     }
 
-    public void setAlumnos(List<Alumnos> alumnos) {
+    public void setAlumnos(List<Personas> alumnos) {
         this.alumnos = alumnos;
     }
 
-
-
-//este metodo tiene que recibir un string en el siguiente formato 0000000
+    // este metodo tiene que recibir un string en el siguiente formato 0000000
     // cada 0 en el string representa un dia de la semana, si en la priemra posicion
     // hay un 1 en lugar de un 0, quiere decir que esa tutoria es los lunes
-    //y asi para cada dia dependiendo de si hay 0 o 1 representa los dias de la tutoria
-    //public void setearDias(List<String> pDiasLista){
-    //    for (String dia: pDiasLista){
+    // y asi para cada dia dependiendo de si hay 0 o 1 representa los dias de la
+    // tutoria
+    // public void setearDias(List<String> pDiasLista){
+    // for (String dia: pDiasLista){
 
-    //    }
-    //}
+    // }
+    // }
 }

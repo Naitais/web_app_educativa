@@ -2,7 +2,6 @@ package proyecto.web_app_educativa.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,29 +10,28 @@ import java.util.List;
 public class Perfiles {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private boolean estado;
     private double rating;
     private String biografia;
-    private String foto; //es un link
+    private String foto; // es un link
     @ElementCollection
-    private List<String> certificados; //por ahora solo son strings
+    private List<String> certificados; // por ahora solo son strings
     @ElementCollection
     private List<String> experiencia;
 
-
-    //si no lo pongo para que traiga todo de una con eager me tira error hibernate
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
+    // si no lo pongo para que traiga todo de una con eager me tira error hibernate
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tutorias> tutorias = new ArrayList<>();
-    //private List<Reseñas> reseñas;
+    // private List<Reseñas> reseñas;
 
     @OneToOne
-    @JoinColumn(name = "tutor_id", referencedColumnName = "id")
+    @JoinColumn(name = "persona_id", referencedColumnName = "id")
     @JsonBackReference
-    //@JsonIgnore //TODO tuve que incluir jsonignore preguntar al profe sobre la recursion
-    private Tutores tutor;
+    // @JsonIgnore //TODO tuve que incluir jsonignore preguntar al profe sobre la
+    // recursion
+    private Personas persona;
 
     public Perfiles(
             Boolean estado,
@@ -41,18 +39,18 @@ public class Perfiles {
             String biografia,
             String foto,
             List<String> certificados,
-            List<String> experiencia
-    ) {
+            List<String> experiencia) {
 
         this.rating = rating;
         this.biografia = biografia;
         this.foto = foto;
         this.certificados = certificados;
         this.experiencia = experiencia;
-        this.estado = (estado != null) ? estado:true; // si esta null, pongo true sino entra estado
+        this.estado = (estado != null) ? estado : true; // si esta null, pongo true sino entra estado
     }
 
-    public Perfiles(){}
+    public Perfiles() {
+    }
 
     public int getId() {
         return id;
@@ -110,14 +108,13 @@ public class Perfiles {
         this.experiencia = experiencia;
     }
 
-    public Tutores getTutor() {
-        return tutor;
+    public Personas getPersona() {
+        return persona;
     }
 
-    public void setTutor(Tutores tutor) {
-        this.tutor = tutor;
+    public void setPersona(Personas persona) {
+        this.persona = persona;
     }
-
 
     public List<Tutorias> getTutorias() {
         return tutorias;
@@ -127,7 +124,7 @@ public class Perfiles {
         this.tutorias = tutorias;
     }
 
-    public void agregarTutoria(Tutorias tutoria){
+    public void agregarTutoria(Tutorias tutoria) {
         tutoria.setPerfil(this);
         tutorias.add(tutoria);
     }

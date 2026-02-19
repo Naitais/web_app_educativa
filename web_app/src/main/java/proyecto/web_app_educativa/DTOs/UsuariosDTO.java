@@ -2,12 +2,13 @@ package proyecto.web_app_educativa.DTOs;
 
 import proyecto.web_app_educativa.models.Personas;
 import proyecto.web_app_educativa.models.Roles;
+import proyecto.web_app_educativa.models.UsuarioEstados;
 import proyecto.web_app_educativa.models.Usuarios;
 import java.time.LocalDateTime;
 
 public class UsuariosDTO {
     private int id;
-    private Boolean estado;
+    private UsuarioEstados estado;
     private LocalDateTime ultimaSesion;
     private String email;
     private String contraseña;
@@ -15,7 +16,7 @@ public class UsuariosDTO {
     private Roles rol;
     private Personas personas;
 
-    public UsuariosDTO(Usuarios usuario){
+    public UsuariosDTO(Usuarios usuario) {
         this.id = usuario.getId();
         this.estado = usuario.getEstado();
         this.ultimaSesion = usuario.getUltimaSesion();
@@ -26,7 +27,7 @@ public class UsuariosDTO {
         this.personas = usuario.getPersona();
     }
 
-    public UsuariosDTO(){
+    public UsuariosDTO() {
 
     }
 
@@ -34,7 +35,7 @@ public class UsuariosDTO {
         return id;
     }
 
-    public Boolean getEstado() {
+    public UsuarioEstados getEstado() {
         return estado;
     }
 

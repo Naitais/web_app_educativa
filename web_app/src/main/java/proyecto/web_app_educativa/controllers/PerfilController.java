@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import proyecto.web_app_educativa.models.Tutores;
+import proyecto.web_app_educativa.models.Personas;
+import proyecto.web_app_educativa.models.Roles;
 import proyecto.web_app_educativa.models.Usuarios;
 import proyecto.web_app_educativa.services.UsuariosService;
 import java.security.Principal;
+
 @Controller
 public class PerfilController {
 
@@ -30,22 +32,21 @@ public class PerfilController {
 
                 // verifico si la persona cargada en el usuario logeado es una
                 // instancia de Tutores
-                if (usuario.getPersona() instanceof Tutores) {
+                if (usuario.getRol() == Roles.ROL_PROFESOR) {
 
-                    //si el usuario es un tutor agrego variable de sesion true
+                    // si el usuario es un tutor agrego variable de sesion true
                     model.addAttribute("esTutor", true);
-                    Tutores tutor = (Tutores) usuario.getPersona();
+                    Personas persona = usuario.getPersona();
 
-                    if (tutor.getPerfil() != null) {
+                    if (persona.getPerfil() != null) {
 
-
-                        //agrego al modelo la informacion del perfil del tutor logeado
-                        model.addAttribute("perfil", tutor.getPerfil());
+                        // agrego al modelo la informacion del perfil del tutor logeado
+                        model.addAttribute("perfil", persona.getPerfil());
                     }
 
-                }else {
+                } else {
 
-                    //caso contrario es false y no podra ver el boton perfil
+                    // caso contrario es false y no podra ver el boton perfil
                     model.addAttribute("esTutor", false);
                 }
             }

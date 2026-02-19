@@ -3,9 +3,9 @@ package proyecto.web_app_educativa.services;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.PerfilesDTO;
 import proyecto.web_app_educativa.models.Perfiles;
-import proyecto.web_app_educativa.models.Tutores;
+import proyecto.web_app_educativa.models.Personas;
 import proyecto.web_app_educativa.repositories.PerfilesRepository;
-import proyecto.web_app_educativa.repositories.TutoresRepository;
+import proyecto.web_app_educativa.repositories.PersonasRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,45 +14,46 @@ import java.util.stream.Collectors;
 public class PerfilesService {
 
     private PerfilesRepository perfilesRepository;
-    private TutoresRepository tutoresRepository;
+    private PersonasRepository personasRepository;
 
     public PerfilesService(PerfilesRepository perfilesRepository,
-                           TutoresRepository tutoresRepository) {
+            PersonasRepository personasRepository) {
         this.perfilesRepository = perfilesRepository;
-        this.tutoresRepository = tutoresRepository;
+        this.personasRepository = personasRepository;
     }
 
-
-    public List<PerfilesDTO> getPerfilesActivos(){
+    public List<PerfilesDTO> getPerfilesActivos() {
         return perfilesRepository.findByEstadoTrue().stream()
                 .map(PerfilesDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public PerfilesDTO findPerfilById(int id){
-        Perfiles tutor =  perfilesRepository.findById(id).orElse(null);
+    public PerfilesDTO findPerfilById(int id) {
+        Perfiles tutor = perfilesRepository.findById(id).orElse(null);
         return new PerfilesDTO(tutor);
     }
 
     public Perfiles crearPerfil(PerfilesDTO perfilDTO, int id) {
-        Tutores tutor = tutoresRepository.findById(id).orElse(null);
+        Personas persona = personasRepository.findById(id).orElse(null);
 
-        Perfiles perfil = new Perfiles(
-                perfilDTO.getEstado(),
-                perfilDTO.getRating(),
-                perfilDTO.getBiografia(),
-                perfilDTO.getFoto(),
-                perfilDTO.getCertificados(),
-                perfilDTO.getExperiencia()
+        if (persona != null) {
+            Perfiles perfil = new Perfiles(
+                    perfilDTO.getEstado(),
+                    perfilDTO.getRating(),
+                    perfilDTO.getBiografia(),
+                    perfilDTO.getFoto(),
+                    perfilDTO.getCertificados(),
+                    perfilDTO.getExperiencia()
 
-        );
+            );
 
-        tutor.agregarPerfil(perfil);
-        return perfilesRepository.save(perfil);
+            persona.agregarPerfil(perfil);
+            return perfilesRepository.save(perfil);
+        }
+        return null; // Handle null implicitly or throw exception
     }
 
-
-    public Perfiles actualizarPerfil(int id,PerfilesDTO perfilDTO){
+    public Perfiles actualizarPerfil(int id, PerfilesDTO perfilDTO) {
         Perfiles perfil = new Perfiles(
                 perfilDTO.getEstado(),
                 perfilDTO.getRating(),
@@ -65,7 +66,5 @@ public class PerfilesService {
         perfil.setId(id);
         return perfilesRepository.save(perfil);
     }
-
-
 
 }

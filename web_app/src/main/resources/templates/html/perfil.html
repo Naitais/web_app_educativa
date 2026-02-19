@@ -7,10 +7,13 @@
 <body>
 <h1>Perfil de Usuario</h1>
 
-<div>
+<div th:if="${usuario != null}">
     <h2>Información Personal</h2>
-    <p><strong>Nombre:</strong> <span th:text="${usuario.persona.nombre}">Nombre</span></p>
+    <p><strong>Nombre:</strong> <span th:text="${usuario.persona != null ? usuario.persona.nombre : 'Sin Nombre'}">Nombre</span></p>
     <p><strong>Correo:</strong> <span th:text="${usuario.email}">Correo</span></p>
+</div>
+<div th:if="${usuario == null}">
+    <p>Por favor inicia sesión para ver tu perfil.</p>
 </div>
 
 
