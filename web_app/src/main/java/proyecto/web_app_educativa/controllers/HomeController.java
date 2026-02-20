@@ -8,6 +8,7 @@ import proyecto.web_app_educativa.DTOs.TutoriasDTO;
 import proyecto.web_app_educativa.models.Usuarios;
 import proyecto.web_app_educativa.services.TutoriasService;
 import proyecto.web_app_educativa.services.UsuariosService;
+import proyecto.web_app_educativa.services.PerfilesService;
 
 import java.security.Principal;
 import java.util.List;
@@ -17,13 +18,16 @@ public class HomeController {
 
     private final UsuariosService usuariosService;
     private final TutoriasService tutoriasService;
+    private final PerfilesService perfilesService;
 
     @Autowired
     public HomeController(
             UsuariosService usuariosService,
-            TutoriasService tutoriasService) {
+            TutoriasService tutoriasService,
+            PerfilesService perfilesService) {
         this.usuariosService = usuariosService;
         this.tutoriasService = tutoriasService;
+        this.perfilesService = perfilesService;
     }
 
     @GetMapping("/home")
@@ -43,6 +47,18 @@ public class HomeController {
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
             if (usuario != null) {
+                // Check if user has a profile
+                if (usuario.getPersonaId() != null) {
+                    if (perfilesService.findPerfilByPersonaId(usuario.getPersonaId()) == null) {
+                        return "redirect:/crear-perfil";
+                    }
+                } else if (usuario.getPersona() != null) {
+                    // Fallback check if personaId is not set but object is
+                    if (perfilesService.findPerfilByPersonaId(usuario.getPersona().getId()) == null) {
+                        return "redirect:/crear-perfil";
+                    }
+                }
+
                 // el atributo del nombre de usuario lo pasamos al "contexto"
                 // en caso de que queramos mostrarlo en la pagina
 

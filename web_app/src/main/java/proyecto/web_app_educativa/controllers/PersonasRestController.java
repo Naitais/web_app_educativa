@@ -26,20 +26,20 @@ public class PersonasRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getPersona(@PathVariable int id){
-        try{
+    public ResponseEntity<Object> getPersona(@PathVariable int id) {
+        try {
             PersonasDTO persona = personasService.findPersonaById(id);
             return new ResponseEntity<>(persona, HttpStatus.OK);
-        } catch(EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
 
             return new ResponseEntity<>("Persona no existe.", HttpStatus.FORBIDDEN);
         }
     }
 
-    @ResponseStatus(HttpStatus.CREATED) // para tener una respuesta despues de haber creado el post
-    @PostMapping("/{id}") //vacio porque asi comparte la misma ruta que los demas
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{id}") // vacio porque asi comparte la misma ruta que los demas
     void crearPersona(@RequestBody PersonasDTO personaDTO, @PathVariable int id) {
-        personasService.crearPersona(personaDTO,id);
+        personasService.crearPersona(personaDTO);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

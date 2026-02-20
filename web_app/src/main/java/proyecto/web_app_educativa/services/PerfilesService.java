@@ -1,70 +1,72 @@
 package proyecto.web_app_educativa.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 import proyecto.web_app_educativa.DTOs.PerfilesDTO;
-import proyecto.web_app_educativa.models.Perfiles;
-import proyecto.web_app_educativa.models.Personas;
-import proyecto.web_app_educativa.repositories.PerfilesRepository;
-import proyecto.web_app_educativa.repositories.PersonasRepository;
+import proyecto.web_app_educativa.models.OrdsResponse;
 
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PerfilesService {
 
-    private PerfilesRepository perfilesRepository;
-    private PersonasRepository personasRepository;
+    private final String APEX_URL = "https://oracleapex.com/ords/wksp_enzof9849/perfiles/";
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    public PerfilesService(PerfilesRepository perfilesRepository,
-            PersonasRepository personasRepository) {
-        this.perfilesRepository = perfilesRepository;
-        this.personasRepository = personasRepository;
+    public PerfilesService() {
     }
 
     public List<PerfilesDTO> getPerfilesActivos() {
-        return perfilesRepository.findByEstadoTrue().stream()
-                .map(PerfilesDTO::new)
-                .collect(Collectors.toList());
+        URI uri = UriComponentsBuilder.fromHttpUrl(APEX_URL)
+                .queryParam("q", "{\"estado\":1}")
+                .build()
+                .toUri();
+
+        OrdsResponse<PerfilesDTO> response = restTemplate.exchange(
+                uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<OrdsResponse<PerfilesDTO>>() {
+                }).getBody();
+
+        return response != null ? response.getItems() : List.of();
     }
 
     public PerfilesDTO findPerfilById(int id) {
-        Perfiles tutor = perfilesRepository.findById(id).orElse(null);
-        return new PerfilesDTO(tutor);
-    }
-
-    public Perfiles crearPerfil(PerfilesDTO perfilDTO, int id) {
-        Personas persona = personasRepository.findById(id).orElse(null);
-
-        if (persona != null) {
-            Perfiles perfil = new Perfiles(
-                    perfilDTO.getEstado(),
-                    perfilDTO.getRating(),
-                    perfilDTO.getBiografia(),
-                    perfilDTO.getFoto(),
-                    perfilDTO.getCertificados(),
-                    perfilDTO.getExperiencia()
-
-            );
-
-            persona.agregarPerfil(perfil);
-            return perfilesRepository.save(perfil);
+        try {
+            return restTemplate.getForObject(APEX_URL + id, PerfilesDTO.class);
+        } catch (Exception e) {
+            return null;
         }
-        return null; // Handle null implicitly or throw exception
     }
 
-    public Perfiles actualizarPerfil(int id, PerfilesDTO perfilDTO) {
-        Perfiles perfil = new Perfiles(
-                perfilDTO.getEstado(),
-                perfilDTO.getRating(),
-                perfilDTO.getBiografia(),
-                perfilDTO.getFoto(),
-                perfilDTO.getCertificados(),
-                perfilDTO.getExperiencia()
+    public PerfilesDTO findPerfilByPersonaId(int personaId) {
+        String jsonQuery = "{\"persona_id\":" + personaId + "}";
+        URI uri = UriComponentsBuilder.fromHttpUrl(APEX_URL)
+                .queryParam("q", jsonQuery)
+                .build()
+                .toUri();
 
-        );
-        perfil.setId(id);
-        return perfilesRepository.save(perfil);
+        OrdsResponse<PerfilesDTO> response = restTemplate.exchange(
+                uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<OrdsResponse<PerfilesDTO>>() {
+                }).getBody();
+
+        if (response != null && !response.getItems().isEmpty()) {
+            return response.getItems().get(0);
+        }
+        return null;
     }
 
+    public PerfilesDTO crearPerfil(PerfilesDTO perfilDTO, int personaId) {
+        perfilDTO.setPersonaId(personaId);
+        perfilDTO.setId(0);
+        return restTemplate.postForObject(APEX_URL, perfilDTO, PerfilesDTO.class);
+    }
+
+    public void actualizarPerfil(int id, PerfilesDTO perfilDTO) {
+        restTemplate.put(APEX_URL + id, perfilDTO);
+    }
 }

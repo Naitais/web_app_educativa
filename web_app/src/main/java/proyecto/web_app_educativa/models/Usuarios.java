@@ -105,4 +105,18 @@ public class Usuarios {
     public void setPersona(Personas persona) {
         this.persona = persona;
     }
+
+    @Transient
+    private Integer personaId;
+
+    public void setPersonaId(Integer personaId) {
+        this.personaId = personaId;
+    }
+
+    public Integer getPersonaId() {
+        if (persona != null) {
+            return persona.getId();
+        }
+        return personaId;
+    }
 }

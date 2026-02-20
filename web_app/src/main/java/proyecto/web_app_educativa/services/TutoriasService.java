@@ -1,115 +1,78 @@
 package proyecto.web_app_educativa.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import proyecto.web_app_educativa.DTOs.TutoriasDTO;
-import proyecto.web_app_educativa.models.Perfiles;
-import proyecto.web_app_educativa.models.Tutorias;
-import proyecto.web_app_educativa.repositories.PerfilesRepository;
-import proyecto.web_app_educativa.repositories.TutoriasRepository;
+import proyecto.web_app_educativa.models.OrdsResponse;
 
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TutoriasService {
 
-    private final TutoriasRepository tutoriasRepository;
-    private final PerfilesRepository perfilesRepository;
-
-    @Autowired
-
-    public TutoriasService(TutoriasRepository tutoriasRepository, PerfilesRepository perfilesRepository) {
-        this.tutoriasRepository = tutoriasRepository;
-        this.perfilesRepository = perfilesRepository;
-    }
+    // Your APEX URL (make sure it ends with /)
+    private final String APEX_URL = "https://oracleapex.com/ords/wksp_enzof9849/tutorias/";
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public List<TutoriasDTO> getTutoriasActivas() {
-        return tutoriasRepository.findByEstadoTrue().stream()
-                .map(TutoriasDTO::new)
-                .collect(Collectors.toList());
+        // ORDS Filter: q={"estado":1} mimics findByEstadoTrue
+        URI uri = UriComponentsBuilder.fromHttpUrl(APEX_URL)
+                .queryParam("q", "{\"estado\":1}")
+                .build()
+                .toUri();
+
+        OrdsResponse<TutoriasDTO> response = restTemplate.exchange(
+                uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<OrdsResponse<TutoriasDTO>>() {
+                }).getBody();
+
+        return response.getItems();
     }
 
     public TutoriasDTO findTutoriaById(int id) {
-        Tutorias tutorias = tutoriasRepository.findById(id).orElse(null);
-        return new TutoriasDTO(tutorias);
+        // GET .../tutorias/5
+        return restTemplate.getForObject(APEX_URL + id, TutoriasDTO.class);
     }
 
-    // filtro con palabra clave solo funciona con una sola palabra
-    // todo en un futuro modificar metodo para que pueda incluir busquedas booleanas
     public List<TutoriasDTO> buscarTutoriasPorPalabra(String palabra) {
-        List<Tutorias> tutorias = tutoriasRepository.buscarPorPalabra(palabra);
-        return tutorias.stream()
-                .map(TutoriasDTO::new)
-                .collect(Collectors.toList());
+        // ORDS Filter: Like search on 'disciplina' (adjust column as needed)
+        String jsonQuery = "{\"disciplina\":{\"$like\":\"%" + palabra + "%\"}}";
+        URI uri = UriComponentsBuilder.fromHttpUrl(APEX_URL)
+                .queryParam("q", jsonQuery)
+                .build()
+                .toUri();
+
+        OrdsResponse<TutoriasDTO> response = restTemplate.exchange(
+                uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<OrdsResponse<TutoriasDTO>>() {
+                }).getBody();
+
+        return response.getItems();
     }
 
-    /*
-     * // para filtrar con el nombre del tutor
-     * public List<Tutorias> obtenerTutoriasPorTutor(Tutores tutor) {
-     * 
-     * return tutoriasRepository.findByTutorAndEstadoTrue(tutor);
-     * }
-     */
-    public Tutorias crearTutoria(TutoriasDTO tutoriaDTO, int id) {
-        // busco por id perfil al cual le agrego la tutoria
-        Perfiles perfil = perfilesRepository.findById(id).orElse(null);
-
-        Tutorias tutoria = new Tutorias(
-
-                tutoriaDTO.getEdadMinima(),
-                tutoriaDTO.getHorarioDesde(),
-                tutoriaDTO.getHorarioHasta(),
-                tutoriaDTO.getFechaDesde(),
-                tutoriaDTO.getFechaHasta(),
-                tutoriaDTO.getDias(),
-                tutoriaDTO.getTipoUbicaciones(),
-                tutoriaDTO.getDisciplina(),
-                tutoriaDTO.getMateriales(),
-                tutoriaDTO.getUbicacion(),
-                tutoriaDTO.getEstado(),
-                tutoriaDTO.getDescripcion(),
-                tutoriaDTO.getTipoPago(),
-                tutoriaDTO.getModalidad(),
-                tutoriaDTO.getArancel()
-
-        );
-        // agrego la tutoria
-        perfil.agregarTutoria(tutoria);
-
-        return tutoriasRepository.save(tutoria);
+    public void crearTutoria(TutoriasDTO tutoriaDTO, int perfilId) {
+        // Map DTO to the ID of the profile for the database FK
+        // In the ORDS POST, we just send the object with the FK included
+        tutoriaDTO.setPerfilId(perfilId);
+        restTemplate.postForObject(APEX_URL, tutoriaDTO, Void.class);
     }
 
-    public Tutorias actualizarTutoria(int id, TutoriasDTO tutoriaDTO) {
-        Tutorias tutoria = new Tutorias(
-                tutoriaDTO.getEdadMinima(), //
-                tutoriaDTO.getHorarioDesde(),
-                tutoriaDTO.getHorarioHasta(),
-                tutoriaDTO.getFechaDesde(),
-                tutoriaDTO.getFechaHasta(),
-                tutoriaDTO.getDias(),
-                tutoriaDTO.getTipoUbicaciones(), //
-                tutoriaDTO.getDisciplina(), //
-                tutoriaDTO.getMateriales(), //
-                tutoriaDTO.getUbicacion(), //
-                tutoriaDTO.getEstado(),
-                tutoriaDTO.getDescripcion(),
-                tutoriaDTO.getTipoPago(), //
-                tutoriaDTO.getModalidad(), //
-                tutoriaDTO.getArancel() //
-        );
-        tutoria.setId(id);
-        return tutoriasRepository.save(tutoria);
+    public void actualizarTutoria(int id, TutoriasDTO tutoriaDTO) {
+        // PUT .../tutorias/5
+        restTemplate.put(APEX_URL + id, tutoriaDTO);
     }
 
-    // TODO agregar metodo delete pero que haga update
-    public Tutorias borrarTutoria(int id) {
-        Tutorias tutoria = tutoriasRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tutoria no encontrada"));
-
-        tutoria.setEstado(false);
-
-        return tutoriasRepository.save(tutoria);
+    public void borrarTutoria(int id) {
+        // Logic: Logic delete (set estado = 0)
+        TutoriasDTO tutoria = findTutoriaById(id);
+        if (tutoria != null) {
+            tutoria.setEstado(false);
+            restTemplate.put(APEX_URL + id, tutoria);
+        }
     }
 
 }

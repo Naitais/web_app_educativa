@@ -25,19 +25,19 @@ public class SeguridadConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/public/**", "/api/**").permitAll()
-                        //.requestMatchers("").authenticated()
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(httpBasic -> {}) // Replaces httpBasic() with the latest API
-                .formLogin(form -> form
-                        .defaultSuccessUrl("/home", true)
+                        .requestMatchers("/login", "/registro", "/public/**", "/api/**", "/css/**", "/js/**")
                         .permitAll()
-                )
+                        // .requestMatchers("").authenticated()
+                        .anyRequest().authenticated())
+                .httpBasic(httpBasic -> {
+                }) // Replaces httpBasic() with the latest API
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home", true)
+                        .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
-                        .permitAll()
-                )
+                        .permitAll())
                 .csrf(csrf -> csrf.disable()); // Disables CSRF for testing purposes
 
         return http.build();

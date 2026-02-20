@@ -1,68 +1,51 @@
 package proyecto.web_app_educativa.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 import proyecto.web_app_educativa.DTOs.PersonasDTO;
-import proyecto.web_app_educativa.models.Personas;
-import proyecto.web_app_educativa.models.Usuarios;
-import proyecto.web_app_educativa.repositories.PersonasRepository;
-import proyecto.web_app_educativa.repositories.UsuariosRepository;
+import proyecto.web_app_educativa.models.OrdsResponse;
 
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PersonasService {
-    PersonasRepository personasRepository;
-    UsuariosRepository usuariosRepository;
 
-    @Autowired
-    public PersonasService(PersonasRepository repository,
-                           UsuariosRepository usuariosRepository){
+    private final String APEX_URL = "https://oracleapex.com/ords/wksp_enzof9849/personas/";
+    private final RestTemplate restTemplate = new RestTemplate();
 
-        this.personasRepository = repository;
-        this.usuariosRepository = usuariosRepository;
+    public List<PersonasDTO> getPersonasActivos() {
+        URI uri = UriComponentsBuilder.fromHttpUrl(APEX_URL)
+                .queryParam("q", "{\"estado\":1}")
+                .build()
+                .toUri();
 
+        OrdsResponse<PersonasDTO> response = restTemplate.exchange(
+                uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<OrdsResponse<PersonasDTO>>() {
+                }).getBody();
+
+        return response != null ? response.getItems() : List.of();
     }
 
-    public List<PersonasDTO> getPersonasActivos(){
-        return personasRepository.findByEstadoTrue().stream()
-                .map(PersonasDTO::new)
-                .collect(Collectors.toList());
+    public PersonasDTO findPersonaById(int id) {
+        try {
+            return restTemplate.getForObject(APEX_URL + id, PersonasDTO.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public PersonasDTO findPersonaById(int id){
-        Personas persona =  personasRepository.findById(id).orElse(null);
-        return new PersonasDTO(persona);
+    public PersonasDTO crearPersona(PersonasDTO personaDTO) {
+        // Ensure ID is 0 for creation
+        personaDTO.setId(0);
+        return restTemplate.postForObject(APEX_URL, personaDTO, PersonasDTO.class);
     }
 
-    public Personas crearPersona(PersonasDTO personaDTO, int id) {
-        Usuarios usuario = usuariosRepository.findById(id).orElse(null);
-
-        Personas persona = new Personas(
-                personaDTO.getNombre(),
-                personaDTO.getApellido(),
-                personaDTO.getNumCelular(),
-                personaDTO.getEstado()
-        );
-
-        persona.agregarUsuario(usuario);
-        return personasRepository.save(persona);
+    public void actualizarPersona(int id, PersonasDTO personaDTO) {
+        restTemplate.put(APEX_URL + id, personaDTO);
     }
-
-    public Personas actualizarPersona(int id,PersonasDTO personaDTO){
-        Personas persona = new Personas(
-                personaDTO.getNombre(),
-                personaDTO.getApellido(),
-                personaDTO.getNumCelular(),
-                personaDTO.getEstado()
-        );
-        persona.setId(id);
-        return personasRepository.save(persona);
-    }
-
-//TODO agregar metodo delete pero que haga update
 }
-
-
-

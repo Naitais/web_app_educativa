@@ -1,68 +1,91 @@
 package proyecto.web_app_educativa.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.UsuariosDTO;
-import proyecto.web_app_educativa.repositories.UsuariosRepository;
-import proyecto.web_app_educativa.models.UsuarioEstados;
+import proyecto.web_app_educativa.models.OrdsResponse;
 import proyecto.web_app_educativa.models.Usuarios;
+import proyecto.web_app_educativa.models.UsuarioEstados;
+import proyecto.web_app_educativa.models.Roles;
+
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuariosService {
 
-    private UsuariosRepository usuariosRepository;
+    private final String APEX_URL = "https://oracleapex.com/ords/wksp_enzof9849/usuarios/";
+    private final RestTemplate restTemplate = new RestTemplate();
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    UsuariosService(UsuariosRepository usauriosRepository, PasswordEncoder passwordEncoder) {
-        this.usuariosRepository = usauriosRepository;
+    public UsuariosService(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
     public List<UsuariosDTO> getUsuariosActivos() {
-        return usuariosRepository.findByEstado(UsuarioEstados.ACTIVO).stream()
-                .map(UsuariosDTO::new)
-                .collect(Collectors.toList());
+        URI uri = UriComponentsBuilder.fromHttpUrl(APEX_URL)
+                .queryParam("q", "{\"estado\":\"ACTIVO\"}")
+                .build()
+                .toUri();
+
+        OrdsResponse<UsuariosDTO> response = restTemplate.exchange(
+                uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<OrdsResponse<UsuariosDTO>>() {
+                }).getBody();
+
+        return response != null ? response.getItems() : List.of();
     }
 
     public UsuariosDTO getUsuarioPorId(int id) {
-        Usuarios usuario = usuariosRepository.findById(id).orElse(null);
-        return new UsuariosDTO(usuario);
+        try {
+            return restTemplate.getForObject(APEX_URL + id, UsuariosDTO.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public Usuarios crearUsuario(UsuariosDTO usuariosDTO) {
+    public UsuariosDTO crearUsuario(UsuariosDTO usuariosDTO) {
         String contraseñaCodificada = passwordEncoder.encode(usuariosDTO.getContraseña());
-
-        Usuarios usuario = new Usuarios(
-                usuariosDTO.getUltimaSesion(),
-                usuariosDTO.getEmail(),
-                contraseñaCodificada,
-                usuariosDTO.getEstado(),
-                usuariosDTO.getRol());
-        return usuariosRepository.save(usuario);
+        usuariosDTO.setContraseña(contraseñaCodificada);
+        usuariosDTO.setId(0);
+        return restTemplate.postForObject(APEX_URL, usuariosDTO, UsuariosDTO.class);
     }
 
-    public Usuarios actualizarUsuario(int id, UsuariosDTO usuariosDTO) {
-
-        Usuarios usuario = new Usuarios(
-                usuariosDTO.getUltimaSesion(),
-                usuariosDTO.getEmail(),
-                usuariosDTO.getContraseña(),
-                usuariosDTO.getEstado(),
-                usuariosDTO.getRol());
-        usuario.setId(id);
-        return usuariosRepository.save(usuario);
+    public void actualizarUsuario(int id, UsuariosDTO usuariosDTO) {
+        restTemplate.put(APEX_URL + id, usuariosDTO);
     }
 
     public Usuarios getUsuarioPorEmail(String email) {
-        return usuariosRepository.findByEmail(email)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException("No se encontro ningun usuario con el email: " + email));
-    }
+        String jsonQuery = "{\"email\":\"" + email + "\"}";
+        URI uri = UriComponentsBuilder.fromHttpUrl(APEX_URL)
+                .queryParam("q", jsonQuery)
+                .build()
+                .toUri();
 
-    // TODO agregar metodo delete pero que haga update
+        OrdsResponse<UsuariosDTO> response = restTemplate.exchange(
+                uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<OrdsResponse<UsuariosDTO>>() {
+                }).getBody();
+
+        if (response != null && !response.getItems().isEmpty()) {
+            UsuariosDTO dto = response.getItems().get(0);
+            Usuarios usuario = new Usuarios();
+            usuario.setId(dto.getId());
+            usuario.setEmail(dto.getEmail());
+            usuario.setContraseña(dto.getContraseña());
+            usuario.setEstado(dto.getEstado());
+            usuario.setRol(dto.getRol());
+            usuario.setPersonaId(dto.getPersonaId()); // Map the ID
+            return usuario;
+        } else {
+            // Return null mostly, but let's see if we should throw or return null.
+            // CustomUserDetailsService handles null.
+            return null;
+        }
+    }
 }
