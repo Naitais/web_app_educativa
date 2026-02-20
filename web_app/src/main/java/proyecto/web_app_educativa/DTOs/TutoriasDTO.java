@@ -95,6 +95,14 @@ public class TutoriasDTO {
 
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getPerfilId() {
         return perfilId;
     }
@@ -103,16 +111,24 @@ public class TutoriasDTO {
         this.perfilId = perfilId;
     }
 
-    public int getEdadMinima() {
-        return edadMinima;
+    public void setEdadMinima(int edadMinima) {
+        this.edadMinima = edadMinima;
     }
 
     public LocalTime getHorarioDesde() {
         return horarioDesde;
     }
 
+    public void setHorarioDesde(LocalTime horarioDesde) {
+        this.horarioDesde = horarioDesde;
+    }
+
     public LocalTime getHorarioHasta() {
         return horarioHasta;
+    }
+
+    public void setHorarioHasta(LocalTime horarioHasta) {
+        this.horarioHasta = horarioHasta;
     }
 
     public Boolean getEstado() {
@@ -127,40 +143,80 @@ public class TutoriasDTO {
         return fechaDesde;
     }
 
+    public void setFechaDesde(LocalDate fechaDesde) {
+        this.fechaDesde = fechaDesde;
+    }
+
     public LocalDate getFechaHasta() {
         return fechaHasta;
+    }
+
+    public void setFechaHasta(LocalDate fechaHasta) {
+        this.fechaHasta = fechaHasta;
     }
 
     public String getDias() {
         return dias;
     }
 
+    public void setDias(String dias) {
+        this.dias = dias;
+    }
+
     public TiposUbicaciones getTipoUbicaciones() {
         return tipoUbicaciones;
+    }
+
+    public void setTipoUbicaciones(TiposUbicaciones tipoUbicaciones) {
+        this.tipoUbicaciones = tipoUbicaciones;
     }
 
     public String getDisciplina() {
         return disciplina;
     }
 
+    public void setDisciplina(String disciplina) {
+        this.disciplina = disciplina;
+    }
+
     public String getMateriales() {
         return materiales;
+    }
+
+    public void setMateriales(String materiales) {
+        this.materiales = materiales;
     }
 
     public String getUbicacion() {
         return ubicacion;
     }
 
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
     public List<PersonasDTO> getAlumnos() {
         return alumnos;
+    }
+
+    public void setAlumnos(List<PersonasDTO> alumnos) {
+        this.alumnos = alumnos;
     }
 
     public String getDescripcion() {
         return descripcion;
     }
 
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public TiposPagos getTipoPago() {
         return tipoPago;
+    }
+
+    public void setTipoPago(TiposPagos tipoPago) {
+        this.tipoPago = tipoPago;
     }
 
     public Perfiles getPerfil() {

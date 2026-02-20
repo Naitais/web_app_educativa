@@ -1,8 +1,18 @@
 const eliminarTutoriaBtn = document.getElementById('eliminarTutoriaBtn');
 const agregarTutoriaBtn = document.getElementById('agregarTutoriaBtn');
 
+if (agregarTutoriaBtn) {
+    agregarTutoriaBtn.addEventListener('click', function () {
+        document.getElementById('ventanaEmergente').style.display = 'flex';
+    });
+}
 
-//CREAR TUTORIA
+window.onclick = function (event) {
+    const modal = document.getElementById('ventanaEmergente');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
 async function submitTutoriaForm() {
     try {
         console.log("Compiling form data...");
@@ -25,7 +35,6 @@ async function submitTutoriaForm() {
         };
         console.log("Form data compiled:", formData);
 
-        // Get perfilId from hidden input
         const perfilIdInput = document.getElementById('perfilId');
         if (!perfilIdInput) {
             throw new Error("Perfil ID not found. Are you logged in as a Tutor with a valid profile?");
@@ -41,18 +50,17 @@ async function submitTutoriaForm() {
         });
 
         if (response.ok) {
-            alert("Tutoria created successfully!");
-            // Optionally, redirect or clear the form
+            alert("¡Tutoría creada exitosamente!");
             document.getElementById("tutoriaForm").reset();
             location.reload();
         } else {
             const errorText = await response.text();
             console.error("Server responded with error:", errorText);
-            alert("Failed to create Tutoria: " + errorText);
+            alert("Error al crear la Tutoría: " + errorText);
         }
     } catch (error) {
         console.error("Error in submitTutoriaForm:", error);
-        alert("An error occurred while creating the Tutoria. Check console for details.");
+        alert("Ocurrió un error al crear la Tutoría. Revisa la consola para más detalles.");
     }
 }
 
@@ -61,19 +69,13 @@ document.getElementById("tutoriaForm").addEventListener("submit", async function
     await submitTutoriaForm();
 });
 
-//ELIMINAR TUTORIAS
-
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.eliminarTutoriaBtn').forEach(button => {
         button.addEventListener('click', function (event) {
-            // Get the tutoria id from the hidden span element
             const tutoriaId = event.target.closest('div').querySelector('[id^="tutoriaID"]').textContent;
-
-
-            console.log('Tutoria ID:', tutoriaId); // Check if the ID is being retrieved
+            console.log('Tutoria ID:', tutoriaId);
 
             if (tutoriaId) {
-                // Proceed with the fetch request to delete the tutoria
                 fetch(`/api/tutorias/${tutoriaId}`, {
                     method: 'DELETE',
                     headers: {
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => {
                         if (response.ok) {
                             alert('Tutoria deleted successfully');
-                            location.reload();  // Reload the page to reflect changes
+                            location.reload();
                         } else {
                             alert('Failed to delete tutoria');
                         }

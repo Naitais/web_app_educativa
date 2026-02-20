@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
 <body>
 
-<nav id="menuNav">
-    <ul>
-        <li><a href="#" class="logo">LOGO</a></li>
-        <li class="search-item">
-            <input type="text" id="searchBox" placeholder="Buscar..." />
-            <div id="filterOptions" class="filter-options">
-                <label><input type="checkbox" class="filter-checkbox"> Opción 1</label><br>
-                <label><input type="checkbox" class="filter-checkbox"> Opción 2</label><br>
-                <label><input type="checkbox" class="filter-checkbox"> Opción 3</label><br>
+    <nav id="menuNav">
+        <ul>
+            <li><a href="#" class="logo">LOGO</a></li>
+            <li class="search-item">
+                <input type="text" id="searchBox" placeholder="Buscar..." />
+                <div id="filterOptions" class="filter-options">
+                    <label><input type="checkbox" class="filter-checkbox"> Opción 1</label><br>
+                    <label><input type="checkbox" class="filter-checkbox"> Opción 2</label><br>
+                    <label><input type="checkbox" class="filter-checkbox"> Opción 3</label><br>
+                </div>
+            </li>
+            <!-- Conditional link for Perfil, only visible to tutors -->
+            <!-- <li th:if="${esTutor}"> -->
+            <li>
+                <a th:href="@{/perfil}">PERFIL</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="content-wrapper">
+        <div id="contenedorPrincipal" class="container" style="max-width: 800px;">
+            <h3 style="color: var(--primary-color);">Crear publicación</h3>
+            <button class="btn" style="margin-bottom: 2rem;">boton</button>
+            <div id="contenedorFeed">
+                <h1 style="color: var(--primary-color);">FEED</h1>
+                <!-- por cada publicacion mostrar dentro de este div -->
             </div>
-        </li>
-        <!-- Conditional link for Perfil, only visible to tutors -->
-        <!-- <li th:if="${esTutor}"> -->
-        <li>
-            <a th:href="@{/perfil}">PERFIL</a>
-        </li>
-    </ul>
-</nav>
+        </div>
 
-<div id="contenedorPrincipal">
-    <h3>Crear publicación</h3>
-    <button>boton</button>
-    <div id="contenedorFeed">
-        <h1>FEED</h1> <!-- por cada publicacion mostrar dentro de este div -->
+        <main class="container" style="max-width: 800px; margin-top: 0;">
+            <div id="tutoriasFiltradas"></div>
+        </main>
     </div>
-</div>
 
-<main>
-    <div id="tutoriasFiltradas"></div>
-</main>
+    <footer id="footer">
+        <p>&copy; 2024 Tatutor. All rights reserved.</p>
+    </footer>
 
-<footer id="footer">
-    <p>&copy; 2024 Tatutor. All rights reserved.</p>
-</footer>
-
-<script th:src="@{/javascript/home.js}"></script>
+    <script th:src="@{/javascript/home.js}"></script>
 </body>
+
 </html>

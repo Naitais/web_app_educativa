@@ -16,8 +16,10 @@ public class PerfilesService {
 
     private final String APEX_URL = "https://oracleapex.com/ords/wksp_enzof9849/perfiles/";
     private final RestTemplate restTemplate = new RestTemplate();
+    private final TutoriasService tutoriasService;
 
-    public PerfilesService() {
+    public PerfilesService(TutoriasService tutoriasService) {
+        this.tutoriasService = tutoriasService;
     }
 
     public List<PerfilesDTO> getPerfilesActivos() {
@@ -36,7 +38,11 @@ public class PerfilesService {
 
     public PerfilesDTO findPerfilById(int id) {
         try {
-            return restTemplate.getForObject(APEX_URL + id, PerfilesDTO.class);
+            PerfilesDTO perfil = restTemplate.getForObject(APEX_URL + id, PerfilesDTO.class);
+            if (perfil != null) {
+                perfil.setTutorias(tutoriasService.getTutoriasByPerfilId(perfil.getId()));
+            }
+            return perfil;
         } catch (Exception e) {
             return null;
         }
@@ -55,7 +61,9 @@ public class PerfilesService {
                 }).getBody();
 
         if (response != null && !response.getItems().isEmpty()) {
-            return response.getItems().get(0);
+            PerfilesDTO perfil = response.getItems().get(0);
+            perfil.setTutorias(tutoriasService.getTutoriasByPerfilId(perfil.getId()));
+            return perfil;
         }
         return null;
     }

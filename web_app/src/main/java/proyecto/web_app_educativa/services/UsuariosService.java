@@ -78,14 +78,11 @@ public class UsuariosService {
             usuario.setId(dto.getId());
             usuario.setEmail(dto.getEmail());
             usuario.setContraseña(dto.getContraseña());
-            usuario.setEstado(dto.getEstado());
             usuario.setRol(dto.getRol());
-            usuario.setPersonaId(dto.getPersonaId()); // Map the ID
+            usuario.setEstado(dto.getEstado());
+            usuario.setPersonaId(dto.getPersonaId());
             return usuario;
-        } else {
-            // Return null mostly, but let's see if we should throw or return null.
-            // CustomUserDetailsService handles null.
-            return null;
         }
+        return null;
     }
 }

@@ -4,86 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Crear Perfil - Web App Educativa</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-        }
-
-        h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #666;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            /* Ensures padding doesn't affect width */
-            font-size: 1rem;
-        }
-
-        input:focus,
-        textarea:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .error {
-            color: #dc3545;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
     <div class="container">
-        <h2>Completa tu Perfil</h2>
+        <h2 style="color: var(--primary-color);">Completa tu Perfil</h2>
 
         <div th:if="${error}" class="error">
             <p th:text="${error}"></p>
@@ -108,7 +34,7 @@
                 <input type="text" id="experiencia" name="experiencia" placeholder="5 años en docencia...">
             </div>
 
-            <button type="submit">Guardar Perfil</button>
+            <button type="submit" class="btn">Guardar Perfil</button>
         </form>
     </div>
 </body>

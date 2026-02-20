@@ -1,25 +1,161 @@
-body {
-    height: 100%;
-    margin: 0;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-image: linear-gradient(to bottom right, rgb(150, 130, 120), rgb(88, 115, 117));
-    background-size: cover;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    /*display: flex;*/
-    flex-direction: column;
-    justify-content: space-between;
+/* Modern Design System - web_app_educativa */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #0056b3;
+    --primary-hover: #004494;
+    --secondary-color: #1a73e8;
+    --background-gradient-start: #eef2f3;
+    --background-gradient-end: #8e9eab;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --white: #ffffff;
+    --border-color: #e0e0e0;
+    --error-color: #dc3545;
+    --error-bg: #f8d7da;
+    --success-color: #28a745;
+    
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
 }
 
-/* General navbar styling */
+body {
+    height: 100vh;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+    background-attachment: fixed;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Typography Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+h1 { font-size: 2.25rem; text-align: center; }
+h2 { font-size: 1.75rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;}
+p { line-height: 1.6; margin-bottom: 1rem; }
+
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+}
+a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Global Layout Containers & Cards */
+.container, .main-content {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    width: 90%;
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+    background-color: var(--white);
+}
+
+/* Button Styling */
+button, .btn {
+    display: inline-block;
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color var(--transition-speed), transform 0.1s;
+}
+
+button:hover, .btn:hover {
+    background-color: var(--primary-hover);
+}
+
+button:active, .btn:active {
+    transform: scale(0.98);
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Error/Alert Messages */
+.error, .alert-danger {
+    color: var(--error-color);
+    background-color: var(--error-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border: 1px solid #f5c6cb;
+}
+
+/* Navbar */
 #menuNav {
-    background-color: #333; /* Dark background for the nav */
-    padding: 10px 20px;
-    font-family: Arial, sans-serif;
+    background-color: rgba(255, 255, 255, 0.98);
+    padding: 0.5rem 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adding a subtle shadow */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 #menuNav ul {
@@ -28,127 +164,161 @@ body {
     margin: 0;
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 #menuNav li {
-    margin-right: 20px; /* Spacing between the items */
+    margin-right: 1.5rem;
 }
 
 #menuNav li:last-child {
-    margin-right: 0; /* No margin on the last item */
+    margin-right: 0;
+    margin-left: auto;
 }
 
-/* Styling for logo */
 #menuNav .logo {
-    font-weight: bold;
-    color: #fff;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+#menuNav .logo:hover {
     text-decoration: none;
-    font-size: 24px;
 }
 
-/* Styling for links */
 #menuNav a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s ease;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 #menuNav a:hover {
-    color: #ffcc00; /* Highlight color when hovering */
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
-/* Styling for the search box */
+/* Search Box embedded in Nav */
 #menuNav .search-item input {
-    padding: 8px 15px;
-    border: 2px solid #ccc;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     width: 250px;
-    font-size: 16px;
-    transition: width 0.3s ease, border-color 0.3s ease;
+    font-size: 0.9rem;
+    background-color: #f1f3f4;
 }
 
-/* On focus, make the search box larger */
 #menuNav .search-item input:focus {
-    width: 300px; /* Increase the width when focused */
-    border-color: #ffcc00; /* Change border color on focus */
-    outline: none; /* Remove outline */
+    width: 320px;
+    background-color: var(--white);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0,86,179,0.1);
 }
 
-    #menuNav li {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    #menuNav .search-item input {
-        width: 200px;
-    }
-}
-
-#ventanaEmergente{
-    display: none;
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-
-    z-index: 1; /* pongo ventana encima de todo lo demas */
-
-}
-
-/* Filter options container - hidden by default */
+/* Filter Options Hover Dropdown */
 #filterOptions {
     display: none;
     position: absolute;
-    top: 40px; /* Adjust the position of the filter options below the search bar */
-    left: 0;
-    background-color: #fff;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    width: 200px;
-    max-height: 200px;  /* Optional: set a max height */
+    top: 60px;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    width: 250px;
+    z-index: 1001;
+}
+
+#menuNav .search-item input:focus + #filterOptions,
+#filterOptions:hover {
+    display: block;
 }
 
 #filterOptions label {
-    display: block;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
+    font-weight: normal;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+#filterOptions input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
 }
 
-#filterOptions input {
-    margin-right: 5px;
+/* Custom Cards inside Perfil */
+.profile-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
 }
-
-/* When the search box is focused, show the filter options */
-#menuNav .search-item input:focus + #filterOptions {
-    visibility: visible;
-}
-
-
-.main{
-    display: none;
-}
-
-
-#footer {
-    margin-top: 70px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50px;
-    background-image: linear-gradient(rgb(202, 223, 221), rgb(121, 226, 193));
-
-    border-top: 1px solid #888;;
-    border-top-right-radius: 8px;
-    border-top-left-radius: 8px;
-
+.profile-card p {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+.profile-card p:last-child {
+    border-bottom: none;
+}
+.profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    display: block;
+    margin: 1rem auto;
+}
+
+/* Modal / Ventana Emergente */
+#ventanaEmergente {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+#ventanaEmergente form {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Feed / Dashboard specific layout */
+#contenedorPrincipal {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+#contenedorFeed h1 {
+    text-align: left;
+    margin-top: 2rem;
+}
+
+/* Footer Container */
+.content-wrapper {
+    flex: 1 0 auto;
+}
+
+#footer {
+    flex-shrink: 0;
+    background-color: var(--white);
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
 }

@@ -29,7 +29,12 @@ public class TutoriasRestController {
         return (tutoria != null) ? ResponseEntity.ok(tutoria) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{id}") // id here refers to the Perfil ID
+    @GetMapping("/busqueda")
+    public List<TutoriasDTO> buscar(@RequestParam("palabra") String palabra) {
+        return tutoriasService.buscarTutoriasPorPalabra(palabra);
+    }
+
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public void crear(@RequestBody TutoriasDTO dto, @PathVariable int id) {
         tutoriasService.crearTutoria(dto, id);
