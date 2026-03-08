@@ -83,8 +83,7 @@ body {
     #menuNav .search-item input {
         width: 200px;
     }
-}
-
+    }
 #ventanaEmergente{
     display: none;
 
@@ -151,4 +150,83 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Tutorias Grid Layout */
+.tutorias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    margin-bottom: 80px; /* Leave space for footer */
+}
+
+.tutoria-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out;
+}
+
+.tutoria-card:hover {
+    transform: translateY(-5px);
+}
+
+.tutoria-card h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #ffcc00;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.tutoria-card p {
+    margin: 8px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.tutoria-card .price {
+    font-weight: bold;
+    color: #2E8B57;
+    font-size: 1.3em;
+    margin-top: auto;
+    padding-top: 15px;
+}
+
+.tutoria-card .status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.tutoria-card .status.disponible {
+    background-color: #E8F5E9;
+    color: #2E8B57;
+}
+
+.tutoria-card .status.no-disponible {
+    background-color: #FFEBEE;
+    color: #C62828;
+}
+
+.btn {
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #e6b800;
 }

@@ -12,9 +12,16 @@ public class UsuariosDTO {
     private LocalDateTime ultimaSesion;
     private String email;
     private String contraseña;
+    private String confirmContraseña;
     private LocalDateTime fechaRegistro;
     private Roles rol;
     private Personas personas;
+
+    // Campos agregados para la creacion de la Persona durante el registro
+    private String nombre;
+    private String apellido;
+    private String numCelular;
+    private java.time.LocalDate fechaNacimiento;
 
     public UsuariosDTO(Usuarios usuario) {
         this.id = usuario.getId();
@@ -51,6 +58,14 @@ public class UsuariosDTO {
         return contraseña;
     }
 
+    public String getConfirmContraseña() {
+        return confirmContraseña;
+    }
+
+    public void setConfirmContraseña(String confirmContraseña) {
+        this.confirmContraseña = confirmContraseña;
+    }
+
     public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
     }
@@ -61,5 +76,53 @@ public class UsuariosDTO {
 
     public Personas getPersonas() {
         return personas;
+    }
+
+    public void setEstado(UsuarioEstados estado) {
+        this.estado = estado;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
+
+    public void setRol(Roles rol) {
+        this.rol = rol;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getNumCelular() {
+        return numCelular;
+    }
+
+    public void setNumCelular(String numCelular) {
+        this.numCelular = numCelular;
+    }
+
+    public java.time.LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(java.time.LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 }

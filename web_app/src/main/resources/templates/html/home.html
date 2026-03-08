@@ -4,39 +4,170 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 { margin-top: 0; color: #d19f00; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        .btn-submit {
+            background-color: #ffcc00; color: #333; border: none; padding: 10px 15px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+        .btn-submit:hover { background-color: #e6b800; }
+    </style>
 </head>
 <body>
 
 <nav id="menuNav">
     <ul>
         <li><a href="#" class="logo">LOGO</a></li>
-        <li class="search-item">
-            <input type="text" id="searchBox" placeholder="Buscar..." />
-            <div id="filterOptions" class="filter-options">
-                <label><input type="checkbox" class="filter-checkbox"> Opción 1</label><br>
-                <label><input type="checkbox" class="filter-checkbox"> Opción 2</label><br>
-                <label><input type="checkbox" class="filter-checkbox"> Opción 3</label><br>
-            </div>
+        <li class="search-item" style="position: relative;">
+            <form th:action="@{/home}" method="get" style="display: flex; align-items: center; gap: 5px;">
+                <input type="text" name="q" id="searchBox" placeholder="Buscar Palabra Clave..." th:value="${searchQuery}" />
+                <button type="submit" class="btn" style="padding: 5px 10px; font-size: 0.9em;">Buscar</button>
+                <div id="filterOptions" class="filter-options" style="display: flex; flex-direction: column; background: white; padding: 10px; position: absolute; top: calc(100% + 5px); left: 0; border: 1px solid #ccc; z-index: 100; min-width: 150px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <label><input type="checkbox" name="searchTutorias" value="true" checked> Buscar Tutorías</label>
+                    <label><input type="checkbox" name="searchPerfiles" value="true"> Buscar Tutores</label>
+                </div>
+            </form>
         </li>
-        <!-- Conditional link for Perfil, only visible to tutors -->
-        <!-- <li th:if="${esTutor}"> -->
+        <li th:if="${esTutor}">
+            <a th:href="@{/mis-tutorias}">Mis Tutorías</a>
+        </li>
         <li>
-            <a th:href="@{/perfil}">PERFIL</a>
+            <a th:href="@{/perfil}">Mi Perfil</a>
+        </li>
+        <li>
+            <a th:href="@{/logout}">Cerrar Sesión</a>
         </li>
     </ul>
 </nav>
 
 <div id="contenedorPrincipal">
-    <h3>Crear publicación</h3>
-    <button>boton</button>
+    <h3>Resultados de Búsqueda</h3>
+    
     <div id="contenedorFeed">
-        <h1>FEED</h1> <!-- por cada publicacion mostrar dentro de este div -->
+        <!-- Tutorias Results -->
+        <div th:if="${tutorias != null and !tutorias.isEmpty()}">
+            <h4 style="border-bottom: 2px solid #ccc; padding-bottom: 5px;">Tutorías Encontradas</h4>
+            <div class="tutorias-grid">
+                <div th:each="tutoria : ${tutorias}" class="tutoria-card" style="margin-bottom: 15px;">
+                    <div class="status disponible">Disponible</div>
+                    <h3><span th:text="${tutoria.disciplina != null ? tutoria.disciplina : 'Sin Categoría'}">Disciplina</span></h3>
+                    <p><strong>Descripción:</strong> <span th:text="${tutoria.descripcion}">Descripción</span></p>
+                    <p><strong>Días:</strong> <span th:text="${tutoria.dias}">Días</span></p>
+                    <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
+                    <div class="price">
+                        $<span th:text="${tutoria.arancel}">Arancel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Perfiles Results -->
+        <div th:if="${perfilesResult != null and !perfilesResult.isEmpty()}" style="margin-top: 30px;">
+            <h4 style="border-bottom: 2px solid #ccc; padding-bottom: 5px;">Tutores Encontrados</h4>
+            <div class="perfiles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                <div th:each="perfilObj : ${perfilesResult}" class="tutoria-card" style="margin-bottom: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+                    <h3 style="margin-top: 0; color: #d19f00;">
+                        Tutor: 
+                        <span th:text="${perfilObj.nombrePersona != null ? (perfilObj.nombrePersona + ' ' + perfilObj.apellidoPersona) : 'Sin Nombre'}">Tutor Name</span>
+                    </h3>
+                    <p th:if="${perfilObj.biografia != null}"><strong>Biografía:</strong> <span th:text="${perfilObj.biografia}">Bio</span></p>
+                    <p><strong>Rating:</strong> <span th:text="${perfilObj.rating}">0.0</span> ⭐</p>
+                    <a th:href="@{/perfil/{id}(id=${perfilObj.id})}" class="btn-submit" style="display: block; text-align: center; text-decoration: none; margin-top: 10px; padding: 8px;">Ver Perfil</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results Fallback -->
+        <div th:if="${(tutorias == null or tutorias.isEmpty()) and (perfilesResult == null or perfilesResult.isEmpty())}">
+            <p style="color: #666; font-style: italic;">No se encontraron resultados para su búsqueda.</p>
+        </div>
     </div>
 </div>
 
-<main>
-    <div id="tutoriasFiltradas"></div>
-</main>
+<!-- Profile Completion Modal for First-Time Tutors -->
+<div th:if="${mostrarModalPerfil}" id="profileModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>Completa tu Perfil de Tutor</h2>
+        <p>Para poder publicar tutorías, necesitamos un poco más de información sobre ti.</p>
+        
+        <form th:action="@{/perfil/primera-vez}" method="post">
+            <div class="form-group">
+                <label for="biografia">Biografía:</label>
+                <textarea id="biografia" name="biografia" required rows="4" placeholder="Cuéntanos sobre tu experiencia..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="foto">Enlace a Foto de Perfil:</label>
+                <input type="url" id="foto" name="foto" placeholder="https://ejemplo.com/mifoto.jpg">
+            </div>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+            <h3 style="margin-top: 0; color: #555;">Experiencia Principal (Opcional)</h3>
+            
+            <div class="form-group">
+                <label for="expTitulo">Título o Cargo:</label>
+                <input type="text" id="expTitulo" name="expTitulo" placeholder="Ej: Profesor de Matemáticas">
+            </div>
+            <div class="form-group">
+                <label for="expInstitucion">Institución o Empresa:</label>
+                <input type="text" id="expInstitucion" name="expInstitucion" placeholder="Ej: Universidad Nacional">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="expFechaDesde">Desde:</label>
+                    <input type="date" id="expFechaDesde" name="expFechaDesde">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="expFechaHasta">Hasta (Dejar vacío si es actual):</label>
+                    <input type="date" id="expFechaHasta" name="expFechaHasta">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="expDescripcion">Descripción:</label>
+                <textarea id="expDescripcion" name="expDescripcion" rows="2" placeholder="Breve descripción..."></textarea>
+            </div>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+            <h3 style="margin-top: 0; color: #555;">Certificado Principal (Opcional)</h3>
+            
+            <div class="form-group">
+                <label for="certNombre">Nombre del Certificado:</label>
+                <input type="text" id="certNombre" name="certNombre" placeholder="Ej: Profesorado en Matemáticas">
+            </div>
+            <div class="form-group">
+                <label for="certUrl">Enlace al Certificado:</label>
+                <input type="url" id="certUrl" name="certUrl" placeholder="https://ejemplo.com/certificado.pdf">
+            </div>
+            
+            <button type="submit" class="btn-submit">Guardar Perfil</button>
+        </form>
+    </div>
+</div>
 
 <footer id="footer">
     <p>&copy; 2024 Tatutor. All rights reserved.</p>

@@ -16,7 +16,7 @@ public class TutoriasDTO {
     private Boolean estado;
     private LocalDate fechaDesde;
     private LocalDate fechaHasta;
-    private String dias;
+    private List<String> dias;
     private TiposUbicaciones tipoUbicaciones;
     private String disciplina;
     private String materiales;
@@ -39,15 +39,15 @@ public class TutoriasDTO {
         this.fechaHasta = tutoria.getFechaHasta();
         this.dias = tutoria.getDias();
         this.tipoUbicaciones = tutoria.getTipoUbicaciones();
-        this.disciplina = tutoria.getDisciplina();
+        this.disciplina = tutoria.getCategoria() != null ? tutoria.getCategoria().getNombre() : null;
         this.materiales = tutoria.getMateriales();
         this.ubicacion = tutoria.getUbicacion();
         this.estado = tutoria.getEstado();
         this.descripcion = tutoria.getDescripcion();
         this.tipoPago = tutoria.getTipoPago();
         this.modalidad = tutoria.getModalidad();
-        this.arancel = tutoria.getArancel();
-        this.alumnos = tutoria.getAlumnos().stream().map(alumno -> new PersonasDTO(alumno))
+        this.arancel = tutoria.getValorPorClase();
+        this.alumnos = tutoria.getSolicitudes().stream().map(solicitud -> new PersonasDTO(solicitud.getAlumno()))
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +79,7 @@ public class TutoriasDTO {
         return fechaHasta;
     }
 
-    public String getDias() {
+    public List<String> getDias() {
         return dias;
     }
 

@@ -38,7 +38,7 @@ public class WebAppEducativaApplication {
             TutoriasService tutoriasService,
             TutoriasRepository tutoriasRepository) {
         return (args) -> {
-
+            /*
             // Create Admin
             if (usuariosRepository.findByEmail("admin").isEmpty()) {
                 Usuarios admin = new Usuarios(
@@ -74,9 +74,10 @@ public class WebAppEducativaApplication {
                         "Soy profesor de Matemáticas...", "link_foto_carlos", "Matemáticas", 2000);
                 // Add more as needed...
             }
+            */
         };
     }
-
+/*
     private void createTutor(PersonasRepository personasRepository, PerfilesService perfilesService, String nombre,
             String apellido, int celular, String bio, String foto, String disciplina, double arancel) {
         Personas persona = new Personas(nombre, apellido, celular, true);
@@ -92,5 +93,5 @@ public class WebAppEducativaApplication {
         perfilDTO.setExperiencia(Arrays.asList("Experiencia Dummy"));
 
         perfilesService.crearPerfil(perfilDTO, persona.getId());
-    }
+    }*/
 }

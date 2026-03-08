@@ -14,6 +14,8 @@ public class PerfilesDTO {
     private List<String> certificados; // por ahora solo son strings
     private List<String> experiencia;
     private List<TutoriasDTO> tutorias;
+    private String nombrePersona;
+    private String apellidoPersona;
 
     public PerfilesDTO(Perfiles perfil) {
         this.id = perfil.getId();
@@ -21,10 +23,14 @@ public class PerfilesDTO {
         this.rating = perfil.getRating();
         this.biografia = perfil.getBiografia();
         this.foto = perfil.getFoto();
-        this.certificados = perfil.getCertificados();
-        this.experiencia = perfil.getExperiencia();
+        this.certificados = perfil.getCertificados().stream().map(c -> c.getNombre()).collect(Collectors.toList());
+        this.experiencia = perfil.getExperiencia().stream().map(e -> e.getTitulo()).collect(Collectors.toList());
         this.tutorias = perfil.getTutorias().stream().map(tutoria -> new TutoriasDTO(tutoria))
                 .collect(Collectors.toList());
+        if(perfil.getPersona() != null) {
+            this.nombrePersona = perfil.getPersona().getNombre();
+            this.apellidoPersona = perfil.getPersona().getApellido();
+        }
 
     }
 
@@ -94,5 +100,21 @@ public class PerfilesDTO {
 
     public void setTutorias(List<TutoriasDTO> tutorias) {
         this.tutorias = tutorias;
+    }
+
+    public String getNombrePersona() {
+        return nombrePersona;
+    }
+
+    public void setNombrePersona(String nombrePersona) {
+        this.nombrePersona = nombrePersona;
+    }
+
+    public String getApellidoPersona() {
+        return apellidoPersona;
+    }
+
+    public void setApellidoPersona(String apellidoPersona) {
+        this.apellidoPersona = apellidoPersona;
     }
 }

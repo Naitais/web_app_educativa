@@ -1,50 +1,67 @@
-const eliminarTutoriaBtn = document.getElementById('eliminarTutoriaBtn');
+const eliminarTutoriaBtn = document.querySelectorAll('.eliminarTutoriaBtn');
 const agregarTutoriaBtn = document.getElementById('agregarTutoriaBtn');
+const cerrarVentanaBtn = document.getElementById('cerrarVentanaBtn');
+const ventanaEmergente = document.getElementById('ventanaEmergente');
 
 
-//CREAR TUTORIA
+//CREAR/EDITAR TUTORIA
  async function submitTutoriaForm() {
+            // Get checked days
+            const fileCheckboxes = document.querySelectorAll('input[name="dias"]:checked');
+            const checkedDias = Array.from(fileCheckboxes).map(cb => cb.value);
+            
+            // Get robust profile ID from hidden input
+            const profileId = document.getElementById('perfilId').value;
+            const editId = document.getElementById('tutoriaIdEdit').value;
+
             const formData = {
                 edadMinima: document.getElementById('edadMinima').value,
                 horarioDesde: document.getElementById('horarioDesde').value,
                 horarioHasta: document.getElementById('horarioHasta').value,
-                fechaDesde: document.getElementById('fechaDesde').value,
-                fechaHasta: document.getElementById('fechaHasta').value,
-                dias: document.getElementById('dias').value,
+                fechaDesde: document.getElementById('fechaDesde') ? document.getElementById('fechaDesde').value : null,
+                fechaHasta: document.getElementById('fechaHasta') ? document.getElementById('fechaHasta').value : null,
+                dias: checkedDias,
                 tipoUbicaciones: document.getElementById('tipoUbicaciones').value,
                 disciplina: document.getElementById('disciplina').value,
-                materiales: document.getElementById('materiales').value,
-                ubicacion: document.getElementById('ubicacion').value,
+                materiales: document.getElementById('materiales') ? document.getElementById('materiales').value : null,
+                ubicacion: document.getElementById('ubicacion') ? document.getElementById('ubicacion').value : null,
                 estado: true,
                 descripcion: document.getElementById('descripcion').value,
                 tipoPago: document.getElementById('tipoPago').value,
                 modalidad: document.getElementById('modalidad').value,
                 arancel: document.getElementById('arancel').value
-
             };
 
             try {
-                //por el momento lo dejo hardcodeado para que agregue tutorias
-                //al mismo perfil el de pame
-                const response = await fetch('api/tutorias/1', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                });
+                let response;
+                if (editId) {
+                    response = await fetch('/api/tutorias/' + editId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                    });
+                } else {
+                    response = await fetch('/api/tutorias/' + profileId, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                    });
+                }
 
                 if (response.ok) {
-                    alert("Tutoria created successfully!");
-                    // Optionally, redirect or clear the form
+                    alert(editId ? "Tutoria actualizada!" : "Tutoria created successfully!");
                     document.getElementById("tutoriaForm").reset();
+                    document.getElementById("tutoriaIdEdit").value = "";
+                    document.getElementById("modalTitle").innerText = "Nueva Tutoría";
+                    ventanaEmergente.style.display = 'none'; // Hide modal
+                    location.reload(); // Reload to show new item
                 } else {
                     const errorText = await response.text();
-                    alert("Failed to create Tutoria: " + errorText);
+                    alert("Failed to save Tutoria: " + errorText);
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("An error occurred while creating the Tutoria.");
+                alert("An error occurred while saving the Tutoria.");
             }
         }
 
@@ -53,40 +70,79 @@ document.getElementById("tutoriaForm").addEventListener("submit", async function
     await submitTutoriaForm();
 });
 
-//ELIMINAR TUTORIAS
+// MODAL TOGGLES
+if(agregarTutoriaBtn) {
+    agregarTutoriaBtn.addEventListener('click', () => {
+        document.getElementById("tutoriaForm").reset();
+        document.getElementById("tutoriaIdEdit").value = "";
+        document.getElementById("modalTitle").innerText = "Nueva Tutoría";
+        ventanaEmergente.style.display = 'flex';
+    });
+}
+if(cerrarVentanaBtn) {
+    cerrarVentanaBtn.addEventListener('click', () => {
+        ventanaEmergente.style.display = 'none';
+        document.getElementById("tutoriaForm").reset();
+    });
+}
+
+//ELIMINAR / TOGGLE / EDITAR TUTORIAS
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.eliminarTutoriaBtn').forEach(button => {
+    // TOGGLE ESTADO
+    document.querySelectorAll('.toggleTutoriaBtn').forEach(button => {
         button.addEventListener('click', function(event) {
-            // Get the tutoria id from the hidden span element
-            const tutoriaId = event.target.closest('div').querySelector('[id^="tutoriaID"]').textContent;
-
-
-            console.log('Tutoria ID:', tutoriaId); // Check if the ID is being retrieved
+            const tutoriaId = event.target.getAttribute('data-tutoria-id');
 
             if (tutoriaId) {
-                // Proceed with the fetch request to delete the tutoria
-                fetch(`/api/tutorias/${tutoriaId}`, {
-                    method: 'DELETE',
+                fetch(`/api/tutorias/${tutoriaId}/toggle`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 })
                 .then(response => {
                     if (response.ok) {
-                        alert('Tutoria deleted successfully');
                         location.reload();  // Reload the page to reflect changes
                     } else {
-                        alert('Failed to delete tutoria');
+                        alert('Failed to toggle tutoria estado');
                     }
                 })
                 .catch(error => {
-                    console.error('Error deleting tutoria:', error);
-                    alert('An error occurred while deleting the tutoria');
+                    console.error('Error toggling tutoria:', error);
                 });
-            } else {
-                console.log('Tutoria ID is missing');
             }
+        });
+    });
+
+    // EDITAR TUTORIA
+    document.querySelectorAll('.editarTutoriaBtn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            const btn = event.target;
+            
+            document.getElementById('tutoriaIdEdit').value = btn.getAttribute('data-id');
+            document.getElementById('modalTitle').innerText = "Editar Tutoría";
+            
+            document.getElementById('edadMinima').value = btn.getAttribute('data-edadminima');
+            document.getElementById('horarioDesde').value = btn.getAttribute('data-horariodesde');
+            document.getElementById('horarioHasta').value = btn.getAttribute('data-horariohasta');
+            if(document.getElementById('fechaDesde')) document.getElementById('fechaDesde').value = btn.getAttribute('data-fechadesde') || '';
+            if(document.getElementById('fechaHasta')) document.getElementById('fechaHasta').value = btn.getAttribute('data-fechahasta') || '';
+            document.getElementById('disciplina').value = btn.getAttribute('data-disciplina');
+            document.getElementById('tipoUbicaciones').value = btn.getAttribute('data-tipoubicaciones');
+            document.getElementById('descripcion').value = btn.getAttribute('data-descripcion');
+            if (document.getElementById('materiales')) document.getElementById('materiales').value = btn.getAttribute('data-materiales');
+            document.getElementById('tipoPago').value = btn.getAttribute('data-tipopago');
+            document.getElementById('modalidad').value = btn.getAttribute('data-modalidad');
+            document.getElementById('arancel').value = btn.getAttribute('data-arancel');
+            
+            // Checkboxes
+            const diasStr = btn.getAttribute('data-dias'); // e.g., "[Lunes, Martes]"
+            document.querySelectorAll('input[name="dias"]').forEach(cb => {
+                cb.checked = diasStr ? diasStr.includes(cb.value) : false;
+            });
+            
+            ventanaEmergente.style.display = 'flex';
         });
     });
 });

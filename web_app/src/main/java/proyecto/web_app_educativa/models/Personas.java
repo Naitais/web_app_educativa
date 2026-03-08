@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Personas {
 
@@ -12,17 +16,20 @@ public class Personas {
     private int id;
     private String nombre;
     private String apellido;
-    private int numCelular;
+    private String numCelular;
     private Boolean estado;
+
+    private LocalDate fechaNacimiento;
+    private String nombreAdulto;
+    private String telefonoAdulto;
 
     @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
     @JsonBackReference
     private Usuarios usuario;
 
     // From Alumnos
-    @ManyToOne
-    @JoinColumn(name = "tutoria_id")
-    private Tutorias tutoria;
+    @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SolicitudTutoria> solicitudes = new ArrayList<>();
 
     // From Tutores
     @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
@@ -30,7 +37,7 @@ public class Personas {
                           // in this view or inverse
     private Perfiles perfil;
 
-    public Personas(String nombre, String apellido, int numCelular, Boolean estado) {
+    public Personas(String nombre, String apellido, String numCelular, Boolean estado) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.numCelular = numCelular;
@@ -49,7 +56,7 @@ public class Personas {
         this.id = id;
     }
 
-    public void setNumCelular(int numCelular) {
+    public void setNumCelular(String numCelular) {
         this.numCelular = numCelular;
     }
 
@@ -69,11 +76,11 @@ public class Personas {
         this.apellido = apellido;
     }
 
-    public int getNumCelular() {
+    public String getNumCelular() {
         return numCelular;
     }
 
-    public void setNum_celular(int num_celular) {
+    public void setNum_celular(String num_celular) {
         this.numCelular = num_celular;
     }
 
@@ -98,12 +105,36 @@ public class Personas {
         setUsuario(usuario);
     }
 
-    public Tutorias getTutoria() {
-        return tutoria;
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setTutoria(Tutorias tutoria) {
-        this.tutoria = tutoria;
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getNombreAdulto() {
+        return nombreAdulto;
+    }
+
+    public void setNombreAdulto(String nombreAdulto) {
+        this.nombreAdulto = nombreAdulto;
+    }
+
+    public String getTelefonoAdulto() {
+        return telefonoAdulto;
+    }
+
+    public void setTelefonoAdulto(String telefonoAdulto) {
+        this.telefonoAdulto = telefonoAdulto;
+    }
+
+    public List<SolicitudTutoria> getSolicitudes() {
+        return solicitudes;
+    }
+
+    public void setSolicitudes(List<SolicitudTutoria> solicitudes) {
+        this.solicitudes = solicitudes;
     }
 
     public Perfiles getPerfil() {

@@ -14,7 +14,7 @@ public interface TutoriasRepository extends JpaRepository<Tutorias, Integer> {
     List<Tutorias> findByEstadoTrue();
 
     // busqueda con query
-    @Query("SELECT t FROM Tutorias t WHERE LOWER(t.disciplina) LIKE LOWER(CONCAT('%', :palabra, '%')) OR LOWER(t.descripcion) LIKE LOWER(CONCAT('%', :palabra, '%'))")
+    @Query("SELECT t FROM Tutorias t LEFT JOIN t.categoria c WHERE t.estado = true AND (LOWER(c.nombre) LIKE LOWER(CONCAT('%', :palabra, '%')) OR LOWER(t.descripcion) LIKE LOWER(CONCAT('%', :palabra, '%')) OR LOWER(t.ubicacion) LIKE LOWER(CONCAT('%', :palabra, '%')))")
     List<Tutorias> buscarPorPalabra(@Param("palabra") String palabra);
 
     // List<Tutorias> findByTutorAndEstadoTrue(Tutores tutor);

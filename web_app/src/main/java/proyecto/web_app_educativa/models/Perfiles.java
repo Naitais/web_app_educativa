@@ -16,10 +16,11 @@ public class Perfiles {
     private double rating;
     private String biografia;
     private String foto; // es un link
-    @ElementCollection
-    private List<String> certificados; // por ahora solo son strings
-    @ElementCollection
-    private List<String> experiencia;
+    @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Certificado> certificados = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Experiencia> experiencia = new ArrayList<>();
 
     // si no lo pongo para que traiga todo de una con eager me tira error hibernate
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -37,15 +38,11 @@ public class Perfiles {
             Boolean estado,
             double rating,
             String biografia,
-            String foto,
-            List<String> certificados,
-            List<String> experiencia) {
+            String foto) {
 
         this.rating = rating;
         this.biografia = biografia;
         this.foto = foto;
-        this.certificados = certificados;
-        this.experiencia = experiencia;
         this.estado = (estado != null) ? estado : true; // si esta null, pongo true sino entra estado
     }
 
@@ -92,19 +89,19 @@ public class Perfiles {
         this.foto = foto;
     }
 
-    public List<String> getCertificados() {
+    public List<Certificado> getCertificados() {
         return certificados;
     }
 
-    public void setCertificados(List<String> certificados) {
+    public void setCertificados(List<Certificado> certificados) {
         this.certificados = certificados;
     }
 
-    public List<String> getExperiencia() {
+    public List<Experiencia> getExperiencia() {
         return experiencia;
     }
 
-    public void setExperiencia(List<String> experiencia) {
+    public void setExperiencia(List<Experiencia> experiencia) {
         this.experiencia = experiencia;
     }
 
@@ -127,6 +124,16 @@ public class Perfiles {
     public void agregarTutoria(Tutorias tutoria) {
         tutoria.setPerfil(this);
         tutorias.add(tutoria);
+    }
+
+    public void agregarCertificado(Certificado certificado) {
+        certificado.setPerfil(this);
+        certificados.add(certificado);
+    }
+
+    public void agregarExperiencia(Experiencia exp) {
+        exp.setPerfil(this);
+        experiencia.add(exp);
     }
 
 }

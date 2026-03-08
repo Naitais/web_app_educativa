@@ -2,6 +2,8 @@ package proyecto.web_app_educativa.services;
 
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.PerfilesDTO;
+import proyecto.web_app_educativa.models.Certificado;
+import proyecto.web_app_educativa.models.Experiencia;
 import proyecto.web_app_educativa.models.Perfiles;
 import proyecto.web_app_educativa.models.Personas;
 import proyecto.web_app_educativa.repositories.PerfilesRepository;
@@ -33,6 +35,13 @@ public class PerfilesService {
         return new PerfilesDTO(tutor);
     }
 
+    public List<PerfilesDTO> buscarPerfilesPorPalabra(String palabra) {
+        List<Perfiles> perfiles = perfilesRepository.buscarPorPalabra(palabra);
+        return perfiles.stream()
+                .map(PerfilesDTO::new)
+                .collect(Collectors.toList());
+    }
+
     public Perfiles crearPerfil(PerfilesDTO perfilDTO, int id) {
         Personas persona = personasRepository.findById(id).orElse(null);
 
@@ -41,9 +50,7 @@ public class PerfilesService {
                     perfilDTO.getEstado(),
                     perfilDTO.getRating(),
                     perfilDTO.getBiografia(),
-                    perfilDTO.getFoto(),
-                    perfilDTO.getCertificados(),
-                    perfilDTO.getExperiencia()
+                    perfilDTO.getFoto()
 
             );
 
@@ -53,14 +60,37 @@ public class PerfilesService {
         return null; // Handle null implicitly or throw exception
     }
 
+    public Perfiles crearPerfilConDetalles(PerfilesDTO perfilDTO, int id, Experiencia exp, Certificado cert) {
+        Personas persona = personasRepository.findById(id).orElse(null);
+
+        if (persona != null) {
+            Perfiles perfil = new Perfiles(
+                    perfilDTO.getEstado(),
+                    perfilDTO.getRating(),
+                    perfilDTO.getBiografia(),
+                    perfilDTO.getFoto()
+            );
+
+            if (exp != null) {
+                perfil.agregarExperiencia(exp);
+            }
+            
+            if (cert != null) {
+                perfil.agregarCertificado(cert);
+            }
+
+            persona.agregarPerfil(perfil);
+            return perfilesRepository.save(perfil);
+        }
+        return null;
+    }
+
     public Perfiles actualizarPerfil(int id, PerfilesDTO perfilDTO) {
         Perfiles perfil = new Perfiles(
                 perfilDTO.getEstado(),
                 perfilDTO.getRating(),
                 perfilDTO.getBiografia(),
-                perfilDTO.getFoto(),
-                perfilDTO.getCertificados(),
-                perfilDTO.getExperiencia()
+                perfilDTO.getFoto()
 
         );
         perfil.setId(id);

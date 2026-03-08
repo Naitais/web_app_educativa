@@ -35,7 +35,48 @@ public class UsuariosService {
     }
 
     public Usuarios crearUsuario(UsuariosDTO usuariosDTO) {
+        // Validate Email
+        if (usuariosDTO.getEmail() == null || !usuariosDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("El email provisto no es válido.");
+        }
+        
+        // Validate Password Constraints
+        String password = usuariosDTO.getContraseña();
+        if (password == null || password.length() < 8 || 
+            !password.matches(".*[A-Z].*") || 
+            !password.matches(".*[a-z].*") || 
+            !password.matches(".*\\d.*") || 
+            !password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
+            throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.");
+        }
+        
+        // Confirm Password Match
+        if (!password.equals(usuariosDTO.getConfirmContraseña())) {
+            throw new IllegalArgumentException("Las contraseñas no coinciden.");
+        }
+        
+        // Validate age for Tutor
+        if (usuariosDTO.getRol() == proyecto.web_app_educativa.models.Roles.ROL_PROFESOR) {
+             if (usuariosDTO.getFechaNacimiento() != null) {
+                 int age = java.time.Period.between(usuariosDTO.getFechaNacimiento(), java.time.LocalDate.now()).getYears();
+                 if (age < 18) {
+                     throw new IllegalArgumentException("Un profesor debe ser mayor de 18 años.");
+                 }
+             } else {
+                 throw new IllegalArgumentException("La fecha de nacimiento es requerida para un profesor.");
+             }
+        }
+
         String contraseñaCodificada = passwordEncoder.encode(usuariosDTO.getContraseña());
+
+        // Create Personas object
+        proyecto.web_app_educativa.models.Personas nuevaPersona = new proyecto.web_app_educativa.models.Personas(
+                usuariosDTO.getNombre(),
+                usuariosDTO.getApellido(),
+                usuariosDTO.getNumCelular(),
+                true // estado activo
+        );
+        nuevaPersona.setFechaNacimiento(usuariosDTO.getFechaNacimiento());
 
         Usuarios usuario = new Usuarios(
                 usuariosDTO.getUltimaSesion(),
@@ -43,6 +84,10 @@ public class UsuariosService {
                 contraseñaCodificada,
                 usuariosDTO.getEstado(),
                 usuariosDTO.getRol());
+                
+        // Link Personas and Usuario
+        usuario.setPersona(nuevaPersona);
+        
         return usuariosRepository.save(usuario);
     }
 

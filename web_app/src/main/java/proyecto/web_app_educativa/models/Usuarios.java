@@ -18,7 +18,7 @@ public class Usuarios {
     private LocalDateTime fechaRegistro;
     private Roles rol;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
     @JsonManagedReference
     private Personas persona;

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mis Tutorías</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav id="menuNav">
+    <ul>
+        <li><a href="#" class="logo">LOGO</a></li>
+        <li><a th:href="@{/home}">Inicio</a></li>
+        <li><a th:href="@{/perfil}">Mi Perfil</a></li>
+        <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
+    </ul>
+</nav>
+
+<div style="padding: 20px;">
+    <h1>Mis Tutorías</h1>
+    <button id="agregarTutoriaBtn" class="btn">Agregar nueva tutoría</button>
+</div>
+
+<div class="tutorias-grid" th:if="${perfil != null}">
+    <div th:each="tutoria : ${perfil.tutorias}" class="tutoria-card">
+        <div class="status" th:classappend="${tutoria.estado ? 'disponible' : 'desactivada'}" 
+             th:text="${tutoria.estado ? 'Disponible' : 'Desactivada'}"
+             th:style="${tutoria.estado ? '' : 'background-color: #666;'}">Estado</div>
+        <h3><span th:text="${tutoria.categoria != null ? tutoria.categoria.nombre : 'Sin Categoría'}">Disciplina</span></h3>
+        <p><strong>Descripción:</strong> <span th:text="${tutoria.descripcion}">Descripción</span></p>
+        <p><strong>Edad Mínima:</strong> <span th:text="${tutoria.edadMinima}">Edad</span> años</p>
+        <p><strong>Horarios:</strong> de <span th:text="${tutoria.horarioDesde}">00:00</span> a <span th:text="${tutoria.horarioHasta}">00:00</span></p>
+        <p><strong>Días:</strong> <span th:text="${tutoria.dias}">Días</span></p>
+        <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
+        <p><strong>Tipo de Ubicación:</strong> <span th:text="${tutoria.tipoUbicaciones}">Tipo de Ubicación</span></p>
+        <p><strong>Ubicación Específica:</strong> <span th:text="${tutoria.ubicacion != null and !tutoria.ubicacion.isEmpty() ? tutoria.ubicacion : 'No aplica'}">Ubicación Específica</span></p>
+        <p><strong>Materiales requiridos:</strong> <span th:text="${tutoria.materiales != null and !tutoria.materiales.isEmpty() ? tutoria.materiales : 'Ninguno'}">Ninguno</span></p>
+        <p><strong>Tipo de Pago:</strong> <span th:text="${tutoria.tipoPago}">Tipo Pago</span></p>
+        <div class="price">
+            $<span th:text="${tutoria.valorPorClase}">Arancel</span>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn editarTutoriaBtn" style="background-color: #f39c12; color: white; flex: 1;"
+                    th:attr="data-id=${tutoria.id},
+                             data-edadminima=${tutoria.edadMinima},
+                             data-horariodesde=${tutoria.horarioDesde},
+                             data-horariohasta=${tutoria.horarioHasta},
+                             data-fechadesde=${tutoria.fechaDesde != null ? tutoria.fechaDesde : ''},
+                             data-fechahasta=${tutoria.fechaHasta != null ? tutoria.fechaHasta : ''},
+                             data-disciplina=${tutoria.categoria != null ? tutoria.categoria.nombre : ''},
+                             data-tipoubicaciones=${tutoria.tipoUbicaciones},
+                             data-dias=${tutoria.dias},
+                             data-descripcion=${tutoria.descripcion},
+                             data-tipopago=${tutoria.tipoPago},
+                             data-modalidad=${tutoria.modalidad},
+                             data-materiales=${tutoria.materiales != null ? tutoria.materiales : ''},
+                             data-arancel=${tutoria.valorPorClase}">
+                Editar tutoría
+            </button>
+            <button class="btn toggleTutoriaBtn" 
+                    th:style="${tutoria.estado ? 'background-color: #ff4d4d; color: white; flex: 1;' : 'background-color: #2ecc71; color: white; flex: 1;'}" 
+                    th:text="${tutoria.estado ? 'Desactivar tutoría' : 'Activar tutoría'}"
+                    th:attr="data-tutoria-id=${tutoria.id}">Alternar tutoría</button>
+        </div>
+    </div>
+</div>
+
+<div th:if="${perfil == null}">
+    <p style="padding: 20px;">No se encontró información de perfil de tutor para este usuario.</p>
+</div>
+
+<div id="ventanaEmergente" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <form id="tutoriaForm" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; margin: auto; max-height: 90vh; overflow-y: auto;">
+        <input type="hidden" id="perfilId" th:value="${perfil.id}">
+        <input type="hidden" id="tutoriaIdEdit">
+        <h2 id="modalTitle" style="margin-top: 0;">Nueva Tutoría</h2>
+        
+        <label for="edadMinima">Edad Minima:</label>
+        <input type="number" id="edadMinima" name="edadMinima" required style="width: 100%; margin-bottom: 10px;"><br>
+
+        <label for="horarioDesde">Horario Desde:</label>
+        <input type="time" id="horarioDesde" name="horarioDesde" required style="width: 100%; margin-bottom: 10px;"><br>
+
+        <label for="horarioHasta">Horario Hasta:</label>
+        <input type="time" id="horarioHasta" name="horarioHasta" required style="width: 100%; margin-bottom: 10px;"><br>
+
+        <label for="disciplina">Disciplina / Categoría:</label>
+        <input type="text" id="disciplina" name="disciplina" required style="width: 100%; margin-bottom: 10px;"><br>
+
+        <label for="tipoUbicaciones">Tipo de Ubicación:</label>
+        <select id="tipoUbicaciones" name="tipoUbicaciones" required style="width: 100%; margin-bottom: 10px;">
+            <option value="A_DOMICILIO">A Domicilio</option>
+            <option value="DOMICILIO_DEL_TUTOR">Domicilio del Tutor</option>
+            <option value="DOMICILIO_DEL_ESTUDIANTE">Domicilio del Estudiante</option>
+        </select><br>
+
+        <label>Días de la semana:</label>
+        <div id="diasDiasContainer" style="margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+            <label><input type="checkbox" name="dias" value="Lunes"> Lunes</label>
+            <label><input type="checkbox" name="dias" value="Martes"> Martes</label>
+            <label><input type="checkbox" name="dias" value="Miércoles"> Miércoles</label>
+            <label><input type="checkbox" name="dias" value="Jueves"> Jueves</label>
+            <label><input type="checkbox" name="dias" value="Viernes"> Viernes</label>
+            <label><input type="checkbox" name="dias" value="Sábado"> Sábado</label>
+            <label><input type="checkbox" name="dias" value="Domingo"> Domingo</label>
+        </div>
+
+        <label for="descripcion">Descripcion:</label>
+        <textarea id="descripcion" name="descripcion" required style="width: 100%; margin-bottom: 10px;"></textarea><br>
+
+        <label for="materiales">Materiales:</label>
+        <textarea id="materiales" name="materiales" style="width: 100%; margin-bottom: 10px;" placeholder="Opcional"></textarea><br>
+
+        <label for="tipoPago">Tipo de Pago:</label>
+        <select id="tipoPago" name="tipoPago" required style="width: 100%; margin-bottom: 10px;">
+            <option value="POR_HORA">Por Hora</option>
+            <option value="POR_CLASE">Por Clase</option>
+            <option value="POR_SEMANA">Por Semana</option>
+            <option value="POR_MES">Por Mes</option>
+        </select><br>
+
+        <label for="modalidad">Modalidad:</label>
+        <select id="modalidad" name="modalidad" style="width: 100%; margin-bottom: 10px;">
+            <option value="PRESENCIAL">Presencial</option>
+            <option value="HIBRIDO">Híbrido</option>
+            <option value="VIRTUAL">Virtual</option>
+        </select><br>
+
+        <label for="arancel">Valor por Clase ($):</label>
+        <input type="number" id="arancel" name="arancel" step="0.01" required style="width: 100%; margin-bottom: 10px;"><br>
+
+        <button type="submit" class="btn" style="width: 100%;">Guarar Tutoría</button>
+        <button type="button" id="cerrarVentanaBtn" class="btn" style="width: 100%; background-color: #ccc; margin-top: 5px;">Cancelar</button>
+    </form>
+</div>
+
+<script th:src="@{/javascript/perfil.js}"></script>
+</body>
+</html>

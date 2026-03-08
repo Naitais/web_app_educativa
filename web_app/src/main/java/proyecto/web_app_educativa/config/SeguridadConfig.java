@@ -25,12 +25,13 @@ public class SeguridadConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/public/**", "/api/**").permitAll()
+                        .requestMatchers("/login", "/register", "/css/**", "/javascript/**", "/public/**", "/api/**").permitAll()
                         //.requestMatchers("").authenticated()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(httpBasic -> {}) // Replaces httpBasic() with the latest API
+                .httpBasic(httpBasic -> httpBasic.disable()) // Replaces httpBasic() with the latest API
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )

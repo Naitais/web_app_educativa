@@ -7,6 +7,8 @@ import proyecto.web_app_educativa.models.Perfiles;
 import proyecto.web_app_educativa.models.Tutorias;
 import proyecto.web_app_educativa.repositories.PerfilesRepository;
 import proyecto.web_app_educativa.repositories.TutoriasRepository;
+import proyecto.web_app_educativa.repositories.CategoriaRepository;
+import proyecto.web_app_educativa.models.Categoria;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,12 +18,14 @@ public class TutoriasService {
 
     private final TutoriasRepository tutoriasRepository;
     private final PerfilesRepository perfilesRepository;
+    private final CategoriaRepository categoriaRepository;
 
     @Autowired
 
-    public TutoriasService(TutoriasRepository tutoriasRepository, PerfilesRepository perfilesRepository) {
+    public TutoriasService(TutoriasRepository tutoriasRepository, PerfilesRepository perfilesRepository, CategoriaRepository categoriaRepository) {
         this.tutoriasRepository = tutoriasRepository;
         this.perfilesRepository = perfilesRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     public List<TutoriasDTO> getTutoriasActivas() {
@@ -55,6 +59,15 @@ public class TutoriasService {
         // busco por id perfil al cual le agrego la tutoria
         Perfiles perfil = perfilesRepository.findById(id).orElse(null);
 
+        Categoria categoria = null;
+        if(tutoriaDTO.getDisciplina() != null) {
+            categoria = categoriaRepository.findByNombre(tutoriaDTO.getDisciplina());
+            if(categoria == null) {
+                categoria = new Categoria(tutoriaDTO.getDisciplina());
+                categoriaRepository.save(categoria);
+            }
+        }
+
         Tutorias tutoria = new Tutorias(
 
                 tutoriaDTO.getEdadMinima(),
@@ -64,7 +77,7 @@ public class TutoriasService {
                 tutoriaDTO.getFechaHasta(),
                 tutoriaDTO.getDias(),
                 tutoriaDTO.getTipoUbicaciones(),
-                tutoriaDTO.getDisciplina(),
+                categoria,
                 tutoriaDTO.getMateriales(),
                 tutoriaDTO.getUbicacion(),
                 tutoriaDTO.getEstado(),
@@ -81,25 +94,34 @@ public class TutoriasService {
     }
 
     public Tutorias actualizarTutoria(int id, TutoriasDTO tutoriaDTO) {
-        Tutorias tutoria = new Tutorias(
-                tutoriaDTO.getEdadMinima(), //
-                tutoriaDTO.getHorarioDesde(),
-                tutoriaDTO.getHorarioHasta(),
-                tutoriaDTO.getFechaDesde(),
-                tutoriaDTO.getFechaHasta(),
-                tutoriaDTO.getDias(),
-                tutoriaDTO.getTipoUbicaciones(), //
-                tutoriaDTO.getDisciplina(), //
-                tutoriaDTO.getMateriales(), //
-                tutoriaDTO.getUbicacion(), //
-                tutoriaDTO.getEstado(),
-                tutoriaDTO.getDescripcion(),
-                tutoriaDTO.getTipoPago(), //
-                tutoriaDTO.getModalidad(), //
-                tutoriaDTO.getArancel() //
-        );
-        tutoria.setId(id);
-        return tutoriasRepository.save(tutoria);
+        Tutorias tutoriaExistente = tutoriasRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tutoria no encontrada"));
+
+        Categoria categoria = null;
+        if(tutoriaDTO.getDisciplina() != null) {
+            categoria = categoriaRepository.findByNombre(tutoriaDTO.getDisciplina());
+            if(categoria == null) {
+                categoria = new Categoria(tutoriaDTO.getDisciplina());
+                categoriaRepository.save(categoria);
+            }
+        }
+        
+        tutoriaExistente.setEdadMinima(tutoriaDTO.getEdadMinima());
+        tutoriaExistente.setHorarioDesde(tutoriaDTO.getHorarioDesde());
+        tutoriaExistente.setHorarioHasta(tutoriaDTO.getHorarioHasta());
+        tutoriaExistente.setFechaDesde(tutoriaDTO.getFechaDesde());
+        tutoriaExistente.setFechaHasta(tutoriaDTO.getFechaHasta());
+        tutoriaExistente.setDias(tutoriaDTO.getDias());
+        tutoriaExistente.setTipoUbicaciones(tutoriaDTO.getTipoUbicaciones());
+        tutoriaExistente.setCategoria(categoria);
+        tutoriaExistente.setMateriales(tutoriaDTO.getMateriales());
+        tutoriaExistente.setUbicacion(tutoriaDTO.getUbicacion());
+        tutoriaExistente.setDescripcion(tutoriaDTO.getDescripcion());
+        tutoriaExistente.setTipoPago(tutoriaDTO.getTipoPago());
+        tutoriaExistente.setModalidad(tutoriaDTO.getModalidad());
+        tutoriaExistente.setValorPorClase(tutoriaDTO.getArancel());
+
+        return tutoriasRepository.save(tutoriaExistente);
     }
 
     // TODO agregar metodo delete pero que haga update
@@ -108,6 +130,16 @@ public class TutoriasService {
                 .orElseThrow(() -> new RuntimeException("Tutoria no encontrada"));
 
         tutoria.setEstado(false);
+
+        return tutoriasRepository.save(tutoria);
+    }
+
+    public Tutorias toggleEstado(int id) {
+        Tutorias tutoria = tutoriasRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tutoria no encontrada"));
+        
+        // Reverse whatever the current estado boolean is
+        tutoria.setEstado(!tutoria.getEstado());
 
         return tutoriasRepository.save(tutoria);
     }

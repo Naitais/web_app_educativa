@@ -50,6 +50,15 @@ public class PersonasService {
         return personasRepository.save(persona);
     }
 
+    public Personas crearPersona(PersonasDTO personasDTO) {
+        Personas persona = new Personas(
+                personasDTO.getNombre(),
+                personasDTO.getApellido(),
+                personasDTO.getNumCelular(),
+                personasDTO.getEstado());
+        return personasRepository.save(persona);
+    }
+
     public Personas actualizarPersona(int id,PersonasDTO personaDTO){
         Personas persona = new Personas(
                 personaDTO.getNombre(),
@@ -63,6 +72,5 @@ public class PersonasService {
 
 //TODO agregar metodo delete pero que haga update
 }
-
 
 

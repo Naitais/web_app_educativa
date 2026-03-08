@@ -5,6 +5,17 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<nav id="menuNav">
+    <ul>
+        <li><a href="#" class="logo">LOGO</a></li>
+        <li><a th:href="@{/home}">Inicio</a></li>
+        <li th:if="${esTutor}"><a th:href="@{/mis-tutorias}">Mis Tutorías</a></li>
+        <li><a th:href="@{/perfil}">Mi Perfil</a></li>
+        <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
+    </ul>
+</nav>
+
+<div style="padding: 20px;">
 <h1>Perfil de Usuario</h1>
 
 <div th:if="${usuario != null}">
@@ -40,80 +51,16 @@
         <!-- por ahora filtro las tutorias aca pero tengo que hacerlo en el controller -->
         <div th:if="${tutoria.estado}">
             <p style="display:none"><strong>id:</strong> <span th:text="${tutoria.id}" id="tutoriaID_${tutoria.id}">id</span></p>
-            <p><strong>Disciplina:</strong> <span th:text="${tutoria.disciplina}">Disciplina</span></p>
+            <p><strong>Disciplina:</strong> <span th:text="${tutoria.categoria != null ? tutoria.categoria.nombre : 'Sin Categoría'}">Disciplina</span></p>
             <p><strong>Descripción:</strong> <span th:text="${tutoria.descripcion}">Descripción</span></p>
             <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
             <p><strong>Ubicación:</strong> <span th:text="${tutoria.ubicacion}">Ubicación</span></p>
             <p><strong>Materiales:</strong> <span th:text="${tutoria.materiales}">Materiales</span></p>
-            <p><strong>Arancel:</strong> <span th:text="${tutoria.arancel}">Arancel</span></p>
             <p><strong>Días:</strong> <span th:text="${tutoria.dias}">Días</span></p>
-            <button class="eliminarTutoriaBtn" data-tutoria-id="${tutoria.id}">Eliminar tutoria</button>
         </div>
     </div>
 
 </div>
-<div>
-    <button id="agregarTutoriaBtn">Agregar tutoria</button>
-
-</div>
-
-<div id="ventanaEmergente">
-
-    <form id="tutoriaForm">
-        <label for="edadMinima">Edad Minima:</label>
-        <input type="number" id="edadMinima" name="edadMinima" required><br>
-
-        <label for="horarioDesde">Horario Desde:</label>
-        <input type="time" id="horarioDesde" name="horarioDesde" required><br>
-
-        <label for="horarioHasta">Horario Hasta:</label>
-        <input type="time" id="horarioHasta" name="horarioHasta" required><br>
-
-
-        <label for="fechaDesde">Fecha Desde:</label>
-        <input type="date" id="fechaDesde" name="fechaDesde" required><br>
-
-        <label for="fechaHasta">Fecha Hasta:</label>
-        <input type="date" id="fechaHasta" name="fechaHasta" required><br>
-
-        <label for="dias">Dias:</label>
-        <input type="text" id="dias" name="dias" placeholder="Ej: 1010100" required><br>
-
-        <label for="tipoUbicaciones">Tipo de Ubicaciones:</label>
-        <select id="tipoUbicaciones" name="tipoUbicaciones">
-            <option value="DOMICILIO_DEL_TUTOR">Domicilio del Tutor</option>
-            <option value="DOMICILIO_DEL_ESTUDIANTE">Domicilio del Estudiante</option>
-        </select><br>
-
-        <label for="disciplina">Disciplina:</label>
-        <input type="text" id="disciplina" name="disciplina" required><br>
-
-        <label for="materiales">Materiales:</label>
-        <input type="text" id="materiales" name="materiales" placeholder="Materiales incluidos"><br>
-
-        <label for="ubicacion">Ubicacion:</label>
-        <input type="text" id="ubicacion" name="ubicacion" required><br>
-
-        <label for="descripcion">Descripcion:</label>
-        <textarea id="descripcion" name="descripcion" required></textarea><br>
-
-        <label for="tipoPago">Tipo de Pago:</label>
-        <select id="tipoPago" name="tipoPago">
-            <option value="POR_MES">Por Mes</option>
-            <option value="POR_CLASE">Por Clase</option>
-        </select><br>
-
-        <label for="modalidad">Modalidad:</label>
-        <select id="modalidad" name="modalidad">
-            <option value="PRESENCIAL">Presencial</option>
-            <option value="ONLINE">Online</option>
-        </select><br>
-
-        <label for="arancel">Arancel:</label>
-        <input type="number" id="arancel" name="arancel" step="0.01" required><br>
-
-        <button type="submit">Crear Tutoria</button>
-    </form>
 </div>
 
 <script th:src="@{/javascript/perfil.js}"></script>

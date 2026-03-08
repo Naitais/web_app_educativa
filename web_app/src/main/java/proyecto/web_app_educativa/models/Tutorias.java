@@ -24,18 +24,25 @@ public class Tutorias {
     private Boolean estado;
     private LocalDate fechaDesde;
     private LocalDate fechaHasta;
-    private String dias;
+    
+    @ElementCollection
+    private List<String> dias;
+    
     private TiposUbicaciones tipoUbicaciones;
-    private String disciplina;
+    
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+    
     private String materiales;
     private String ubicacion;
     private String descripcion;
     private TiposPagos tipoPago;
     private Modalidades modalidad;
-    private double arancel;
+    private double valorPorClase;
 
     @OneToMany(mappedBy = "tutoria", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Personas> alumnos = new ArrayList<>();
+    private List<SolicitudTutoria> solicitudes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "perfil_id")
@@ -43,9 +50,9 @@ public class Tutorias {
     private Perfiles perfil;
 
     public Tutorias(int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,
-            LocalDate fechaDesde, LocalDate fechaHasta, String dias, TiposUbicaciones tipoUbicaciones,
-            String disciplina, String materiales, String ubicacion, Boolean estado,
-            String descripcion, TiposPagos tipoPago, Modalidades modalidad, double arancel) {
+            LocalDate fechaDesde, LocalDate fechaHasta, List<String> dias, TiposUbicaciones tipoUbicaciones,
+            Categoria categoria, String materiales, String ubicacion, Boolean estado,
+            String descripcion, TiposPagos tipoPago, Modalidades modalidad, double valorPorClase) {
 
         this.edadMinima = edadMinima;
         this.horarioDesde = horarioDesde;
@@ -55,13 +62,13 @@ public class Tutorias {
         this.fechaHasta = (fechaHasta != null) ? fechaHasta : null; // si esta null, pongo true sino entra estado
         this.dias = dias;
         this.tipoUbicaciones = tipoUbicaciones;
-        this.disciplina = disciplina;
+        this.categoria = categoria;
         this.materiales = materiales;
         this.ubicacion = ubicacion;
         this.descripcion = descripcion;
         this.tipoPago = tipoPago;
         this.modalidad = modalidad;
-        this.arancel = arancel;
+        this.valorPorClase = valorPorClase;
 
     }
 
@@ -121,11 +128,11 @@ public class Tutorias {
         this.fechaHasta = fechaHasta;
     }
 
-    public String getDias() {
+    public List<String> getDias() {
         return dias;
     }
 
-    public void setDias(String dias) {
+    public void setDias(List<String> dias) {
         this.dias = dias;
     }
 
@@ -137,12 +144,12 @@ public class Tutorias {
         this.tipoUbicaciones = tipo;
     }
 
-    public String getDisciplina() {
-        return disciplina;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setDisciplina(String disciplina) {
-        this.disciplina = disciplina;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public String getMateriales() {
@@ -197,24 +204,24 @@ public class Tutorias {
         this.modalidad = modalidad;
     }
 
-    public double getArancel() {
-        return arancel;
+    public double getValorPorClase() {
+        return valorPorClase;
     }
 
-    public void setArancel(double arancel) {
-        this.arancel = arancel;
+    public void setValorPorClase(double valorPorClase) {
+        this.valorPorClase = valorPorClase;
     }
 
-    public List<Personas> getAlumnos() {
-        return alumnos;
+    public List<SolicitudTutoria> getSolicitudes() {
+        return solicitudes;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setAlumnos(List<Personas> alumnos) {
-        this.alumnos = alumnos;
+    public void setSolicitudes(List<SolicitudTutoria> solicitudes) {
+        this.solicitudes = solicitudes;
     }
 
     // este metodo tiene que recibir un string en el siguiente formato 0000000
