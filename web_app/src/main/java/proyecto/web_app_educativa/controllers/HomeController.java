@@ -17,15 +17,18 @@ public class HomeController {
     private final UsuariosService usuariosService;
     private final TutoriasService tutoriasService;
     private final PerfilesService perfilesService;
+    private final proyecto.web_app_educativa.repositories.CategoriaRepository categoriaRepository;
 
     @Autowired
     public HomeController(
             UsuariosService usuariosService,
             TutoriasService tutoriasService,
-            PerfilesService perfilesService) {
+            PerfilesService perfilesService,
+            proyecto.web_app_educativa.repositories.CategoriaRepository categoriaRepository) {
         this.usuariosService = usuariosService;
         this.tutoriasService = tutoriasService;
         this.perfilesService = perfilesService;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @GetMapping("/home")
@@ -39,9 +42,14 @@ public class HomeController {
             Model model, 
             Principal principal,
             @org.springframework.web.bind.annotation.RequestParam(value = "q", required = false) String query,
-            @org.springframework.web.bind.annotation.RequestParam(value = "searchTutorias", required = false) Boolean searchTutorias,
-            @org.springframework.web.bind.annotation.RequestParam(value = "searchPerfiles", required = false) Boolean searchPerfiles) {
-
+            @org.springframework.web.bind.annotation.RequestParam(value = "modalidad", required = false) proyecto.web_app_educativa.models.Modalidades modalidad,
+            @org.springframework.web.bind.annotation.RequestParam(value = "precioMax", required = false) Double precioMax,
+            @org.springframework.web.bind.annotation.RequestParam(value = "edadMinima", required = false) Integer edadMinima,
+            @org.springframework.web.bind.annotation.RequestParam(value = "horarioDesde", required = false) java.time.LocalTime horarioDesde,
+            @org.springframework.web.bind.annotation.RequestParam(value = "horarioHasta", required = false) java.time.LocalTime horarioHasta,
+            @org.springframework.web.bind.annotation.RequestParam(value = "tipoPago", required = false) proyecto.web_app_educativa.models.TiposPagos tipoPago,
+            @org.springframework.web.bind.annotation.RequestParam(value = "tipoUbicacion", required = false) proyecto.web_app_educativa.models.TiposUbicaciones tipoUbicacion,
+            @org.springframework.web.bind.annotation.RequestParam(value = "categoriaId", required = false) Integer categoriaId) {
         if (principal != null) { // si es distinto a null obtenemos el nombre de usuario
             String email = principal.getName();
 
@@ -58,31 +66,33 @@ public class HomeController {
                 model.addAttribute("rol", usuario.getRol());
                 model.addAttribute("ultimaSesion", usuario.getUltimaSesion());
 
-                // search toggles default to false if not checked
-                boolean doSearchTutorias = (searchTutorias != null && searchTutorias);
-                boolean doSearchPerfiles = (searchPerfiles != null && searchPerfiles);
-                
-                // if neither is checked (or simply visiting /home raw), show both / generic feed.
-                if(!doSearchTutorias && !doSearchPerfiles) {
-                    doSearchTutorias = true;
-                    // For default view, showing all active tutorias:
-                    if(query == null || query.trim().isEmpty()) {
-                         model.addAttribute("tutorias", tutoriasService.getTutoriasActivas());
-                    }
-                }
+                boolean hasQuery = (query != null && !query.trim().isEmpty());
+                boolean hasModalidad = (modalidad != null);
+                boolean hasPrecioMax = (precioMax != null);
+                boolean hasExtraFilters = (edadMinima != null || horarioDesde != null || horarioHasta != null || tipoPago != null || tipoUbicacion != null || categoriaId != null);
 
-                if (query != null && !query.trim().isEmpty()) {
-                    model.addAttribute("searchQuery", query);
-                    if (doSearchTutorias) {
-                        model.addAttribute("tutorias", tutoriasService.buscarTutoriasPorPalabra(query));
+                if (hasQuery || hasModalidad || hasPrecioMax || hasExtraFilters) {
+                    if (hasQuery) {
+                        model.addAttribute("searchQuery", query);
                     }
-                    if (doSearchPerfiles) {
-                        model.addAttribute("perfilesResult", perfilesService.buscarPerfilesPorPalabra(query));
-                    }
-                } else if (!doSearchTutorias && doSearchPerfiles) {
-                   // If they ONLY clicked "Search Tutors" but didn't put a word, we could list all active tutors:
-                   model.addAttribute("perfilesResult", perfilesService.getPerfilesActivos());
+                    model.addAttribute("tutorias", tutoriasService.buscarTutoriasAvanzado(query, modalidad, precioMax, edadMinima, horarioDesde, horarioHasta, tipoPago, tipoUbicacion, categoriaId));
+                } else {
+                    model.addAttribute("tutorias", tutoriasService.getTutoriasActivas());
                 }
+                
+                // Add categorias for the filter dropdown
+                model.addAttribute("categorias", categoriaRepository.findAll());
+                // Add current person id for preventing self-application
+                model.addAttribute("currentUsuarioPersonaId", usuario.getPersona() != null ? usuario.getPersona().getId() : null);
+
+                // Add list of tutoria IDs the student has already applied to
+                java.util.List<Integer> tutoriasSolicitadasIds = new java.util.ArrayList<>();
+                if (usuario.getPersona() != null && usuario.getPersona().getSolicitudes() != null) {
+                    for (proyecto.web_app_educativa.models.SolicitudTutoria sol : usuario.getPersona().getSolicitudes()) {
+                        tutoriasSolicitadasIds.add(sol.getTutoria().getId());
+                    }
+                }
+                model.addAttribute("tutoriasSolicitadasIds", tutoriasSolicitadasIds);
 
                 // Add flags for Tutor privileges and First-Time Profile Completion
                 boolean isTutor = (usuario.getRol() == proyecto.web_app_educativa.models.Roles.ROL_PROFESOR);

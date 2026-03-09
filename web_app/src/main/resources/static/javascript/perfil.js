@@ -145,4 +145,74 @@ document.addEventListener('DOMContentLoaded', function () {
             ventanaEmergente.style.display = 'flex';
         });
     });
+
+    // VER SOLICITUDES
+    const modalSolicitudes = document.getElementById('modalSolicitudes');
+    const cerrarModalSolicitudesBtn = document.getElementById('cerrarModalSolicitudesBtn');
+    const listaSolicitudesContainer = document.getElementById('listaSolicitudesContainer');
+
+    if (cerrarModalSolicitudesBtn) {
+        cerrarModalSolicitudesBtn.addEventListener('click', () => {
+            modalSolicitudes.style.display = 'none';
+        });
+    }
+
+    function attachModalLogic(buttonsSelector, targetEstado, modalTitle) {
+        document.querySelectorAll(buttonsSelector).forEach(button => {
+            button.addEventListener('click', function(event) {
+                const tutoriaId = event.target.getAttribute('data-tutoria-id');
+                const dataContainer = document.getElementById('solicitudes-data-' + tutoriaId);
+                const titleNode = document.getElementById('modalSolicitudesTitle');
+                if (titleNode) titleNode.innerText = modalTitle;
+                
+                listaSolicitudesContainer.innerHTML = ''; // Clear previous
+
+                if (dataContainer) {
+                    const solicitudes = dataContainer.querySelectorAll('.solicitud-item');
+                    let hasItems = false;
+                    if (solicitudes.length > 0) {
+                        solicitudes.forEach(sol => {
+                            const estado = sol.getAttribute('data-estado');
+                            if (estado === targetEstado) {
+                                hasItems = true;
+                                const solId = sol.getAttribute('data-id');
+                                const infoHtml = sol.querySelector('.solicitud-info').innerHTML;
+                                
+                                let buttonsHtml = '';
+                                if (estado === 'PENDIENTE') {
+                                    buttonsHtml = `
+                                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                            <form action="/solicitudes/aceptar/${solId}" method="POST" style="margin: 0;">
+                                                <button type="submit" class="btn" style="background-color: #2ecc71; color: white; padding: 5px 10px; font-size: 0.9em;">Aceptar</button>
+                                            </form>
+                                            <form action="/solicitudes/rechazar/${solId}" method="POST" style="margin: 0;">
+                                                <button type="submit" class="btn" style="background-color: #e74c3c; color: white; padding: 5px 10px; font-size: 0.9em;">Rechazar</button>
+                                            </form>
+                                        </div>
+                                    `;
+                                }
+
+                                const div = document.createElement('div');
+                                div.style = "border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 10px; background: #fafafa;";
+                                div.innerHTML = `
+                                    ${infoHtml}
+                                    ${buttonsHtml}
+                                `;
+                                listaSolicitudesContainer.appendChild(div);
+                            }
+                        });
+                    } 
+                    if (!hasItems) {
+                        listaSolicitudesContainer.innerHTML = '<p>No hay items para mostrar.</p>';
+                    }
+                }
+                
+                modalSolicitudes.style.display = 'flex';
+            });
+        });
+    }
+
+    attachModalLogic('.verSolicitudesBtn', 'PENDIENTE', 'Solicitudes Pendientes');
+    attachModalLogic('.verAceptadosBtn', 'ACEPTADA', 'Alumnos Aceptados');
+
 });

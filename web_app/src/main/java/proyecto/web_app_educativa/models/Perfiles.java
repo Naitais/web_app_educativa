@@ -25,7 +25,8 @@ public class Perfiles {
     // si no lo pongo para que traiga todo de una con eager me tira error hibernate
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tutorias> tutorias = new ArrayList<>();
-    // private List<Reseñas> reseñas;
+    @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ComentarioPerfil> comentarios = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
@@ -136,4 +137,33 @@ public class Perfiles {
         experiencia.add(exp);
     }
 
+    public List<ComentarioPerfil> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<ComentarioPerfil> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public void agregarComentario(ComentarioPerfil comentario) {
+        comentario.setPerfil(this);
+        comentarios.add(comentario);
+        actualizarPromedioRating();
+    }
+
+    public void actualizarPromedioRating() {
+        if (comentarios == null || comentarios.isEmpty()) {
+            this.rating = 0.0;
+            return;
+        }
+        
+        double sum = 0;
+        int totalCom = comentarios.size();
+
+        for (ComentarioPerfil cp : comentarios) {
+            sum += cp.getPuntaje();
+        }
+
+        this.rating = sum / totalCom;
+    }
 }

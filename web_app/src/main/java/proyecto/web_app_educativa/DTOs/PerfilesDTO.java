@@ -16,6 +16,7 @@ public class PerfilesDTO {
     private List<TutoriasDTO> tutorias;
     private String nombrePersona;
     private String apellidoPersona;
+    private List<ComentarioPerfilDTO> comentarios;
 
     public PerfilesDTO(Perfiles perfil) {
         this.id = perfil.getId();
@@ -31,7 +32,15 @@ public class PerfilesDTO {
             this.nombrePersona = perfil.getPersona().getNombre();
             this.apellidoPersona = perfil.getPersona().getApellido();
         }
-
+        if (perfil.getComentarios() != null) {
+            this.comentarios = perfil.getComentarios().stream().map(c -> new ComentarioPerfilDTO(
+                c.getId(),
+                c.getAutor().getNombre() + " " + c.getAutor().getApellido(),
+                c.getPuntaje(),
+                c.getComentario(),
+                c.getFechaCreacion()
+            )).collect(Collectors.toList());
+        }
     }
 
     public PerfilesDTO() {
@@ -116,5 +125,13 @@ public class PerfilesDTO {
 
     public void setApellidoPersona(String apellidoPersona) {
         this.apellidoPersona = apellidoPersona;
+    }
+
+    public List<ComentarioPerfilDTO> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<ComentarioPerfilDTO> comentarios) {
+        this.comentarios = comentarios;
     }
 }

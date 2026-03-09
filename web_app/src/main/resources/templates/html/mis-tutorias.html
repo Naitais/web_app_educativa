@@ -8,7 +8,7 @@
 
 <nav id="menuNav">
     <ul>
-        <li><a href="#" class="logo">LOGO</a></li>
+        <li style="margin-right: auto;"><a th:href="@{/home}" class="logo"><img th:src="@{/images/icon_tatutor.png}" alt="Tatutor Logo" style="height: 40px; vertical-align: middle;"></a></li>
         <li><a th:href="@{/home}">Inicio</a></li>
         <li><a th:href="@{/perfil}">Mi Perfil</a></li>
         <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
@@ -61,6 +61,44 @@
                     th:style="${tutoria.estado ? 'background-color: #ff4d4d; color: white; flex: 1;' : 'background-color: #2ecc71; color: white; flex: 1;'}" 
                     th:text="${tutoria.estado ? 'Desactivar tutoría' : 'Activar tutoría'}"
                     th:attr="data-tutoria-id=${tutoria.id}">Alternar tutoría</button>
+        </div>
+        
+        <!-- Solicitudes Section -->
+        <div style="margin-top: 15px;" th:if="${tutoria.solicitudes != null and !tutoria.solicitudes.isEmpty()}">
+            <div th:with="pendientes=${tutoria.solicitudes.?[estado.name() == 'PENDIENTE']}, aceptadas=${tutoria.solicitudes.?[estado.name() == 'ACEPTADA']}">
+                <button th:if="${pendientes.size() > 0}" class="btn verSolicitudesBtn" style="background-color: #3498db; color: white; width: 100%; margin-bottom: 5px;"
+                        th:attr="data-tutoria-id=${tutoria.id}">
+                    Ver Solicitudes (<span th:text="${pendientes.size()}">0</span>)
+                </button>
+                <button th:if="${aceptadas.size() > 0}" class="btn verAceptadosBtn" style="background-color: #2ecc71; color: white; width: 100%;"
+                        th:attr="data-tutoria-id=${tutoria.id}">
+                    Alumnos Aceptados (<span th:text="${aceptadas.size()}">0</span>)
+                </button>
+            </div>
+            
+            <!-- Hidden template to store the requests data -->
+            <div th:id="'solicitudes-data-' + ${tutoria.id}" style="display: none;">
+                <div th:each="solicitud : ${tutoria.solicitudes}" class="solicitud-item" th:attr="data-id=${solicitud.id}, data-estado=${solicitud.estado}">
+                    <div class="solicitud-info">
+                        <strong>Alumno: </strong><span th:text="${solicitud.alumno.nombre + ' ' + solicitud.alumno.apellido}">Nombre Completo</span>
+                        <div style="font-size: 0.9em; color: #666;">
+                            Edad: <span th:text="${solicitud.alumno.fechaNacimiento != null ? (T(java.time.Period).between(solicitud.alumno.fechaNacimiento, T(java.time.LocalDate).now()).getYears()) : 'No especificada'}">Edad</span> años
+                        </div>
+                        <div style="font-size: 0.9em; color: #666;">
+                            Enviada: <span th:text="${#temporals.format(solicitud.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+                        </div>
+                        <div style="font-size: 0.9em;">
+                            Estado: <strong th:text="${solicitud.estado}" 
+                                           th:style="${solicitud.estado.name() == 'PENDIENTE' ? 'color: #f39c12;' : (solicitud.estado.name() == 'ACEPTADA' ? 'color: #2ecc71;' : 'color: #e74c3c;')}">ESTADO
+                                   </strong>
+                        </div>
+                        <div style="font-size: 0.9em; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;" th:if="${solicitud.estado.name() == 'ACEPTADA'}">
+                            <strong>Contacto:</strong> <span th:text="${solicitud.alumno.numCelular != null and !solicitud.alumno.numCelular.isEmpty() ? solicitud.alumno.numCelular : (solicitud.alumno.telefonoAdulto != null ? solicitud.alumno.telefonoAdulto : 'No provisto')}">Telefono</span><br>
+                            <strong>Email:</strong> <span th:text="${solicitud.alumno.usuario != null ? solicitud.alumno.usuario.email : 'Sin email vinculado'}">Email</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -133,6 +171,23 @@
         <button type="button" id="cerrarVentanaBtn" class="btn" style="width: 100%; background-color: #ccc; margin-top: 5px;">Cancelar</button>
     </form>
 </div>
+
+<!-- Modal para ver Solicitudes -->
+<div id="modalSolicitudes" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%; margin: auto; max-height: 90vh; overflow-y: auto;">
+        <h2 id="modalSolicitudesTitle" style="margin-top: 0; border-bottom: 2px solid #ffcc00; padding-bottom: 10px;">Solicitudes de Tutoría</h2>
+        
+        <div id="listaSolicitudesContainer" style="margin-bottom: 20px; margin-top: 15px;">
+            <!-- Elementos inyectados por JS -->
+        </div>
+
+        <button type="button" id="cerrarModalSolicitudesBtn" class="btn" style="width: 100%; background-color: #ccc;">Cerrar</button>
+    </div>
+</div>
+
+<footer id="footer">
+    <p>&copy; 2026 Tatutor. Todos los derechos reservados.</p>
+</footer>
 
 <script th:src="@{/javascript/perfil.js}"></script>
 </body>

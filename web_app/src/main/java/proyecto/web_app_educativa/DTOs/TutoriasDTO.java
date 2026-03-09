@@ -27,6 +27,13 @@ public class TutoriasDTO {
     private Perfiles perfil;
     private Modalidades modalidad;
     private double arancel;
+    
+    private String tutorNombre;
+    private String tutorApellido;
+    private double tutorRating;
+    private String tutorBiografia;
+    private int tutorPerfilId;
+    private int tutorPersonaId;
 
     public TutoriasDTO(Tutorias tutoria) {
 
@@ -49,10 +56,25 @@ public class TutoriasDTO {
         this.arancel = tutoria.getValorPorClase();
         this.alumnos = tutoria.getSolicitudes().stream().map(solicitud -> new PersonasDTO(solicitud.getAlumno()))
                 .collect(Collectors.toList());
+        
+        if (tutoria.getPerfil() != null) {
+            this.tutorPerfilId = tutoria.getPerfil().getId();
+            this.tutorRating = tutoria.getPerfil().getRating();
+            this.tutorBiografia = tutoria.getPerfil().getBiografia();
+            if (tutoria.getPerfil().getPersona() != null) {
+                this.tutorNombre = tutoria.getPerfil().getPersona().getNombre();
+                this.tutorApellido = tutoria.getPerfil().getPersona().getApellido();
+                this.tutorPersonaId = tutoria.getPerfil().getPersona().getId();
+            }
+        }
     }
 
     public TutoriasDTO() {
 
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getEdadMinima() {
@@ -121,5 +143,29 @@ public class TutoriasDTO {
 
     public double getArancel() {
         return arancel;
+    }
+
+    public String getTutorNombre() {
+        return tutorNombre;
+    }
+
+    public String getTutorApellido() {
+        return tutorApellido;
+    }
+
+    public double getTutorRating() {
+        return tutorRating;
+    }
+
+    public String getTutorBiografia() {
+        return tutorBiografia;
+    }
+
+    public int getTutorPerfilId() {
+        return tutorPerfilId;
+    }
+
+    public int getTutorPersonaId() {
+        return tutorPersonaId;
     }
 }

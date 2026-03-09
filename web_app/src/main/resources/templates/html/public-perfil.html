@@ -16,6 +16,10 @@
         .profile-photo {
             width: 150px;
             height: 150px;
+            min-width: 150px;
+            max-width: 150px;
+            min-height: 150px;
+            max-height: 150px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid #ffcc00;
@@ -57,6 +61,13 @@
             transition: transform 0.2s;
         }
         .tutoria-card:hover { transform: translateY(-3px); }
+        .status {
+            display: inline-block; padding: 5px 10px; border-radius: 20px;
+            font-size: 0.8em; font-weight: bold; margin-bottom: 15px;
+        }
+        .disponible { background-color: #d4edda; color: #155724; }
+        .no-disponible { background-color: #f8d7da; color: #721c24; }
+        .price { font-size: 1.5em; font-weight: bold; color: #2ecc71; margin-top: 15px; }
         .rating-badge {
             display: inline-block;
             background: #ffcc00;
@@ -75,14 +86,88 @@
             font-size: 0.8em;
             margin-right: 5px;
             margin-bottom: 5px;
+            margin-bottom: 5px;
         }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 { margin-top: 0; color: #d19f00; }
+        .btn-submit {
+            background-color: #ffcc00; color: #333; border: none; padding: 10px 15px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+        .btn-submit:hover { background-color: #e6b800; }
+        
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            cursor: pointer;
+            font-size: 30px;
+            color: #ddd;
+        }
+        .star-rating input:checked ~ label {
+            color: #ffcc00;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffcc00;
+        }
+        
+        .comentario-card {
+            background: #fdfdfd;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .comentario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .comentario-header .author {
+            font-weight: bold;
+            color: #333;
+        }
+        .comentario-header .date {
+            font-size: 0.85em;
+            color: #999;
+        }
+        
     </style>
 </head>
 <body>
 
 <nav id="menuNav">
     <ul>
-        <li><a th:href="@{/home}" class="logo">Tatutor</a></li>
+        <li style="margin-right: auto;"><a th:href="@{/home}" class="logo"><img th:src="@{/images/icon_tatutor.png}" alt="Tatutor Logo" style="height: 40px; vertical-align: middle;"></a></li>
         <li><a th:href="@{/home}">Inicio</a></li>
         <li th:if="${esTutor != null and esTutor}"><a th:href="@{/mis-tutorias}">Mis Tutorías</a></li>
         <li th:if="${esTutor != null}"><a th:href="@{/perfil}">Mi Perfil</a></li>
@@ -121,8 +206,8 @@
             <div style="flex: 1;" th:if="${perfilPublico.experiencia != null and !perfilPublico.experiencia.isEmpty()}">
                 <h3 class="section-title">Experiencia</h3>
                 <ul class="list-group">
-                    <li th:each="exp : ${perfilPublico.experiencia}">
-                        <strong th:text="${exp}">Título de Experiencia</strong>
+                    <li th:each="expStr : ${perfilPublico.experiencia}">
+                        <strong th:text="${expStr}">Título de Experiencia</strong>
                     </li>
                 </ul>
             </div>
@@ -130,8 +215,8 @@
             <div style="flex: 1;" th:if="${perfilPublico.certificados != null and !perfilPublico.certificados.isEmpty()}">
                 <h3 class="section-title">Certificados</h3>
                 <ul class="list-group">
-                    <li th:each="cert : ${perfilPublico.certificados}">
-                        <strong th:text="${cert}">Nombre de Certificado</strong>
+                    <li th:each="certStr : ${perfilPublico.certificados}">
+                        <strong th:text="${certStr}">Nombre de Certificado</strong>
                     </li>
                 </ul>
             </div>
@@ -142,28 +227,85 @@
         <div th:if="${perfilPublico.tutorias != null and !perfilPublico.tutorias.isEmpty()}" class="tutorias-grid">
             <div th:each="tutoria : ${perfilPublico.tutorias}" th:if="${tutoria.estado}" class="tutoria-card">
                 
-                <h3 style="margin-top: 0; color: #d19f00;" th:text="${tutoria.disciplina != null ? tutoria.disciplina : 'Sin Categoría'}">Disciplina</h3>
-                
-                <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;" th:text="${tutoria.descripcion}">Descripción</p>
-                
-                <p style="margin: 5px 0;"><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
+                <div class="status disponible">Disponible</div>
+                <h3><span th:text="${tutoria.disciplina != null ? tutoria.disciplina : 'Sin Categoría'}">Disciplina</span></h3>
+                <p><strong>Descripción:</strong> <span th:text="${tutoria.descripcion}">Descripción</span></p>
                 
                 <div style="margin: 10px 0;">
                     <strong>Días:</strong>
-                    <div style="margin-top: 5px;">
+                    <div style="margin-top: 5px; display: flex; flex-wrap: wrap;">
                         <span th:each="dia : ${tutoria.dias}" class="dias-badge" th:text="${dia}">Día</span>
                         <span th:if="${tutoria.dias == null or tutoria.dias.isEmpty()}" class="dias-badge">No especificado</span>
                     </div>
                 </div>
 
-                <div style="margin-top: 20px; font-weight: bold; font-size: 1.2em; color: #333;">
-                    $<span th:text="${tutoria.arancel}">Arancel</span> <span style="font-size: 0.7em; font-weight: normal; color: #666;">/ <span th:text="${tutoria.tipoPago}">POR_HORA</span></span>
+                <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
+                <p><strong>Tutor:</strong> <span th:text="${perfilPublico.nombrePersona + ' ' + perfilPublico.apellidoPersona}">Tutor Name</span></p>
+
+                <div class="price">
+                    $<span th:text="${tutoria.arancel}">Arancel</span>
                 </div>
+                
+                <button class="btn" style="margin-top: 15px; width: 100%; border-radius: 8px; padding: 12px; background-color: #f0f0f0;"
+                    th:data-id="${tutoria.id}"
+                    th:data-disciplina="${tutoria.disciplina != null ? tutoria.disciplina : (tutoria.categoria != null ? tutoria.categoria.nombre : 'Sin Categoría')}"
+                    th:data-descripcion="${tutoria.descripcion}"
+                    th:data-dias="${#strings.listJoin(tutoria.dias, ', ')}"
+                    th:data-modalidad="${tutoria.modalidad}"
+                    th:data-arancel="${tutoria.arancel}"
+                    th:data-tutornombre="${perfilPublico.nombrePersona + ' ' + perfilPublico.apellidoPersona}"
+                    th:data-tutorrating="${perfilPublico.rating}"
+                    th:data-tutorbio="${perfilPublico.biografia != null ? perfilPublico.biografia : 'Sin biografía disponible.'}"
+                    th:data-tipopago="${tutoria.tipoPago}"
+                    th:data-tutorpersonaid="${tutoria.tutorPersonaId}"
+                    th:data-edadminima="${tutoria.edadMinima}"
+                    th:data-horariodesde="${tutoria.horarioDesde}"
+                    th:data-horariohasta="${tutoria.horarioHasta}"
+                    th:data-tipoubicacion="${tutoria.tipoUbicaciones}"
+                    th:data-ubicacion="${tutoria.ubicacion != null ? tutoria.ubicacion : 'No especificada'}"
+                    th:data-materiales="${tutoria.materiales != null ? tutoria.materiales : 'No se especificaron materiales'}"
+                    onclick="abrirModalTutoria(this)">
+                    Ver Detalles
+                </button>
+
             </div>
         </div>
         
         <div th:unless="${perfilPublico.tutorias != null and !perfilPublico.tutorias.isEmpty()}">
             <p style="color: #888; font-style: italic;">Este tutor actualmente no tiene tutorías activas publicadas.</p>
+        </div>
+
+        <!-- NEW SECTION: Comentarios y Reseñas -->
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 50px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
+            <h3 class="section-title" style="margin-top: 0; border-bottom: none; padding-bottom: 0;">Reseñas de Alumnos</h3>
+            
+            <button th:if="${puedeComentar != null and puedeComentar}" 
+                    class="btn" 
+                    style="padding: 8px 15px; font-size: 0.9em; border-radius: 20px;"
+                    onclick="abrirModalComentario()">
+                Dejar una reseña
+            </button>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <div th:if="${perfilPublico.comentarios != null and !perfilPublico.comentarios.isEmpty()}">
+                <div th:each="com : ${perfilPublico.comentarios}" class="comentario-card">
+                    <div class="comentario-header">
+                        <span class="author" th:text="${com.autorNombre}">Nombre del Alumno</span>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span style="color: #d19f00; font-weight: bold;">
+                                <span th:each="i : ${#numbers.sequence(1, com.puntaje)}">★</span><span th:if="${com.puntaje < 5}" th:each="i : ${#numbers.sequence(com.puntaje + 1, 5)}" style="color: #ddd;">★</span>
+                            </span>
+                            <span class="date" th:text="${#temporals.format(com.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+                        </div>
+                    </div>
+                    <p style="margin: 0; color: #555; line-height: 1.5;" th:text="${com.comentario}">Texto de Comentario</p>
+                </div>
+            </div>
+            
+            <div th:unless="${perfilPublico.comentarios != null and !perfilPublico.comentarios.isEmpty()}">
+                <p style="color: #888; font-style: italic;">Este tutor aún no tiene reseñas. ¡Sé el primero en dejar una después de tomar una tutoría!</p>
+            </div>
         </div>
 
     </div>
@@ -177,9 +319,179 @@
 
 </div>
 
-<footer id="footer" style="margin-top: 50px;">
-    <p>&copy; 2024 Tatutor. Todos los derechos reservados.</p>
+<footer id="footer">
+    <p>&copy; 2026 Tatutor. Todos los derechos reservados.</p>
 </footer>
+
+<!-- Modal de Detalles de Tutoría -->
+<div id="tutoriaModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h2 id="modalDisciplina" style="margin-bottom: 5px;">Disciplina</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+            <div>
+                <strong style="font-size: 1.1em; color: #333;" id="modalTutorNombre">Tutor Nombre</strong>
+                <span style="color: #666; font-size: 0.9em; margin-left: 10px;">⭐ <span id="modalTutorRating">0.0</span></span>
+            </div>
+            <!-- Ver Perfil button removed here as per requested -->
+        </div>
+        
+        <p><strong>Biografía del Tutor:</strong> <span id="modalTutorBio" style="color: #555;">...</span></p>
+        <p><strong>Descripción de la Tutoría:</strong> <span id="modalDescripcion" style="color: #555;">...</span></p>
+        
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong>Modalidad:</strong> <span id="modalModalidad">...</span></p>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong id="modalTipoUbicacionLabel">Ubicación:</strong> <span id="modalUbicacion">...</span></p>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong>Horario:</strong> <span id="modalHorario">...</span></p>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong>Días:</strong> <span id="modalDias">...</span></p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong>Edad Mínima:</strong> <span id="modalEdad">...</span></p>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong>Materiales:</strong> <span id="modalMateriales" style="word-break: break-word;">...</span></p>
+                
+                <div style="text-align: right; margin-top: 15px;">
+                    <span style="font-size: 1.5em; font-weight: bold; color: #2E8B57;">$<span id="modalArancel">0</span></span>
+                    <p style="margin: 0; font-size: 0.8em; color: #666;" id="modalTipoPago">por clase</p>
+                </div>
+            </div>
+        </div>
+        
+        <form th:action="@{/solicitudes/crear}" method="post">
+            <input type="hidden" name="tutoriaId" id="modalTutoriaId" value="">
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn" style="background-color: #ddd; color: #333; flex: 1;" onclick="cerrarModalTutoria()">Cerrar</button>
+                <div style="flex: 2; display: flex; align-items: center; justify-content: center;">
+                    <button type="submit" id="btnSolicitarTutoria" class="btn-submit" style="font-size: 1.1em; width: 100%;">Solicitar Tutoría</button>
+                    <span id="msgTutoriaPropia" style="display: none; color: #888; font-weight: bold; font-style: italic;">Esta es tu propia tutoría</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Dejar Comentario -->
+<div th:if="${perfilPublico != null}" id="comentarioModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2 style="margin-bottom: 20px;">Dejar una Reseña</h2>
+        
+        <form th:action="@{'/perfil/' + ${perfilPublico.id} + '/comentar'}" method="post">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #555;">Puntaje (1-5 estrellas):</label>
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="puntaje" value="5" required />
+                    <label for="star5" title="5 estrellas">★</label>
+                    <input type="radio" id="star4" name="puntaje" value="4" />
+                    <label for="star4" title="4 estrellas">★</label>
+                    <input type="radio" id="star3" name="puntaje" value="3" />
+                    <label for="star3" title="3 estrellas">★</label>
+                    <input type="radio" id="star2" name="puntaje" value="2" />
+                    <label for="star2" title="2 estrellas">★</label>
+                    <input type="radio" id="star1" name="puntaje" value="1" />
+                    <label for="star1" title="1 estrella">★</label>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="comentario" style="display: block; font-weight: bold; margin-bottom: 5px; color: #555;">Tu Reseña:</label>
+                <textarea id="comentario" name="comentario" rows="4" required placeholder="Cuéntanos cómo fue tu experiencia..." style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; box-sizing: border-box; resize: vertical;"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn" style="background-color: #ddd; color: #333; flex: 1;" onclick="cerrarModalComentario()">Cancelar</button>
+                <button type="submit" class="btn-submit" style="flex: 2;">Publicar Reseña</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    var currentUsuarioPersonaId = /*[[${currentUsuarioPersonaId != null ? currentUsuarioPersonaId : -1}]]*/ -1;
+    var tutoriasSolicitadasIds = /*[[${tutoriasSolicitadasIds}]]*/ [];
+    if (!tutoriasSolicitadasIds) {
+        tutoriasSolicitadasIds = [];
+    }
+/*]]>*/
+</script>
+<script>
+function abrirModalTutoria(btn) {
+    var tutoriaId = parseInt(btn.getAttribute('data-id'));
+    document.getElementById('modalTutoriaId').value = tutoriaId;
+    document.getElementById('modalDisciplina').innerText = btn.getAttribute('data-disciplina');
+    document.getElementById('modalTutorNombre').innerText = btn.getAttribute('data-tutornombre');
+    document.getElementById('modalTutorRating').innerText = btn.getAttribute('data-tutorrating');
+    document.getElementById('modalTutorBio').innerText = btn.getAttribute('data-tutorbio');
+    document.getElementById('modalDescripcion').innerText = btn.getAttribute('data-descripcion');
+    document.getElementById('modalDias').innerText = btn.getAttribute('data-dias') || "No especificado";
+    document.getElementById('modalModalidad').innerText = btn.getAttribute('data-modalidad');
+    document.getElementById('modalArancel').innerText = btn.getAttribute('data-arancel');
+    document.getElementById('modalEdad').innerText = btn.getAttribute('data-edadminima') !== '0' ? btn.getAttribute('data-edadminima') + ' años' : 'Sin límite';
+    
+    var hDesde = btn.getAttribute('data-horariodesde');
+    var hHasta = btn.getAttribute('data-horariohasta');
+    document.getElementById('modalHorario').innerText = (hDesde && hHasta) ? hDesde + ' - ' + hHasta : 'A coordinar';
+    document.getElementById('modalMateriales').innerText = btn.getAttribute('data-materiales');
+
+    var tipoUbiMapping = {
+        'A_DOMICILIO': 'A Domicilio',
+        'DOMICILIO_DEL_TUTOR': 'Locación del Tutor',
+        'DOMICILIO_DEL_ESTUDIANTE': 'Mi Domicilio'
+    };
+    var tipoUbiStr = btn.getAttribute('data-tipoubicacion');
+    var ubiLabel = tipoUbiMapping[tipoUbiStr] || 'Ubicación';
+    document.getElementById('modalTipoUbicacionLabel').innerText = ubiLabel + ':';
+    if (btn.getAttribute('data-modalidad') === 'VIRTUAL') {
+        document.getElementById('modalUbicacion').innerText = 'Plataforma Virtual (A coordinar)';
+        document.getElementById('modalTipoUbicacionLabel').innerText = 'Plataforma:';
+    } else {
+        document.getElementById('modalUbicacion').innerText = btn.getAttribute('data-ubicacion');
+    }
+    
+    var tipoPagoMapping = {
+        'POR_HORA': 'por hora',
+        'POR_CLASE': 'por clase',
+        'POR_SEMANA': 'por semana',
+        'POR_MES': 'por mes'
+    };
+    var tipoPagoStr = btn.getAttribute('data-tipopago');
+    document.getElementById('modalTipoPago').innerText = tipoPagoMapping[tipoPagoStr] || 'por clase';
+    
+    var tutorPersonaId = parseInt(btn.getAttribute('data-tutorpersonaid'));
+    var btnSolicitar = document.getElementById('btnSolicitarTutoria');
+    var msgPropia = document.getElementById('msgTutoriaPropia');
+    
+    // Default styles
+    btnSolicitar.style.display = 'block';
+    msgPropia.style.display = 'none';
+        
+    // Prevent self-application visual
+    if (tutorPersonaId === currentUsuarioPersonaId) {
+        btnSolicitar.style.display = 'none';
+        msgPropia.innerText = 'No puedes solicitar tus propias tutorías';
+        msgPropia.style.display = 'block';
+        msgPropia.style.color = '#888';
+    } else if (tutoriasSolicitadasIds.includes(tutoriaId)) {
+        btnSolicitar.style.display = 'none';
+        msgPropia.innerText = 'Ya has solicitado esta tutoría';
+        msgPropia.style.display = 'block';
+        msgPropia.style.color = '#e67e22'; // Warning orange
+    }
+    
+    document.getElementById('tutoriaModal').style.display = 'flex';
+}
+
+function cerrarModalTutoria() {
+    document.getElementById('tutoriaModal').style.display = 'none';
+}
+
+function abrirModalComentario() {
+    document.getElementById('comentarioModal').style.display = 'flex';
+}
+
+function cerrarModalComentario() {
+    document.getElementById('comentarioModal').style.display = 'none';
+}
+</script>
 
 </body>
 </html>

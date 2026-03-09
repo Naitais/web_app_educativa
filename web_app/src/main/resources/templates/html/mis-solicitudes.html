@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Solicitudes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .solicitud-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .solicitud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f9f9f9;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .status-PENDIENTE { background-color: #f39c12; color: white; }
+        .status-ACEPTADA { background-color: #2ecc71; color: white; }
+        .status-RECHAZADA { background-color: #e74c3c; color: white; }
+        .contacto-box {
+            background-color: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<nav id="menuNav">
+    <ul>
+        <li style="margin-right: auto;"><a th:href="@{/home}" class="logo"><img th:src="@{/images/icon_tatutor.png}" alt="Tatutor Logo" style="height: 40px; vertical-align: middle;"></a></li>
+        <li><a th:href="@{/home}">Inicio</a></li>
+        <li th:if="${esTutor != null and esTutor}"><a th:href="@{/mis-tutorias}">Mis Tutorías</a></li>
+        <li th:if="${esTutor == null or !esTutor}"><a th:href="@{/mis-solicitudes}">Mis Solicitudes</a></li>
+        <li><a th:href="@{/perfil}">Mi Perfil</a></li>
+        <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
+    </ul>
+</nav>
+
+<div id="contenedorPrincipal" style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
+    <h1>Mis Solicitudes Enviadas</h1>
+    
+    <div th:if="${solicitudes != null and !solicitudes.isEmpty()}">
+        <div th:each="solicitud : ${solicitudes}" class="solicitud-card">
+            
+            <div class="solicitud-header">
+                <h3 style="margin: 0; color: #d19f00;">
+                    Tutoría: <span th:text="${solicitud.tutoria.categoria != null ? solicitud.tutoria.categoria.nombre : 'Sin Categoría'}">Disciplina</span>
+                </h3>
+                <div th:class="'status-badge status-' + ${solicitud.estado.name()}" th:text="${solicitud.estado}">ESTADO</div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Tutor:</strong> <span th:text="${solicitud.tutoria.perfil != null and solicitud.tutoria.perfil.persona != null ? (solicitud.tutoria.perfil.persona.nombre + ' ' + solicitud.tutoria.perfil.persona.apellido) : 'Tutor Desconocido'}">Tutor Name</span>
+                </div>
+                <div th:if="${solicitud.tutoria.perfil != null}">
+                    <a th:href="@{/perfil/} + ${solicitud.tutoria.perfil.id}" class="btn" style="background-color: #333; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85em;">Ver Perfil</a>
+                </div>
+            </div>
+            <div style="font-size: 0.9em; color: #666;">
+                <strong>Fecha Solicitud:</strong> <span th:text="${#temporals.format(solicitud.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+            </div>
+            
+            <!-- Contact Box for Accepted Requests -->
+            <div class="contacto-box" th:if="${solicitud.estado.name() == 'ACEPTADA'}">
+                <h4 style="margin-top: 0; color: #117a65; border-bottom: 1px dashed #a3e4d7; padding-bottom: 5px;">¡Solicitud Aceptada! Datos de Contacto del Tutor:</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div>
+                        <strong>Teléfono/Celular:</strong> 
+                        <span th:text="${solicitud.tutoria.perfil != null and solicitud.tutoria.perfil.persona != null ? (solicitud.tutoria.perfil.persona.numCelular != null ? solicitud.tutoria.perfil.persona.numCelular : (solicitud.tutoria.perfil.persona.telefonoAdulto != null ? solicitud.tutoria.perfil.persona.telefonoAdulto : 'No brindado')) : 'No brindado'}">Telefono</span>
+                    </div>
+                    <div>
+                        <strong>Email:</strong>
+                        <span th:text="${solicitud.tutoria.perfil != null and solicitud.tutoria.perfil.persona != null and solicitud.tutoria.perfil.persona.usuario != null ? solicitud.tutoria.perfil.persona.usuario.email : 'No brindado'}">Email</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div th:if="${solicitudes == null or solicitudes.isEmpty()}" style="padding: 20px; background: #fafafa; border: 1px solid #eee; border-radius: 8px; text-align: center;">
+        <p style="color: #666; font-style: italic; font-size: 1.1em;">Aún no has enviado ninguna solicitud a un tutor.</p>
+        <a th:href="@{/home}" class="btn-submit" style="display: inline-block; width: auto; text-decoration: none; margin-top: 15px;">Explorar Tutorías</a>
+    </div>
+
+</div>
+
+<footer id="footer">
+    <p>&copy; 2026 Tatutor. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>

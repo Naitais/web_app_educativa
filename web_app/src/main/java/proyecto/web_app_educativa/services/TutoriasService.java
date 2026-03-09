@@ -39,10 +39,17 @@ public class TutoriasService {
         return new TutoriasDTO(tutorias);
     }
 
-    // filtro con palabra clave solo funciona con una sola palabra
-    // todo en un futuro modificar metodo para que pueda incluir busquedas booleanas
-    public List<TutoriasDTO> buscarTutoriasPorPalabra(String palabra) {
-        List<Tutorias> tutorias = tutoriasRepository.buscarPorPalabra(palabra);
+    public List<TutoriasDTO> buscarTutoriasAvanzado(
+            String palabra, 
+            proyecto.web_app_educativa.models.Modalidades modalidad, 
+            Double precioMax,
+            Integer edadMinima,
+            java.time.LocalTime horarioDesde,
+            java.time.LocalTime horarioHasta,
+            proyecto.web_app_educativa.models.TiposPagos tipoPago,
+            proyecto.web_app_educativa.models.TiposUbicaciones tipoUbicacion,
+            Integer categoriaId) {
+        List<Tutorias> tutorias = tutoriasRepository.buscarAvanzado(palabra, modalidad, precioMax, edadMinima, horarioDesde, horarioHasta, tipoPago, tipoUbicacion, categoriaId);
         return tutorias.stream()
                 .map(TutoriasDTO::new)
                 .collect(Collectors.toList());
