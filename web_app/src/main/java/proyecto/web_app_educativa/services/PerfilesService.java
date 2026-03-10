@@ -46,6 +46,9 @@ public class PerfilesService {
 
     public PerfilesDTO findPerfilById(int id) {
         Perfiles tutor = perfilesRepository.findById(id).orElse(null);
+        if (tutor == null) {
+            return null;
+        }
         return new PerfilesDTO(tutor);
     }
 

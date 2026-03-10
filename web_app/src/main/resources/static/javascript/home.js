@@ -98,10 +98,11 @@ function abrirModalTutoria(btn) {
     document.getElementById('modalTipoPago').innerText = tipoPagoMapping[tipoPagoStr] || 'por clase';
     
     var tutorPersonaId = parseInt(btn.getAttribute('data-tutorpersonaid'));
+    var tutorPerfilId = parseInt(btn.getAttribute('data-tutorperfilid'));
     
     var verPerfilBtn = document.getElementById('modalVerPerfilBtn');
-    if (tutorPersonaId) {
-        verPerfilBtn.href = '/perfil/' + tutorPersonaId;
+    if (tutorPerfilId) {
+        verPerfilBtn.href = '/perfil/' + tutorPerfilId;
         verPerfilBtn.style.display = 'inline-block';
     } else {
         verPerfilBtn.style.display = 'none';

@@ -45,21 +45,34 @@
             <p style="line-height: 1.6; color: #444; font-size: 1.1em;" th:text="${perfilPublico.biografia}">Biografía no disponible.</p>
         </div>
 
-        <div style="display: flex; gap: 40px; margin-top: 20px;">
-            <div style="flex: 1;" th:if="${perfilPublico.experiencia != null and !perfilPublico.experiencia.isEmpty()}">
+        <div style="display: flex; gap: 40px; margin-top: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;" th:if="${perfilPublico.experienciaCompleta != null and !perfilPublico.experienciaCompleta.isEmpty()}">
                 <h3 class="section-title">Experiencia</h3>
                 <ul class="list-group">
-                    <li th:each="expStr : ${perfilPublico.experiencia}">
-                        <strong th:text="${expStr}">Título de Experiencia</strong>
+                    <li th:each="exp : ${perfilPublico.experienciaCompleta}">
+                        <div>
+                            <strong th:text="${exp.titulo}">Título de Experiencia</strong>
+                            <div style="font-size: 0.9em; color: #666;" th:text="${exp.institucionOEmpresa}">Institución</div>
+                            <div style="font-size: 0.85em; color: #888; margin-bottom: 5px;">
+                                <span th:text="${exp.fechaDesde}">Inicio</span> - 
+                                <span th:text="${exp.fechaHasta != null ? exp.fechaHasta : 'Actualidad'}">Fin</span>
+                            </div>
+                            <p style="margin: 0; font-size: 0.95em;" th:text="${exp.descripcion}">Descripción</p>
+                        </div>
                     </li>
                 </ul>
             </div>
 
-            <div style="flex: 1;" th:if="${perfilPublico.certificados != null and !perfilPublico.certificados.isEmpty()}">
+            <div style="flex: 1; min-width: 300px;" th:if="${perfilPublico.certificadosCompletos != null and !perfilPublico.certificadosCompletos.isEmpty()}">
                 <h3 class="section-title">Certificados</h3>
                 <ul class="list-group">
-                    <li th:each="certStr : ${perfilPublico.certificados}">
-                        <strong th:text="${certStr}">Nombre de Certificado</strong>
+                    <li th:each="cert : ${perfilPublico.certificadosCompletos}">
+                        <div>
+                            <strong th:text="${cert.nombre}">Nombre de Certificado</strong>
+                            <div style="margin-top: 5px;" th:if="${cert.urlOArchivo != null and !cert.urlOArchivo.isEmpty()}">
+                                <a th:href="${cert.urlOArchivo}" target="_blank" style="font-size: 0.9em; color: #0066cc; text-decoration: none;">Ver Certificado &rarr;</a>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>

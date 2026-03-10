@@ -35,9 +35,14 @@ public class UsuariosService {
     }
 
     public Usuarios crearUsuario(UsuariosDTO usuariosDTO) {
-        // Validate Email
+        // validacion sencilla Email
         if (usuariosDTO.getEmail() == null || !usuariosDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new IllegalArgumentException("El email provisto no es válido.");
+        }
+        
+        // valido que celualr sea solo numeros
+        if (usuariosDTO.getNumCelular() == null || !usuariosDTO.getNumCelular().matches("^[0-9]+$")) {
+            throw new IllegalArgumentException("Número celular invalido intentar de nuevo.");
         }
         
         // reviso dup email

@@ -1,5 +1,7 @@
 package proyecto.web_app_educativa.DTOs;
 
+import proyecto.web_app_educativa.models.Certificado;
+import proyecto.web_app_educativa.models.Experiencia;
 import proyecto.web_app_educativa.models.Perfiles;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +15,8 @@ public class PerfilesDTO {
     private String foto; // es un link
     private List<String> certificados; // por ahora solo son strings
     private List<String> experiencia;
+    private List<Experiencia> experienciaCompleta;
+    private List<Certificado> certificadosCompletos;
     private List<TutoriasDTO> tutorias;
     private String nombrePersona;
     private String apellidoPersona;
@@ -26,6 +30,8 @@ public class PerfilesDTO {
         this.foto = perfil.getFoto();
         this.certificados = perfil.getCertificados().stream().map(c -> c.getNombre()).collect(Collectors.toList());
         this.experiencia = perfil.getExperiencia().stream().map(e -> e.getTitulo()).collect(Collectors.toList());
+        this.experienciaCompleta = perfil.getExperiencia();
+        this.certificadosCompletos = perfil.getCertificados();
         this.tutorias = perfil.getTutorias().stream().map(tutoria -> new TutoriasDTO(tutoria))
                 .collect(Collectors.toList());
         if(perfil.getPersona() != null) {
@@ -133,5 +139,13 @@ public class PerfilesDTO {
 
     public void setComentarios(List<ComentarioPerfilDTO> comentarios) {
         this.comentarios = comentarios;
+    }
+
+    public List<Experiencia> getExperienciaCompleta() {
+        return experienciaCompleta;
+    }
+
+    public List<Certificado> getCertificadosCompletos() {
+        return certificadosCompletos;
     }
 }
