@@ -4,164 +4,7 @@
     <meta charset="UTF-8">
     <title>Perfil Público - Tatutor</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #ffcc00;
-        }
-        .profile-photo {
-            width: 150px;
-            height: 150px;
-            min-width: 150px;
-            max-width: 150px;
-            min-height: 150px;
-            max-height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #ffcc00;
-        }
-        .profile-info h1 {
-            color: #d19f00;
-            margin: 0 0 10px 0;
-            font-size: 2.2em;
-        }
-        .section-title {
-            color: #555;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-            margin-top: 30px;
-        }
-        .list-group {
-            list-style: none;
-            padding: 0;
-        }
-        .list-group li {
-            background: #f9f9f9;
-            margin-bottom: 10px;
-            padding: 15px;
-            border-left: 4px solid #ffcc00;
-            border-radius: 4px;
-        }
-        .tutorias-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
-        }
-        .tutoria-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-        .tutoria-card:hover { transform: translateY(-3px); }
-        .status {
-            display: inline-block; padding: 5px 10px; border-radius: 20px;
-            font-size: 0.8em; font-weight: bold; margin-bottom: 15px;
-        }
-        .disponible { background-color: #d4edda; color: #155724; }
-        .no-disponible { background-color: #f8d7da; color: #721c24; }
-        .price { font-size: 1.5em; font-weight: bold; color: #2ecc71; margin-top: 15px; }
-        .rating-badge {
-            display: inline-block;
-            background: #ffcc00;
-            color: #333;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-        .dias-badge {
-            display: inline-block;
-            background: #eee;
-            color: #555;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            margin-right: 5px;
-            margin-bottom: 5px;
-            margin-bottom: 5px;
-        }
-        
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .modal-content h2 { margin-top: 0; color: #d19f00; }
-        .btn-submit {
-            background-color: #ffcc00; color: #333; border: none; padding: 10px 15px;
-            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
-        }
-        .btn-submit:hover { background-color: #e6b800; }
-        
-        .star-rating {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .star-rating input {
-            display: none;
-        }
-        .star-rating label {
-            cursor: pointer;
-            font-size: 30px;
-            color: #ddd;
-        }
-        .star-rating input:checked ~ label {
-            color: #ffcc00;
-        }
-        .star-rating label:hover,
-        .star-rating label:hover ~ label {
-            color: #ffcc00;
-        }
-        
-        .comentario-card {
-            background: #fdfdfd;
-            border: 1px solid #eaeaea;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .comentario-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-        .comentario-header .author {
-            font-weight: bold;
-            color: #333;
-        }
-        .comentario-header .date {
-            font-size: 0.85em;
-            color: #999;
-        }
-        
-    </style>
+    <link rel="stylesheet" th:href="@{/css/public-perfil.css}">
 </head>
 <body>
 
@@ -239,7 +82,7 @@
                     </div>
                 </div>
 
-                <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
+                <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad.displayName}">Modalidad</span></p>
                 <p><strong>Tutor:</strong> <span th:text="${perfilPublico.nombrePersona + ' ' + perfilPublico.apellidoPersona}">Tutor Name</span></p>
 
                 <div class="price">
@@ -275,7 +118,7 @@
             <p style="color: #888; font-style: italic;">Este tutor actualmente no tiene tutorías activas publicadas.</p>
         </div>
 
-        <!-- NEW SECTION: Comentarios y Reseñas -->
+        <!-- NUEVA SECCION: Comentarios y Reseñas -->
         <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 50px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
             <h3 class="section-title" style="margin-top: 0; border-bottom: none; padding-bottom: 0;">Reseñas de Alumnos</h3>
             
@@ -310,7 +153,7 @@
 
     </div>
 
-    <!-- Fallback if Model Mapping Failed unexpectedly -->
+    <!-- Contingencia si la asignacion al modelo ha fallado -->
     <div th:unless="${perfilPublico != null}" style="text-align: center; padding: 50px;">
         <h2>Perfil no encontrado</h2>
         <p>No se pudo localizar el perfil solicitado.</p>
@@ -332,7 +175,7 @@
                 <strong style="font-size: 1.1em; color: #333;" id="modalTutorNombre">Tutor Nombre</strong>
                 <span style="color: #666; font-size: 0.9em; margin-left: 10px;">⭐ <span id="modalTutorRating">0.0</span></span>
             </div>
-            <!-- Ver Perfil button removed here as per requested -->
+            <!-- Botón de Ver Perfil removido desde aquí según se ha solicitado -->
         </div>
         
         <p><strong>Biografía del Tutor:</strong> <span id="modalTutorBio" style="color: #555;">...</span></p>
@@ -341,7 +184,7 @@
         <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div>
                 <p style="margin: 0 0 5px 0; color: #555;"><strong>Modalidad:</strong> <span id="modalModalidad">...</span></p>
-                <p style="margin: 0 0 5px 0; color: #555;"><strong id="modalTipoUbicacionLabel">Ubicación:</strong> <span id="modalUbicacion">...</span></p>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong>Ubicación:</strong> <span id="modalTipoUbicacionLabel">...</span></p>
                 <p style="margin: 0 0 5px 0; color: #555;"><strong>Horario:</strong> <span id="modalHorario">...</span></p>
                 <p style="margin: 0 0 5px 0; color: #555;"><strong>Días:</strong> <span id="modalDias">...</span></p>
             </div>
@@ -413,85 +256,7 @@
     }
 /*]]>*/
 </script>
-<script>
-function abrirModalTutoria(btn) {
-    var tutoriaId = parseInt(btn.getAttribute('data-id'));
-    document.getElementById('modalTutoriaId').value = tutoriaId;
-    document.getElementById('modalDisciplina').innerText = btn.getAttribute('data-disciplina');
-    document.getElementById('modalTutorNombre').innerText = btn.getAttribute('data-tutornombre');
-    document.getElementById('modalTutorRating').innerText = btn.getAttribute('data-tutorrating');
-    document.getElementById('modalTutorBio').innerText = btn.getAttribute('data-tutorbio');
-    document.getElementById('modalDescripcion').innerText = btn.getAttribute('data-descripcion');
-    document.getElementById('modalDias').innerText = btn.getAttribute('data-dias') || "No especificado";
-    document.getElementById('modalModalidad').innerText = btn.getAttribute('data-modalidad');
-    document.getElementById('modalArancel').innerText = btn.getAttribute('data-arancel');
-    document.getElementById('modalEdad').innerText = btn.getAttribute('data-edadminima') !== '0' ? btn.getAttribute('data-edadminima') + ' años' : 'Sin límite';
-    
-    var hDesde = btn.getAttribute('data-horariodesde');
-    var hHasta = btn.getAttribute('data-horariohasta');
-    document.getElementById('modalHorario').innerText = (hDesde && hHasta) ? hDesde + ' - ' + hHasta : 'A coordinar';
-    document.getElementById('modalMateriales').innerText = btn.getAttribute('data-materiales');
-
-    var tipoUbiMapping = {
-        'A_DOMICILIO': 'A Domicilio',
-        'DOMICILIO_DEL_TUTOR': 'Locación del Tutor',
-        'DOMICILIO_DEL_ESTUDIANTE': 'Mi Domicilio'
-    };
-    var tipoUbiStr = btn.getAttribute('data-tipoubicacion');
-    var ubiLabel = tipoUbiMapping[tipoUbiStr] || 'Ubicación';
-    document.getElementById('modalTipoUbicacionLabel').innerText = ubiLabel + ':';
-    if (btn.getAttribute('data-modalidad') === 'VIRTUAL') {
-        document.getElementById('modalUbicacion').innerText = 'Plataforma Virtual (A coordinar)';
-        document.getElementById('modalTipoUbicacionLabel').innerText = 'Plataforma:';
-    } else {
-        document.getElementById('modalUbicacion').innerText = btn.getAttribute('data-ubicacion');
-    }
-    
-    var tipoPagoMapping = {
-        'POR_HORA': 'por hora',
-        'POR_CLASE': 'por clase',
-        'POR_SEMANA': 'por semana',
-        'POR_MES': 'por mes'
-    };
-    var tipoPagoStr = btn.getAttribute('data-tipopago');
-    document.getElementById('modalTipoPago').innerText = tipoPagoMapping[tipoPagoStr] || 'por clase';
-    
-    var tutorPersonaId = parseInt(btn.getAttribute('data-tutorpersonaid'));
-    var btnSolicitar = document.getElementById('btnSolicitarTutoria');
-    var msgPropia = document.getElementById('msgTutoriaPropia');
-    
-    // Default styles
-    btnSolicitar.style.display = 'block';
-    msgPropia.style.display = 'none';
-        
-    // Prevent self-application visual
-    if (tutorPersonaId === currentUsuarioPersonaId) {
-        btnSolicitar.style.display = 'none';
-        msgPropia.innerText = 'No puedes solicitar tus propias tutorías';
-        msgPropia.style.display = 'block';
-        msgPropia.style.color = '#888';
-    } else if (tutoriasSolicitadasIds.includes(tutoriaId)) {
-        btnSolicitar.style.display = 'none';
-        msgPropia.innerText = 'Ya has solicitado esta tutoría';
-        msgPropia.style.display = 'block';
-        msgPropia.style.color = '#e67e22'; // Warning orange
-    }
-    
-    document.getElementById('tutoriaModal').style.display = 'flex';
-}
-
-function cerrarModalTutoria() {
-    document.getElementById('tutoriaModal').style.display = 'none';
-}
-
-function abrirModalComentario() {
-    document.getElementById('comentarioModal').style.display = 'flex';
-}
-
-function cerrarModalComentario() {
-    document.getElementById('comentarioModal').style.display = 'none';
-}
-</script>
+<script th:src="@{/javascript/public-perfil.js}"></script>
 
 </body>
 </html>

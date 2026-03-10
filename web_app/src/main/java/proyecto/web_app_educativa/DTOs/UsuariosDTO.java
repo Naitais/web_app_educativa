@@ -1,6 +1,6 @@
 package proyecto.web_app_educativa.DTOs;
 
-import proyecto.web_app_educativa.models.Personas;
+
 import proyecto.web_app_educativa.models.Roles;
 import proyecto.web_app_educativa.models.UsuarioEstados;
 import proyecto.web_app_educativa.models.Usuarios;
@@ -15,23 +15,29 @@ public class UsuariosDTO {
     private String confirmContraseña;
     private LocalDateTime fechaRegistro;
     private Roles rol;
-    private Personas personas;
 
     // Campos agregados para la creacion de la Persona durante el registro
     private String nombre;
     private String apellido;
     private String numCelular;
     private java.time.LocalDate fechaNacimiento;
+    private String nombreAdulto;
+    private String numCelularAdulto;
 
     public UsuariosDTO(Usuarios usuario) {
         this.id = usuario.getId();
-        this.estado = usuario.getEstado();
+        this.estado = usuario.getEstadoUsuario();
         this.ultimaSesion = usuario.getUltimaSesion();
         this.email = usuario.getEmail();
         this.contraseña = usuario.getContraseña();
         this.fechaRegistro = usuario.getFechaRegistro();
         this.rol = usuario.getRol();
-        this.personas = usuario.getPersona();
+        this.nombre = usuario.getNombre();
+        this.apellido = usuario.getApellido();
+        this.numCelular = usuario.getNumCelular();
+        this.fechaNacimiento = usuario.getFechaNacimiento();
+        this.nombreAdulto = usuario.getNombreAdulto();
+        this.numCelularAdulto = usuario.getNumCelularAdulto();
     }
 
     public UsuariosDTO() {
@@ -72,10 +78,6 @@ public class UsuariosDTO {
 
     public Roles getRol() {
         return rol;
-    }
-
-    public Personas getPersonas() {
-        return personas;
     }
 
     public void setEstado(UsuarioEstados estado) {
@@ -124,5 +126,21 @@ public class UsuariosDTO {
 
     public void setFechaNacimiento(java.time.LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getNombreAdulto() {
+        return nombreAdulto;
+    }
+
+    public void setNombreAdulto(String nombreAdulto) {
+        this.nombreAdulto = nombreAdulto;
+    }
+
+    public String getNumCelularAdulto() {
+        return numCelularAdulto;
+    }
+
+    public void setNumCelularAdulto(String numCelularAdulto) {
+        this.numCelularAdulto = numCelularAdulto;
     }
 }

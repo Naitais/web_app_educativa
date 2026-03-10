@@ -13,7 +13,7 @@ public class SolicitudTutoria {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "alumno_id")
+    @JoinColumn(name = "usuario_id")
     private Personas alumno;
 
     @ManyToOne

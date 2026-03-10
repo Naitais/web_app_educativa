@@ -3,10 +3,7 @@ package proyecto.web_app_educativa.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import proyecto.web_app_educativa.models.EstadoSolicitud;
-import proyecto.web_app_educativa.models.SolicitudTutoria;
-import proyecto.web_app_educativa.models.Tutorias;
-import proyecto.web_app_educativa.models.Usuarios;
+import proyecto.web_app_educativa.models.*;
 import proyecto.web_app_educativa.repositories.SolicitudTutoriaRepository;
 import proyecto.web_app_educativa.repositories.TutoriasRepository;
 
@@ -27,11 +24,14 @@ public class SolicitudService {
 
     @Transactional
     public void crearSolicitud(Usuarios usuario, Tutorias tutoria) throws Exception {
-        if (solicitudRepository.existsByAlumnoAndTutoria(usuario.getPersona(), tutoria)) {
-            throw new Exception("Ya has enviado una solicitud para esta tutoría.");
+        //if (!usuario.getRol().equals(Roles.ROL_ESTUDIANTE)){
+        //    throw new Exception("Solo usuarios alumnos pueden solicitar tutorias.");
+        //}
+        if (solicitudRepository.existsByAlumnoAndTutoria(usuario, tutoria)) {
+            throw new Exception("Ya enviaste una solicitud para esta tutoría.");
         }
         
-        SolicitudTutoria solicitud = new SolicitudTutoria(usuario.getPersona(), tutoria);
+        SolicitudTutoria solicitud = new SolicitudTutoria(usuario, tutoria);
         tutoria.getSolicitudes().add(solicitud);
         
         solicitudRepository.save(solicitud);

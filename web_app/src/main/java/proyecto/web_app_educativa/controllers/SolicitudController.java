@@ -2,6 +2,7 @@ package proyecto.web_app_educativa.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,14 +43,23 @@ public class SolicitudController {
         Usuarios usuario = usuariosService.getUsuarioPorEmail(principal.getName());
         Optional<Tutorias> tutoriaOpt = tutoriasRepository.findById(tutoriaId);
         
-        if (tutoriaOpt.isPresent() && usuario != null && usuario.getPersona() != null) {
+        if (tutoriaOpt.isPresent() && usuario != null) {
             Tutorias tutoria = tutoriaOpt.get();
             
-            // Prevent users from applying to their own tutorias
+            // para que no apliquen a sus mismas tutorias
             if (tutoria.getPerfil() != null && tutoria.getPerfil().getPersona() != null &&
-                tutoria.getPerfil().getPersona().getId() == usuario.getPersona().getId()) {
+                tutoria.getPerfil().getPersona().getId() == usuario.getId()) {
                 redirectAttributes.addFlashAttribute("mensajeError", "No puedes solicitar tu propia tutoría.");
                 return "redirect:/home";
+            }
+            
+            // valido la edad para aplicar a tutoria
+            if (tutoria.getEdadMinima() > 0 && usuario.getFechaNacimiento() != null) {
+                int edad = java.time.Period.between(usuario.getFechaNacimiento(), java.time.LocalDate.now()).getYears();
+                if (edad < tutoria.getEdadMinima()) {
+                    redirectAttributes.addFlashAttribute("mensajeError", "No cumple con la edad mínima para aplicar a esta tutoría.");
+                    return "redirect:/home";
+                }
             }
             
             try {
@@ -68,8 +78,8 @@ public class SolicitudController {
 
     @PostMapping("/solicitudes/aceptar/{id}")
     public String aceptarSolicitud(@PathVariable("id") int solicitudId, Principal principal, RedirectAttributes redirectAttributes) {
-        // En una app real aqui habria que validar que la persona que acepta es el dueño de la tutoria.
-        // Por simplificacion del flujo actual, se acepta.
+        // En una app real habria que validar que la persona que acepta es el dueño de la tutoria
+        // Por ahora lo dejo asi
         boolean exito = solicitudService.aceptarSolicitud(solicitudId);
         if (exito) {
             redirectAttributes.addFlashAttribute("mensajeExito", "Solicitud aceptada correctamente.");
@@ -90,7 +100,7 @@ public class SolicitudController {
         return "redirect:/mis-tutorias";
     }
 
-    @org.springframework.web.bind.annotation.GetMapping("/mis-solicitudes")
+    @GetMapping("/mis-solicitudes")
     public String verMisSolicitudes(org.springframework.ui.Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
@@ -98,12 +108,10 @@ public class SolicitudController {
         
         Usuarios usuario = usuariosService.getUsuarioPorEmail(principal.getName());
         
-        if (usuario != null && usuario.getPersona() != null) {
+        if (usuario != null) {
             boolean isTutor = (usuario.getRol() == proyecto.web_app_educativa.models.Roles.ROL_PROFESOR);
             model.addAttribute("esTutor", isTutor);
-            // In a real app we might load this from a repository or query specifically,
-            // but the domain model has mapped the relation locally:
-            model.addAttribute("solicitudes", usuario.getPersona().getSolicitudes());
+            model.addAttribute("solicitudes", usuario.getSolicitudes());
         }
         
         return "html/mis-solicitudes.html";

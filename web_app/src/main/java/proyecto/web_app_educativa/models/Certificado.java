@@ -12,7 +12,7 @@ public class Certificado {
     
     private String nombre;
     
-    private String urlOArchivo; // Para guardar el link de la foto o el archivo si hace falta.
+    private String urlOArchivo; // Para guardar el link de la foto o el archivo si hace falta
 
     @ManyToOne
     @JoinColumn(name = "perfil_id")

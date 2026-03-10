@@ -1,6 +1,6 @@
-# Documentación del Proyecto: Sistema de Tutorías Tatutor
+# Documentación del Proyecto: Tatutor
 
-## 1. Descripción del Problema a Solucionar
+## 1. Descripción del Problema
 El aprendizaje de una nueva disciplina o habilidad específica a menudo se ve obstaculizado por la dificultad de encontrar profesionales o instructores calificados que enseñen exactamente lo que el usuario desea aprender. Por otro lado, los expertos en dichos campos carecen de una plataforma centralizada y eficiente para ofrecer sus tutorías, publicar sus horarios, modalidades y costos, así como para gestionar las solicitudes de los alumnos. 
 
 Este proyecto resuelve este problema de fragmentación conectando a estudiantes (Alumnos) con profesionales (Tutores) a través de una aplicación web centralizada. La plataforma permite a los usuarios registrarse, buscar tutorías de diversas categorías (arte, música, ciencia, programación, etc.), visualizar detalles importantes como el arancel (valor por clase), ubicación y modalidad (presencial u online). Asimismo, los tutores obtienen una herramienta "Mis Tutorías" para crear y administrar sus ofertas, definir sus perfiles profesionales con certificados y experiencia, y organizar eficientemente sus clases.

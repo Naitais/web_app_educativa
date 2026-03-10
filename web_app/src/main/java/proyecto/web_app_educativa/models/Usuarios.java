@@ -1,61 +1,52 @@
 package proyecto.web_app_educativa.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class Usuarios {
+@PrimaryKeyJoinColumn(name = "persona_id")
+public class Usuarios extends Personas {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private UsuarioEstados estado;
+    @Enumerated(EnumType.STRING)
+    private UsuarioEstados estadoUsuario;
     private LocalDateTime ultimaSesion;
     private String email;
     private String contraseña;
     private LocalDateTime fechaRegistro;
+
+    @Enumerated(EnumType.STRING)
     private Roles rol;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "persona_id", referencedColumnName = "id")
-    @JsonManagedReference
-    private Personas persona;
-
     public Usuarios(
+            String nombre,
+            String apellido,
+            String numCelular,
             LocalDateTime ultimaSesion,
             String email,
             String contraseña,
-            UsuarioEstados estado,
+            UsuarioEstados estadoUsuario,
             Roles rol) {
-
-        this.estado = (estado != null) ? estado : UsuarioEstados.ACTIVO; // default to ACTIVO
+        
+        super(nombre, apellido, numCelular, true);
+        this.estadoUsuario = (estadoUsuario != null) ? estadoUsuario : UsuarioEstados.ACTIVO; // default to ACTIVO
         this.ultimaSesion = (ultimaSesion != null) ? ultimaSesion : LocalDateTime.now();
         this.email = email;
         this.contraseña = contraseña;
-        this.persona = persona;
         this.fechaRegistro = LocalDateTime.now();
         this.rol = rol;
     }
 
     public Usuarios() {
+        super();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public UsuarioEstados getEstadoUsuario() {
+        return estadoUsuario;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public UsuarioEstados getEstado() {
-        return estado;
-    }
-
-    public void setEstado(UsuarioEstados estado) {
-        this.estado = estado;
+    public void setEstadoUsuario(UsuarioEstados estadoUsuario) {
+        this.estadoUsuario = estadoUsuario;
     }
 
     public LocalDateTime getUltimaSesion() {
@@ -96,13 +87,5 @@ public class Usuarios {
 
     public void setRol(Roles rol) {
         this.rol = rol;
-    }
-
-    public Personas getPersona() {
-        return persona;
-    }
-
-    public void setPersona(Personas persona) {
-        this.persona = persona;
     }
 }

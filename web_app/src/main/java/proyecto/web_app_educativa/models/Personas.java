@@ -1,6 +1,6 @@
 package proyecto.web_app_educativa.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Personas {
 
     @Id
@@ -21,20 +22,17 @@ public class Personas {
 
     private LocalDate fechaNacimiento;
     private String nombreAdulto;
-    private String telefonoAdulto;
 
-    @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
-    @JsonBackReference
-    private Usuarios usuario;
+    @Column(name = "num_celular_adulto")
+    private String numCelularAdulto;
 
-    // From Alumnos
+    // de alumnos
     @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SolicitudTutoria> solicitudes = new ArrayList<>();
 
-    // From Tutores
+    // de tutores
     @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
-    @JsonManagedReference // Changed to ManagedReference as Personas is now the parent/owner effectively
-                          // in this view or inverse
+    @JsonManagedReference
     private Perfiles perfil;
 
     public Personas(String nombre, String apellido, String numCelular, Boolean estado) {
@@ -92,19 +90,6 @@ public class Personas {
         this.estado = estado;
     }
 
-    public Usuarios getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuarios usuario) {
-        this.usuario = usuario;
-    }
-
-    public void agregarUsuario(Usuarios usuario) {
-        usuario.setPersona(this);
-        setUsuario(usuario);
-    }
-
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
@@ -121,12 +106,12 @@ public class Personas {
         this.nombreAdulto = nombreAdulto;
     }
 
-    public String getTelefonoAdulto() {
-        return telefonoAdulto;
+    public String getNumCelularAdulto() {
+        return numCelularAdulto;
     }
 
-    public void setTelefonoAdulto(String telefonoAdulto) {
-        this.telefonoAdulto = telefonoAdulto;
+    public void setNumCelularAdulto(String numCelularAdulto) {
+        this.numCelularAdulto = numCelularAdulto;
     }
 
     public List<SolicitudTutoria> getSolicitudes() {

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.PersonasDTO;
 import proyecto.web_app_educativa.models.Personas;
-import proyecto.web_app_educativa.models.Usuarios;
 import proyecto.web_app_educativa.repositories.PersonasRepository;
 import proyecto.web_app_educativa.repositories.UsuariosRepository;
 
@@ -37,7 +36,6 @@ public class PersonasService {
     }
 
     public Personas crearPersona(PersonasDTO personaDTO, int id) {
-        Usuarios usuario = usuariosRepository.findById(id).orElse(null);
 
         Personas persona = new Personas(
                 personaDTO.getNombre(),
@@ -46,7 +44,6 @@ public class PersonasService {
                 personaDTO.getEstado()
         );
 
-        persona.agregarUsuario(usuario);
         return personasRepository.save(persona);
     }
 

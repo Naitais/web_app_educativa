@@ -5,10 +5,13 @@ import org.springframework.stereotype.Service;
 import proyecto.web_app_educativa.DTOs.TutoriasDTO;
 import proyecto.web_app_educativa.models.Perfiles;
 import proyecto.web_app_educativa.models.Tutorias;
+import proyecto.web_app_educativa.models.Dia;
 import proyecto.web_app_educativa.repositories.PerfilesRepository;
 import proyecto.web_app_educativa.repositories.TutoriasRepository;
 import proyecto.web_app_educativa.repositories.CategoriaRepository;
+import proyecto.web_app_educativa.repositories.DiaRepository;
 import proyecto.web_app_educativa.models.Categoria;
+import proyecto.web_app_educativa.models.DiasDeLaSemana;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,13 +22,14 @@ public class TutoriasService {
     private final TutoriasRepository tutoriasRepository;
     private final PerfilesRepository perfilesRepository;
     private final CategoriaRepository categoriaRepository;
+    private final DiaRepository diaRepository;
 
     @Autowired
-
-    public TutoriasService(TutoriasRepository tutoriasRepository, PerfilesRepository perfilesRepository, CategoriaRepository categoriaRepository) {
+    public TutoriasService(TutoriasRepository tutoriasRepository, PerfilesRepository perfilesRepository, CategoriaRepository categoriaRepository, DiaRepository diaRepository) {
         this.tutoriasRepository = tutoriasRepository;
         this.perfilesRepository = perfilesRepository;
         this.categoriaRepository = categoriaRepository;
+        this.diaRepository = diaRepository;
     }
 
     public List<TutoriasDTO> getTutoriasActivas() {
@@ -75,14 +79,25 @@ public class TutoriasService {
             }
         }
 
+        List<Dia> diasEntities = (tutoriaDTO.getDias() != null && !tutoriaDTO.getDias().isEmpty())
+                ? tutoriaDTO.getDias().stream().map(nombre -> {
+                    DiasDeLaSemana diaEnum = DiasDeLaSemana.fromDisplayName(nombre);
+                    Dia dia = diaRepository.findByNombre(diaEnum);
+                    if (dia == null) {
+                        dia = new Dia(diaEnum);
+                        diaRepository.save(dia);
+                    }
+                    return dia;
+                }).collect(Collectors.toList())
+                : new java.util.ArrayList<>();
+
         Tutorias tutoria = new Tutorias(
 
                 tutoriaDTO.getEdadMinima(),
                 tutoriaDTO.getHorarioDesde(),
                 tutoriaDTO.getHorarioHasta(),
                 tutoriaDTO.getFechaDesde(),
-                tutoriaDTO.getFechaHasta(),
-                tutoriaDTO.getDias(),
+                diasEntities,
                 tutoriaDTO.getTipoUbicaciones(),
                 categoria,
                 tutoriaDTO.getMateriales(),
@@ -117,8 +132,19 @@ public class TutoriasService {
         tutoriaExistente.setHorarioDesde(tutoriaDTO.getHorarioDesde());
         tutoriaExistente.setHorarioHasta(tutoriaDTO.getHorarioHasta());
         tutoriaExistente.setFechaDesde(tutoriaDTO.getFechaDesde());
-        tutoriaExistente.setFechaHasta(tutoriaDTO.getFechaHasta());
-        tutoriaExistente.setDias(tutoriaDTO.getDias());
+        
+        List<Dia> diasEntities = (tutoriaDTO.getDias() != null && !tutoriaDTO.getDias().isEmpty())
+                ? tutoriaDTO.getDias().stream().map(nombre -> {
+                    DiasDeLaSemana diaEnum = DiasDeLaSemana.fromDisplayName(nombre);
+                    Dia dia = diaRepository.findByNombre(diaEnum);
+                    if (dia == null) {
+                        dia = new Dia(diaEnum);
+                        diaRepository.save(dia);
+                    }
+                    return dia;
+                }).collect(Collectors.toList())
+                : new java.util.ArrayList<>();
+        tutoriaExistente.setDias(diasEntities);
         tutoriaExistente.setTipoUbicaciones(tutoriaDTO.getTipoUbicaciones());
         tutoriaExistente.setCategoria(categoria);
         tutoriaExistente.setMateriales(tutoriaDTO.getMateriales());

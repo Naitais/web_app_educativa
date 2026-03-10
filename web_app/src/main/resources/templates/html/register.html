@@ -4,57 +4,7 @@
     <meta charset="UTF-8">
     <title>Registro - Tatutor</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .register-container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .error-message {
-            background-color: #ffdddd;
-            color: #d8000c;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .btn-submit {
-            width: 100%;
-            background-color: #ffcc00;
-            color: #333;
-            border: none;
-            padding: 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .btn-submit:hover {
-            background-color: #e6b800;
-        }
-        .login-link {
-            text-align: center;
-            margin-top: 20px;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
 </head>
 <body>
 
@@ -65,7 +15,7 @@
         <p th:text="${error}">Error message here</p>
     </div>
 
-    <!-- action goes to /register because we defined that in RegisterController -->
+    <!-- la acción va a /register porque lo definimos en RegisterController -->
     <form th:action="@{/register}" th:object="${usuario}" method="post">
         
         <div class="form-group">
@@ -113,14 +63,60 @@
             </select>
         </div>
 
+        <!-- Parent info for minor students -->
+        <div id="parentInfoSection" style="display: none; border: 2px solid #f39c12; border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #fef9e7;">
+            <p style="margin-top: 0; font-weight: bold; color: #e67e22;">⚠ Al ser menor de edad, debes proporcionar los datos de un adulto responsable:</p>
+            <div class="form-group">
+                <label for="nombreAdulto">Nombre del Adulto Responsable:</label>
+                <input type="text" id="nombreAdulto" th:field="*{nombreAdulto}" placeholder="Nombre completo del adulto">
+            </div>
+            <div class="form-group">
+                <label for="numCelularAdulto">Celular del Adulto Responsable:</label>
+                <input type="text" id="numCelularAdulto" th:field="*{numCelularAdulto}" placeholder="Ej: 1122334455">
+            </div>
+        </div>
+
         <button type="submit" class="btn-submit">Crear cuenta</button>
         
     </form>
     
     <a th:href="@{/login}" class="login-link">¿Ya tienes cuenta? Inicia sesión aquí</a>
-<footer id="footer">
-    <p>&copy; 2026 Tatutor. Todos los derechos reservados.</p>
-</footer>
+
+    </div>
+
+<script>
+    function checkMinorStatus() {
+        var rol = document.getElementById('rol').value;
+        var fechaNac = document.getElementById('fechaNacimiento').value;
+        var section = document.getElementById('parentInfoSection');
+        var nombreAdulto = document.getElementById('nombreAdulto');
+        var numCelularAdulto = document.getElementById('numCelularAdulto');
+        
+        if (rol === 'ROL_ESTUDIANTE' && fechaNac) {
+            var birthDate = new Date(fechaNac);
+            var today = new Date();
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            if (age < 18) {
+                section.style.display = 'block';
+                nombreAdulto.required = true;
+                numCelularAdulto.required = true;
+                return;
+            }
+        }
+        section.style.display = 'none';
+        nombreAdulto.required = false;
+        numCelularAdulto.required = false;
+    }
+    
+    document.getElementById('rol').addEventListener('change', checkMinorStatus);
+    document.getElementById('fechaNacimiento').addEventListener('change', checkMinorStatus);
+    // Run on page load in case values are pre-filled (e.g. after validation error)
+    checkMinorStatus();
+</script>
 
 </body>
 </html>

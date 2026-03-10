@@ -36,7 +36,7 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null) {
+            if (usuario != null) {
                 // obtengo el usuario logeado y lo agrego al contexto (model)
                 model.addAttribute("usuario", usuario);
 
@@ -46,7 +46,7 @@ public class PerfilController {
 
                     // si el usuario es un tutor agrego variable de sesion true
                     model.addAttribute("esTutor", true);
-                    Personas persona = usuario.getPersona();
+                    Personas persona = usuario;
 
                     if (persona.getPerfil() != null) {
 
@@ -67,16 +67,16 @@ public class PerfilController {
     @GetMapping("/perfil/{id}")
     public String perfilTutorPublico(@PathVariable int id, Model model, Principal principal) {
         
-        // 1. Fetch the exact public profile DTO securely
+        // 1. Obtener el DTO exacto del perfil público de forma segura
         PerfilesDTO perfilPublico = perfilesService.findPerfilById(id);
         
         if (perfilPublico == null) {
-            return "redirect:/home"; // fail safe if user queries random ID
+            return "redirect:/home"; // fail safe si el usuario consulta un ID aleatorio
         }
         
         model.addAttribute("perfilPublico", perfilPublico);
 
-        // 2. Preserve current user navbar UI state if someone is logged in while browsing this public profile
+        // 2. Preservar el estado de la UI del navbar para el usuario actual si alguien está logueado mirando este perfil
         if (principal != null) {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
@@ -88,18 +88,18 @@ public class PerfilController {
                     model.addAttribute("esTutor", false);
                 }
                 
-                // Add current person id for preventing self-application
-                model.addAttribute("currentUsuarioPersonaId", usuario.getPersona() != null ? usuario.getPersona().getId() : null);
+                // Cargar el id de la persona actual para evitar auto-solicitudes
+                model.addAttribute("currentUsuarioPersonaId", usuario.getId());
 
-                // Add list of tutoria IDs the user has already applied to
+                // Cargar lista de IDs de tutorías a las que el usuario ya aplicó
                 java.util.List<Integer> tutoriasSolicitadasIds = new java.util.ArrayList<>();
                 boolean puedeComentar = false;
 
-                if (usuario.getPersona() != null && usuario.getPersona().getSolicitudes() != null) {
-                    for (proyecto.web_app_educativa.models.SolicitudTutoria sol : usuario.getPersona().getSolicitudes()) {
+                if (usuario.getSolicitudes() != null) {
+                    for (proyecto.web_app_educativa.models.SolicitudTutoria sol : usuario.getSolicitudes()) {
                         tutoriasSolicitadasIds.add(sol.getTutoria().getId());
                         
-                        // Check if this student has an ACCEPTED request for this specific tutor's profile
+                        // Comprobar si el alumno tiene una solicitud ACEPTADA para el perfil de este tutor
                         if (sol.getEstado() == EstadoSolicitud.ACEPTADA && 
                             sol.getTutoria().getPerfil() != null && 
                             sol.getTutoria().getPerfil().getId() == id) {
@@ -112,7 +112,7 @@ public class PerfilController {
             }
         }
         
-        // Return dedicated read-only screen
+        // Retornar pantalla dedicada de solo lectura
         return "html/public-perfil.html";
     }
 
@@ -122,10 +122,10 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_PROFESOR) {
+            if (usuario != null && usuario.getRol() == Roles.ROL_PROFESOR) {
                 model.addAttribute("usuario", usuario);
                 model.addAttribute("esTutor", true);
-                Personas persona = usuario.getPersona();
+                Personas persona = usuario;
                 if (persona.getPerfil() != null) {
                     model.addAttribute("perfil", persona.getPerfil());
                 }
@@ -138,7 +138,7 @@ public class PerfilController {
     @PostMapping("/perfil/primera-vez")
     public String crearPerfilPrimeraVez(
             @RequestParam("biografia") String biografia,
-            @RequestParam("foto") String foto,
+            @RequestParam(value = "foto", required = false) String foto,
             @RequestParam(value = "expTitulo", required = false) String expTitulo,
             @RequestParam(value = "expInstitucion", required = false) String expInstitucion,
             @RequestParam(value = "expFechaDesde", required = false) String expFechaDesdeStr,
@@ -152,10 +152,13 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_PROFESOR) {
-                // Prepare DTO
+            if (usuario != null && usuario.getRol() == Roles.ROL_PROFESOR) {
+                // Prepara el DTO
                 PerfilesDTO nuevoPerfil = new PerfilesDTO();
                 nuevoPerfil.setBiografia(biografia);
+                if (foto == null || foto.trim().isEmpty()) {
+                    foto = "https://tse2.mm.bing.net/th/id/OIP.Z8d1mi6B_6j2JbElEPl-QQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3";
+                }
                 nuevoPerfil.setFoto(foto);
                 nuevoPerfil.setEstado(true);
                 nuevoPerfil.setRating(0.0);
@@ -180,11 +183,14 @@ public class PerfilController {
                 if (certNombre != null && !certNombre.trim().isEmpty()) {
                     cert = new Certificado();
                     cert.setNombre(certNombre);
+                    if (certUrl == null || certUrl.trim().isEmpty()) {
+                        certUrl = "https://tse1.mm.bing.net/th/id/OIP.BFTeIZVBj7s4XdkpnOk1kwHaFm?rs=1&pid=ImgDetMain&o=7&rm=3";
+                    }
                     cert.setUrlOArchivo(certUrl);
                 }
 
-                // Save using PerfilesService
-                perfilesService.crearPerfilConDetalles(nuevoPerfil, usuario.getPersona().getId(), exp, cert);
+                // Guardar usando PerfilesService
+                perfilesService.crearPerfilConDetalles(nuevoPerfil, usuario.getId(), exp, cert);
             }
         }
         return "redirect:/home";
@@ -193,7 +199,7 @@ public class PerfilController {
     @PostMapping("/perfil/editar")
     public String editarPerfil(
             @RequestParam("biografia") String biografia,
-            @RequestParam("foto") String foto,
+            @RequestParam(value = "foto", required = false) String foto,
             @RequestParam(value = "expTitulo", required = false) String expTitulo,
             @RequestParam(value = "expInstitucion", required = false) String expInstitucion,
             @RequestParam(value = "expFechaDesde", required = false) String expFechaDesdeStr,
@@ -207,10 +213,13 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPersona().getPerfil() != null) {
-                // Prepare DTO for bio/foto
+            if (usuario != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPerfil() != null) {
+                // Prepara el DTO para bio/foto
                 PerfilesDTO updateDto = new PerfilesDTO();
                 updateDto.setBiografia(biografia);
+                if (foto == null || foto.trim().isEmpty()) {
+                    foto = "https://tse2.mm.bing.net/th/id/OIP.Z8d1mi6B_6j2JbElEPl-QQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3";
+                }
                 updateDto.setFoto(foto);
                 
                 // Preparar Experiencia nueva si el usuario la manda
@@ -233,14 +242,17 @@ public class PerfilController {
                 if (certNombre != null && !certNombre.trim().isEmpty()) {
                     cert = new Certificado();
                     cert.setNombre(certNombre);
+                    if (certUrl == null || certUrl.trim().isEmpty()) {
+                        certUrl = "https://tse1.mm.bing.net/th/id/OIP.BFTeIZVBj7s4XdkpnOk1kwHaFm?rs=1&pid=ImgDetMain&o=7&rm=3";
+                    }
                     cert.setUrlOArchivo(certUrl);
                 }
 
-                int perfilId = usuario.getPersona().getPerfil().getId();
+                int perfilId = usuario.getPerfil().getId();
                 perfilesService.actualizarPerfil(perfilId, updateDto, exp, cert);
             }
         }
-        return "redirect:/perfil"; // redirect back to the profile page to see the edits
+        return "redirect:/perfil"; // Redirigir de nuevo a la página del perfil para ver las ediciones
     }
 
     @PostMapping("/perfil/{id}/comentar")
@@ -252,17 +264,17 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_ESTUDIANTE) {
-                // We trust the frontend is only showing the form if puedeComentar is true, 
-                // but ideally we would re-run the Validation logic here to prevent POST spoofing.
-                // For now, we perform the add.
-                perfilesService.agregarComentario(id, usuario.getPersona().getId(), puntaje, comentario);
+            if (usuario != null && usuario.getRol() == Roles.ROL_ESTUDIANTE) {
+                // Confiamos en que el front-end sólo muestre el formulario si puedeComentar es true. 
+                // Lo ideal sería volver a ejecutar la lógica de validación
+
+                perfilesService.agregarComentario(id, usuario.getId(), puntaje, comentario);
             }
         }
         return "redirect:/perfil/" + id;
     }
 
-    // --- Endpoints para editar/eliminar Experiencia y Certificados ---
+    // endpoints para editar
 
     @PostMapping("/perfil/experiencia/editar")
     public String editarExperiencia(
@@ -277,7 +289,7 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPersona().getPerfil() != null) {
+            if (usuario != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPerfil() != null) {
                 Experiencia exp = new Experiencia();
                 exp.setId(expId);
                 exp.setTitulo(titulo);
@@ -290,7 +302,7 @@ public class PerfilController {
                 }
                 exp.setDescripcion(descripcion);
 
-                int perfilId = usuario.getPersona().getPerfil().getId();
+                int perfilId = usuario.getPerfil().getId();
                 perfilesService.editarExperiencia(perfilId, exp);
             }
         }
@@ -303,8 +315,8 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPersona().getPerfil() != null) {
-                int perfilId = usuario.getPersona().getPerfil().getId();
+            if (usuario != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPerfil() != null) {
+                int perfilId = usuario.getPerfil().getId();
                 perfilesService.eliminarExperiencia(perfilId, expId);
             }
         }
@@ -315,19 +327,22 @@ public class PerfilController {
     public String editarCertificado(
             @RequestParam("id") int certId,
             @RequestParam("nombre") String nombre,
-            @RequestParam("urlOArchivo") String urlOArchivo,
+            @RequestParam(value = "urlOArchivo", required = false) String urlOArchivo,
             Principal principal) {
         if (principal != null) {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPersona().getPerfil() != null) {
+            if (usuario != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPerfil() != null) {
                 Certificado cert = new Certificado();
                 cert.setId(certId);
                 cert.setNombre(nombre);
+                if (urlOArchivo == null || urlOArchivo.trim().isEmpty()) {
+                    urlOArchivo = "https://tse1.mm.bing.net/th/id/OIP.BFTeIZVBj7s4XdkpnOk1kwHaFm?rs=1&pid=ImgDetMain&o=7&rm=3";
+                }
                 cert.setUrlOArchivo(urlOArchivo);
 
-                int perfilId = usuario.getPersona().getPerfil().getId();
+                int perfilId = usuario.getPerfil().getId();
                 perfilesService.editarCertificado(perfilId, cert);
             }
         }
@@ -340,8 +355,8 @@ public class PerfilController {
             String email = principal.getName();
             Usuarios usuario = usuariosService.getUsuarioPorEmail(email);
 
-            if (usuario != null && usuario.getPersona() != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPersona().getPerfil() != null) {
-                int perfilId = usuario.getPersona().getPerfil().getId();
+            if (usuario != null && usuario.getRol() == Roles.ROL_PROFESOR && usuario.getPerfil() != null) {
+                int perfilId = usuario.getPerfil().getId();
                 perfilesService.eliminarCertificado(perfilId, certId);
             }
         }

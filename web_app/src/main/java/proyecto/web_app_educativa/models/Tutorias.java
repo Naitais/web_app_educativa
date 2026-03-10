@@ -23,10 +23,13 @@ public class Tutorias {
     private LocalTime horarioHasta;
     private Boolean estado;
     private LocalDate fechaDesde;
-    private LocalDate fechaHasta;
-    
-    @ElementCollection
-    private List<String> dias;
+    @ManyToMany
+    @JoinTable(
+      name = "tutorias_dias", 
+      joinColumns = @JoinColumn(name = "tutoria_id"), 
+      inverseJoinColumns = @JoinColumn(name = "dia_id")
+    )
+    private List<Dia> dias = new ArrayList<>();
     
     private TiposUbicaciones tipoUbicaciones;
     
@@ -50,7 +53,7 @@ public class Tutorias {
     private Perfiles perfil;
 
     public Tutorias(int edadMinima, LocalTime horarioDesde, LocalTime horarioHasta,
-            LocalDate fechaDesde, LocalDate fechaHasta, List<String> dias, TiposUbicaciones tipoUbicaciones,
+            LocalDate fechaDesde, List<Dia> dias, TiposUbicaciones tipoUbicaciones,
             Categoria categoria, String materiales, String ubicacion, Boolean estado,
             String descripcion, TiposPagos tipoPago, Modalidades modalidad, double valorPorClase) {
 
@@ -59,7 +62,6 @@ public class Tutorias {
         this.horarioHasta = horarioHasta;
         this.estado = (estado != null) ? estado : true; // si esta null, pongo true sino entra estado
         this.fechaDesde = LocalDate.now();
-        this.fechaHasta = (fechaHasta != null) ? fechaHasta : null; // si esta null, pongo true sino entra estado
         this.dias = dias;
         this.tipoUbicaciones = tipoUbicaciones;
         this.categoria = categoria;
@@ -120,19 +122,11 @@ public class Tutorias {
         this.fechaDesde = fechaDesde;
     }
 
-    public LocalDate getFechaHasta() {
-        return fechaHasta;
-    }
-
-    public void setFechaHasta(LocalDate fechaHasta) {
-        this.fechaHasta = fechaHasta;
-    }
-
-    public List<String> getDias() {
+    public List<Dia> getDias() {
         return dias;
     }
 
-    public void setDias(List<String> dias) {
+    public void setDias(List<Dia> dias) {
         this.dias = dias;
     }
 

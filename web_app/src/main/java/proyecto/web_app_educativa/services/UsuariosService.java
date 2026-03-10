@@ -24,7 +24,7 @@ public class UsuariosService {
     }
 
     public List<UsuariosDTO> getUsuariosActivos() {
-        return usuariosRepository.findByEstado(UsuarioEstados.ACTIVO).stream()
+        return usuariosRepository.findByEstadoUsuario(UsuarioEstados.ACTIVO).stream()
                 .map(UsuariosDTO::new)
                 .collect(Collectors.toList());
     }
@@ -40,7 +40,12 @@ public class UsuariosService {
             throw new IllegalArgumentException("El email provisto no es válido.");
         }
         
-        // Validate Password Constraints
+        // reviso dup email
+        if (usuariosRepository.findByEmail(usuariosDTO.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("El email ingresado ya se encuentra registrado.");
+        }
+        
+        // valido password
         String password = usuariosDTO.getContraseña();
         if (password == null || password.length() < 8 || 
             !password.matches(".*[A-Z].*") || 
@@ -50,12 +55,12 @@ public class UsuariosService {
             throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.");
         }
         
-        // Confirm Password Match
+        //valido password que sean iguales
         if (!password.equals(usuariosDTO.getConfirmContraseña())) {
             throw new IllegalArgumentException("Las contraseñas no coinciden.");
         }
         
-        // Validate age for Tutor
+        // valido edad tutor
         if (usuariosDTO.getRol() == proyecto.web_app_educativa.models.Roles.ROL_PROFESOR) {
              if (usuariosDTO.getFechaNacimiento() != null) {
                  int age = java.time.Period.between(usuariosDTO.getFechaNacimiento(), java.time.LocalDate.now()).getYears();
@@ -67,39 +72,50 @@ public class UsuariosService {
              }
         }
 
+        // valido que entre la info edl adulto sea obligatoria
+        if (usuariosDTO.getRol() == proyecto.web_app_educativa.models.Roles.ROL_ESTUDIANTE && usuariosDTO.getFechaNacimiento() != null) {
+            int age = java.time.Period.between(usuariosDTO.getFechaNacimiento(), java.time.LocalDate.now()).getYears();
+            if (age < 18) {
+                if (usuariosDTO.getNombreAdulto() == null || usuariosDTO.getNombreAdulto().trim().isEmpty()) {
+                    throw new IllegalArgumentException("El nombre del adulto responsable es obligatorio para menores de edad.");
+                }
+                if (usuariosDTO.getNumCelularAdulto() == null || usuariosDTO.getNumCelularAdulto().trim().isEmpty()) {
+                    throw new IllegalArgumentException("El número de celular del adulto responsable es obligatorio para menores de edad.");
+                }
+            }
+        }
+
         String contraseñaCodificada = passwordEncoder.encode(usuariosDTO.getContraseña());
 
-        // Create Personas object
-        proyecto.web_app_educativa.models.Personas nuevaPersona = new proyecto.web_app_educativa.models.Personas(
+        Usuarios usuario = new Usuarios(
                 usuariosDTO.getNombre(),
                 usuariosDTO.getApellido(),
                 usuariosDTO.getNumCelular(),
-                true // estado activo
-        );
-        nuevaPersona.setFechaNacimiento(usuariosDTO.getFechaNacimiento());
-
-        Usuarios usuario = new Usuarios(
                 usuariosDTO.getUltimaSesion(),
                 usuariosDTO.getEmail(),
                 contraseñaCodificada,
                 usuariosDTO.getEstado(),
                 usuariosDTO.getRol());
                 
-        // Link Personas and Usuario
-        usuario.setPersona(nuevaPersona);
+        usuario.setFechaNacimiento(usuariosDTO.getFechaNacimiento());
+        usuario.setNombreAdulto(usuariosDTO.getNombreAdulto());
+        usuario.setNumCelularAdulto(usuariosDTO.getNumCelularAdulto());
         
         return usuariosRepository.save(usuario);
     }
 
     public Usuarios actualizarUsuario(int id, UsuariosDTO usuariosDTO) {
 
-        Usuarios usuario = new Usuarios(
-                usuariosDTO.getUltimaSesion(),
-                usuariosDTO.getEmail(),
-                usuariosDTO.getContraseña(),
-                usuariosDTO.getEstado(),
-                usuariosDTO.getRol());
-        usuario.setId(id);
+        Usuarios usuario = usuariosRepository.findById(id).orElseThrow();
+        usuario.setultimaSesion(usuariosDTO.getUltimaSesion());
+        usuario.setEmail(usuariosDTO.getEmail());
+        usuario.setContraseña(usuariosDTO.getContraseña());
+        usuario.setEstadoUsuario(usuariosDTO.getEstado());
+        usuario.setRol(usuariosDTO.getRol());
+        usuario.setNombre(usuariosDTO.getNombre());
+        usuario.setApellido(usuariosDTO.getApellido());
+        usuario.setNumCelular(usuariosDTO.getNumCelular());
+
         return usuariosRepository.save(usuario);
     }
 

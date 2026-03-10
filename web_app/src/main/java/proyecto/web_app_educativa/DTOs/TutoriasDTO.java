@@ -15,7 +15,6 @@ public class TutoriasDTO {
     private LocalTime horarioHasta;
     private Boolean estado;
     private LocalDate fechaDesde;
-    private LocalDate fechaHasta;
     private List<String> dias;
     private TiposUbicaciones tipoUbicaciones;
     private String disciplina;
@@ -43,8 +42,9 @@ public class TutoriasDTO {
         this.horarioHasta = tutoria.getHorarioHasta();
         this.estado = tutoria.getEstado();
         this.fechaDesde = tutoria.getFechaDesde();
-        this.fechaHasta = tutoria.getFechaHasta();
-        this.dias = tutoria.getDias();
+        if (tutoria.getDias() != null) {
+            this.dias = tutoria.getDias().stream().map(d -> d.getNombre().getDisplayName()).collect(Collectors.toList());
+        }
         this.tipoUbicaciones = tutoria.getTipoUbicaciones();
         this.disciplina = tutoria.getCategoria() != null ? tutoria.getCategoria().getNombre() : null;
         this.materiales = tutoria.getMateriales();
@@ -97,10 +97,6 @@ public class TutoriasDTO {
         return fechaDesde;
     }
 
-    public LocalDate getFechaHasta() {
-        return fechaHasta;
-    }
-
     public List<String> getDias() {
         return dias;
     }
@@ -139,6 +135,18 @@ public class TutoriasDTO {
 
     public Modalidades getModalidad() {
         return modalidad;
+    }
+
+    public String getModalidadNombre() {
+        return modalidad != null ? modalidad.getDisplayName() : null;
+    }
+
+    public String getTipoUbicacionesNombre() {
+        return tipoUbicaciones != null ? tipoUbicaciones.getDisplayName() : null;
+    }
+
+    public String getTipoPagoNombre() {
+        return tipoPago != null ? tipoPago.getDisplayName() : null;
     }
 
     public double getArancel() {

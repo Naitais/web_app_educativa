@@ -15,7 +15,7 @@ public class ComentarioPerfil {
     private Perfiles perfil;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "autor_id", nullable = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Personas autor;
 
     private int puntaje; // 1 to 5 stars

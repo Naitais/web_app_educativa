@@ -4,73 +4,7 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .tutoria-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-        .tutoria-card:hover { transform: translateY(-3px); }
-        .status {
-            display: inline-block; padding: 5px 10px; border-radius: 20px;
-            font-size: 0.8em; font-weight: bold; margin-bottom: 15px;
-        }
-        .disponible { background-color: #d4edda; color: #155724; }
-        .no-disponible { background-color: #f8d7da; color: #721c24; }
-        .price { font-size: 1.5em; font-weight: bold; color: #2ecc71; margin-top: 15px; }
-        .rating-badge {
-            display: inline-block;
-            background: #ffcc00;
-            color: #333;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-        .dias-badge {
-            display: inline-block;
-            background: #eee;
-            color: #555;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .modal-content h2 { margin-top: 0; color: #d19f00; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
-        }
-        .btn-submit {
-            background-color: #ffcc00; color: #333; border: none; padding: 10px 15px;
-            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
-        }
-        .btn-submit:hover { background-color: #e6b800; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
 
@@ -109,9 +43,9 @@
                     <label style="font-size: 14px; margin-top: 10px;">Lugar de Clases:
                         <select name="tipoUbicacion" style="width: 100%; padding: 5px; margin-top: 3px; border-radius: 4px;">
                             <option value="">Cualquiera</option>
-                            <option value="A_DOMICILIO" th:selected="${param.tipoUbicacion != null and param.tipoUbicacion[0] == 'A_DOMICILIO'}">A Domicilio</option>
-                            <option value="DOMICILIO_DEL_TUTOR" th:selected="${param.tipoUbicacion != null and param.tipoUbicacion[0] == 'DOMICILIO_DEL_TUTOR'}">En Casa del Tutor</option>
-                            <option value="DOMICILIO_DEL_ESTUDIANTE" th:selected="${param.tipoUbicacion != null and param.tipoUbicacion[0] == 'DOMICILIO_DEL_ESTUDIANTE'}">Mi Domicilio</option>
+                            <option value="DOMICILIO_TUTOR" th:selected="${param.tipoUbicacion != null and param.tipoUbicacion[0] == 'DOMICILIO_TUTOR'}">Domicilio del tutor</option>
+                            <option value="DOMICILIO_ESTUDIANTE" th:selected="${param.tipoUbicacion != null and param.tipoUbicacion[0] == 'DOMICILIO_ESTUDIANTE'}">Domicilio del estudiante</option>
+                            <option value="OTRO" th:selected="${param.tipoUbicacion != null and param.tipoUbicacion[0] == 'OTRO'}">Otro</option>
                         </select>
                     </label>
                     <label style="font-size: 14px; margin-top: 10px;">Horario (Desde):
@@ -132,7 +66,7 @@
         <li th:if="${esTutor}">
             <a th:href="@{/mis-tutorias}">Mis Tutorías</a>
         </li>
-        <li th:unless="${esTutor}">
+        <li>
             <a th:href="@{/mis-solicitudes}">Mis Solicitudes</a>
         </li>
         <li>
@@ -145,7 +79,7 @@
 </nav>
 
 <div id="contenedorPrincipal">
-    <!-- Success/Error Messages -->
+    <!-- Mensajes de Éxito/Error -->
     <div th:if="${mensajeExito}" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb; text-align: center; font-weight: bold;">
         <span th:text="${mensajeExito}">Éxito</span>
     </div>
@@ -156,7 +90,7 @@
     <h3>Resultados de Búsqueda</h3>
     
     <div id="contenedorFeed">
-        <!-- Tutorias Results -->
+        <!-- Resultados de Tutorías -->
         <div th:if="${tutorias != null and !tutorias.isEmpty()}">
             <h4 style="border-bottom: 2px solid #ccc; padding-bottom: 5px;">Tutorías Encontradas</h4>
             <div class="tutorias-grid">
@@ -171,7 +105,7 @@
                             <span th:if="${tutoria.dias == null or tutoria.dias.isEmpty()}" class="dias-badge">No especificado</span>
                         </div>
                     </div>
-                    <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
+                    <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad.displayName}">Modalidad</span></p>
                     <p><strong>Tutor:</strong> <span th:text="${tutoria.tutorNombre + ' ' + tutoria.tutorApellido}">Tutor Name</span></p>
                     <div class="price">
                         $<span th:text="${tutoria.arancel}">Arancel</span>
@@ -201,14 +135,14 @@
             </div>
         </div>
 
-        <!-- No Results Fallback -->
+        <!-- Mensaje cuando no hay resultados -->
         <div th:if="${tutorias == null or tutorias.isEmpty()}">
             <p style="color: #666; font-style: italic;">No se encontraron resultados para su búsqueda.</p>
         </div>
     </div>
 </div>
 
-<!-- Profile Completion Modal for First-Time Tutors -->
+<!-- Modal de Completar Perfil para Nuevos Tutores -->
 <div th:if="${mostrarModalPerfil}" id="profileModal" class="modal-overlay">
     <div class="modal-content">
         <h2>Completa tu Perfil de Tutor</h2>
@@ -287,7 +221,7 @@
         <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div>
                 <p style="margin: 0 0 5px 0; color: #555;"><strong>Modalidad:</strong> <span id="modalModalidad">...</span></p>
-                <p style="margin: 0 0 5px 0; color: #555;"><strong id="modalTipoUbicacionLabel">Ubicación:</strong> <span id="modalUbicacion">...</span></p>
+                <p style="margin: 0 0 5px 0; color: #555;"><strong>Ubicación:</strong> <span id="modalTipoUbicacionLabel">...</span></p>
                 <p style="margin: 0 0 5px 0; color: #555;"><strong>Horario:</strong> <span id="modalHorario">...</span></p>
                 <p style="margin: 0 0 5px 0; color: #555;"><strong>Días:</strong> <span id="modalDias">...</span></p>
             </div>
@@ -329,90 +263,6 @@
     }
 /*]]>*/
 </script>
-<script>
-function abrirModalTutoria(btn) {
-    var tutoriaId = parseInt(btn.getAttribute('data-id'));
-    document.getElementById('modalTutoriaId').value = tutoriaId;
-    document.getElementById('modalDisciplina').innerText = btn.getAttribute('data-disciplina');
-    document.getElementById('modalTutorNombre').innerText = btn.getAttribute('data-tutornombre');
-    document.getElementById('modalTutorRating').innerText = btn.getAttribute('data-tutorrating');
-    document.getElementById('modalTutorBio').innerText = btn.getAttribute('data-tutorbio');
-    document.getElementById('modalDescripcion').innerText = btn.getAttribute('data-descripcion');
-    document.getElementById('modalDias').innerText = btn.getAttribute('data-dias') || 'No especificado';
-    document.getElementById('modalModalidad').innerText = btn.getAttribute('data-modalidad');
-    document.getElementById('modalArancel').innerText = btn.getAttribute('data-arancel');
-    document.getElementById('modalEdad').innerText = btn.getAttribute('data-edadminima') !== '0' ? btn.getAttribute('data-edadminima') + ' años' : 'Sin límite';
-    
-    var hDesde = btn.getAttribute('data-horariodesde');
-    var hHasta = btn.getAttribute('data-horariohasta');
-    document.getElementById('modalHorario').innerText = (hDesde && hHasta) ? hDesde + ' - ' + hHasta : 'A coordinar';
-    document.getElementById('modalMateriales').innerText = btn.getAttribute('data-materiales');
-
-    var tipoUbiMapping = {
-        'A_DOMICILIO': 'A Domicilio',
-        'DOMICILIO_DEL_TUTOR': 'Locación del Tutor',
-        'DOMICILIO_DEL_ESTUDIANTE': 'Mi Domicilio'
-    };
-    var tipoUbiStr = btn.getAttribute('data-tipoubicacion');
-    var ubiLabel = tipoUbiMapping[tipoUbiStr] || 'Ubicación';
-    document.getElementById('modalTipoUbicacionLabel').innerText = ubiLabel + ':';
-    // If virtual, we can either hide or just set it as 'Virtual' instead of the specific location
-    if (btn.getAttribute('data-modalidad') === 'VIRTUAL') {
-        document.getElementById('modalUbicacion').innerText = 'Plataforma Virtual (A coordinar)';
-        document.getElementById('modalTipoUbicacionLabel').innerText = 'Plataforma:';
-    } else {
-        document.getElementById('modalUbicacion').innerText = btn.getAttribute('data-ubicacion');
-    }
-    
-    var tipoPagoMapping = {
-        'POR_HORA': 'por hora',
-        'POR_CLASE': 'por clase',
-        'POR_SEMANA': 'por semana',
-        'POR_MES': 'por mes'
-    };
-    var tipoPagoStr = btn.getAttribute('data-tipopago');
-    document.getElementById('modalTipoPago').innerText = tipoPagoMapping[tipoPagoStr] || 'por clase';
-    
-    var tutorPersonaId = parseInt(btn.getAttribute('data-tutorpersonaid'));
-    
-    var verPerfilBtn = document.getElementById('modalVerPerfilBtn');
-    if (tutorPersonaId) {
-        verPerfilBtn.href = '/perfil/' + tutorPersonaId;
-        verPerfilBtn.style.display = 'inline-block';
-    } else {
-        verPerfilBtn.style.display = 'none';
-    }
-    
-    var btnSolicitar = document.getElementById('btnSolicitarTutoria');
-    var msgPropia = document.getElementById('msgTutoriaPropia');
-    
-    // Default styles
-    btnSolicitar.style.display = 'block';
-    btnSolicitar.innerText = 'Solicitar Tutoría';
-    btnSolicitar.disabled = false;
-    btnSolicitar.style.backgroundColor = '#ffcc00';
-    btnSolicitar.style.cursor = 'pointer';
-    msgPropia.style.display = 'none';
-        
-    // Prevent self-application
-    if (tutorPersonaId === currentUsuarioPersonaId) {
-        btnSolicitar.style.display = 'none';
-        msgPropia.innerText = 'Esta es tu propia tutoría';
-        msgPropia.style.display = 'block';
-    } else if (tutoriasSolicitadasIds.includes(tutoriaId)) {
-        // Prevent duplicate application
-        btnSolicitar.style.display = 'none';
-        msgPropia.innerText = 'Ya has solicitado esta tutoría';
-        msgPropia.style.display = 'block';
-        msgPropia.style.color = '#e67e22'; // Warning orange
-    }
-    
-    document.getElementById('tutoriaModal').style.display = 'flex';
-}
-
-function cerrarModalTutoria() {
-    document.getElementById('tutoriaModal').style.display = 'none';
-}
-</script>
+</footer>
 </body>
 </html>

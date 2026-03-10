@@ -80,26 +80,26 @@ public class HomeController {
                     model.addAttribute("tutorias", tutoriasService.getTutoriasActivas());
                 }
                 
-                // Add categorias for the filter dropdown
+                // agrego la categoria al contexto
                 model.addAttribute("categorias", categoriaRepository.findAll());
-                // Add current person id for preventing self-application
-                model.addAttribute("currentUsuarioPersonaId", usuario.getPersona() != null ? usuario.getPersona().getId() : null);
+                // agrego el id para verificar que no aplique a su propia tutoria
+                model.addAttribute("currentUsuarioPersonaId", usuario != null ? usuario.getId() : null);
 
-                // Add list of tutoria IDs the student has already applied to
+                // armo lista de tutorias ya solicitadas
                 java.util.List<Integer> tutoriasSolicitadasIds = new java.util.ArrayList<>();
-                if (usuario.getPersona() != null && usuario.getPersona().getSolicitudes() != null) {
-                    for (proyecto.web_app_educativa.models.SolicitudTutoria sol : usuario.getPersona().getSolicitudes()) {
+                if (usuario.getSolicitudes() != null) {
+                    for (proyecto.web_app_educativa.models.SolicitudTutoria sol : usuario.getSolicitudes()) {
                         tutoriasSolicitadasIds.add(sol.getTutoria().getId());
                     }
                 }
                 model.addAttribute("tutoriasSolicitadasIds", tutoriasSolicitadasIds);
 
-                // Add flags for Tutor privileges and First-Time Profile Completion
+                // agego bandero de tutor y si es la primera vez que inicia
                 boolean isTutor = (usuario.getRol() == proyecto.web_app_educativa.models.Roles.ROL_PROFESOR);
                 model.addAttribute("esTutor", isTutor);
                 
                 if (isTutor) {
-                    boolean hasProfile = (usuario.getPersona() != null && usuario.getPersona().getPerfil() != null);
+                    boolean hasProfile = (usuario.getPerfil() != null);
                     model.addAttribute("mostrarModalPerfil", !hasProfile);
                 }
             }

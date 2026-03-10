@@ -11,14 +11,16 @@ public class PersonasDTO {
     private Boolean estado;
 
     public PersonasDTO(Personas persona) {
-        this.id = persona.getId();
-        this.nombre = persona.getNombre();
-        this.apellido = persona.getApellido();
-        this.numCelular = persona.getNumCelular();
-        this.estado = persona.getEstado();
+        if (persona != null) {
+            this.id = persona.getId();
+            this.nombre = persona.getNombre();
+            this.apellido = persona.getApellido();
+            this.numCelular = persona.getNumCelular();
+            this.estado = persona.getEstado();
+        }
     }
 
-    public PersonasDTO(){}
+    public PersonasDTO() {}
 
     public int getId() {
         return id;

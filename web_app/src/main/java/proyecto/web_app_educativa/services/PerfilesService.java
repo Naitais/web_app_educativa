@@ -71,7 +71,7 @@ public class PerfilesService {
             persona.agregarPerfil(perfil);
             return perfilesRepository.save(perfil);
         }
-        return null; // Handle null implicitly or throw exception
+        return null; // Manejar nulos implícitamente o lanzar excepción
     }
 
     public Perfiles crearPerfilConDetalles(PerfilesDTO perfilDTO, int id, Experiencia exp, Certificado cert) {
@@ -102,15 +102,15 @@ public class PerfilesService {
     public Perfiles actualizarPerfil(int id, PerfilesDTO perfilDTO, Experiencia exp, Certificado cert) {
         Perfiles perfil = perfilesRepository.findById(id).orElse(null);
         if (perfil != null) {
-            // Update simple fields
+            // Actualizar campos simples
             perfil.setBiografia(perfilDTO.getBiografia());
             perfil.setFoto(perfilDTO.getFoto());
 
-            // Append new experience if provided
+            // Agregar nueva experiencia si es otorgada
             if (exp != null && exp.getTitulo() != null && !exp.getTitulo().trim().isEmpty()) {
                 perfil.agregarExperiencia(exp);
             }
-            // Append new certificate if provided
+            // Agregar nuevo certificado si es otorgado
             if (cert != null && cert.getNombre() != null && !cert.getNombre().trim().isEmpty()) {
                 perfil.agregarCertificado(cert);
             }
@@ -156,7 +156,7 @@ public class PerfilesService {
     public void eliminarExperiencia(int perfilId, int expId) {
         Experiencia exp = experienciaRepository.findById(expId).orElse(null);
         if (exp != null && exp.getPerfil() != null && exp.getPerfil().getId() == perfilId) {
-            // Remove from the profile collection to maintain cache integrity
+            // Remover desde la colección del perfil para mantener la integridad en el caché
             exp.getPerfil().getExperiencia().remove(exp);
             experienciaRepository.delete(exp);
         }

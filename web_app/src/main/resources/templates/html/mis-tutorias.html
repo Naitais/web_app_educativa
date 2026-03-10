@@ -29,12 +29,11 @@
         <p><strong>Descripción:</strong> <span th:text="${tutoria.descripcion}">Descripción</span></p>
         <p><strong>Edad Mínima:</strong> <span th:text="${tutoria.edadMinima}">Edad</span> años</p>
         <p><strong>Horarios:</strong> de <span th:text="${tutoria.horarioDesde}">00:00</span> a <span th:text="${tutoria.horarioHasta}">00:00</span></p>
-        <p><strong>Días:</strong> <span th:text="${tutoria.dias}">Días</span></p>
-        <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad}">Modalidad</span></p>
-        <p><strong>Tipo de Ubicación:</strong> <span th:text="${tutoria.tipoUbicaciones}">Tipo de Ubicación</span></p>
-        <p><strong>Ubicación Específica:</strong> <span th:text="${tutoria.ubicacion != null and !tutoria.ubicacion.isEmpty() ? tutoria.ubicacion : 'No aplica'}">Ubicación Específica</span></p>
+        <p><strong>Días:</strong> <span th:text="${#strings.listJoin(tutoria.dias.![nombre.displayName], ', ')}">Días</span></p>
+        <p><strong>Modalidad:</strong> <span th:text="${tutoria.modalidad.displayName}">Modalidad</span></p>
+        <p><strong>Tipo de Ubicación:</strong> <span th:text="${tutoria.tipoUbicaciones.displayName}">Tipo de Ubicación</span></p>
         <p><strong>Materiales requiridos:</strong> <span th:text="${tutoria.materiales != null and !tutoria.materiales.isEmpty() ? tutoria.materiales : 'Ninguno'}">Ninguno</span></p>
-        <p><strong>Tipo de Pago:</strong> <span th:text="${tutoria.tipoPago}">Tipo Pago</span></p>
+        <p><strong>Tipo de Pago:</strong> <span th:text="${tutoria.tipoPago.displayName}">Tipo Pago</span></p>
         <div class="price">
             $<span th:text="${tutoria.valorPorClase}">Arancel</span>
         </div>
@@ -46,10 +45,9 @@
                              data-horariodesde=${tutoria.horarioDesde},
                              data-horariohasta=${tutoria.horarioHasta},
                              data-fechadesde=${tutoria.fechaDesde != null ? tutoria.fechaDesde : ''},
-                             data-fechahasta=${tutoria.fechaHasta != null ? tutoria.fechaHasta : ''},
                              data-disciplina=${tutoria.categoria != null ? tutoria.categoria.nombre : ''},
                              data-tipoubicaciones=${tutoria.tipoUbicaciones},
-                             data-dias=${tutoria.dias},
+                             data-dias=${tutoria.dias != null ? #strings.arrayJoin(tutoria.dias.![nombre.displayName], ',') : ''},
                              data-descripcion=${tutoria.descripcion},
                              data-tipopago=${tutoria.tipoPago},
                              data-modalidad=${tutoria.modalidad},
@@ -93,8 +91,8 @@
                                    </strong>
                         </div>
                         <div style="font-size: 0.9em; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;" th:if="${solicitud.estado.name() == 'ACEPTADA'}">
-                            <strong>Contacto:</strong> <span th:text="${solicitud.alumno.numCelular != null and !solicitud.alumno.numCelular.isEmpty() ? solicitud.alumno.numCelular : (solicitud.alumno.telefonoAdulto != null ? solicitud.alumno.telefonoAdulto : 'No provisto')}">Telefono</span><br>
-                            <strong>Email:</strong> <span th:text="${solicitud.alumno.usuario != null ? solicitud.alumno.usuario.email : 'Sin email vinculado'}">Email</span>
+                            <strong>Contacto:</strong> <span th:text="${solicitud.alumno.fechaNacimiento != null and T(java.time.Period).between(solicitud.alumno.fechaNacimiento, T(java.time.LocalDate).now()).getYears() < 18 ? (solicitud.alumno.numCelularAdulto != null ? solicitud.alumno.numCelularAdulto + ' (Adulto Responsable: ' + (solicitud.alumno.nombreAdulto != null ? solicitud.alumno.nombreAdulto : '') + ')' : 'No provisto') : (solicitud.alumno.numCelular != null and !solicitud.alumno.numCelular.isEmpty() ? solicitud.alumno.numCelular : 'No provisto')}">Telefono</span><br>
+                            <strong>Email:</strong> <span th:text="${solicitud.alumno instanceof T(proyecto.web_app_educativa.models.Usuarios) ? solicitud.alumno.email : 'Sin email vinculado'}">Email</span>
                         </div>
                     </div>
                 </div>
@@ -127,9 +125,9 @@
 
         <label for="tipoUbicaciones">Tipo de Ubicación:</label>
         <select id="tipoUbicaciones" name="tipoUbicaciones" required style="width: 100%; margin-bottom: 10px;">
-            <option value="A_DOMICILIO">A Domicilio</option>
-            <option value="DOMICILIO_DEL_TUTOR">Domicilio del Tutor</option>
-            <option value="DOMICILIO_DEL_ESTUDIANTE">Domicilio del Estudiante</option>
+            <option value="DOMICILIO_TUTOR">Domicilio del tutor</option>
+            <option value="DOMICILIO_ESTUDIANTE">Domicilio del estudiante</option>
+            <option value="OTRO">Otro</option>
         </select><br>
 
         <label>Días de la semana:</label>
@@ -164,10 +162,10 @@
             <option value="VIRTUAL">Virtual</option>
         </select><br>
 
-        <label for="arancel">Valor por Clase ($):</label>
+        <label for="arancel">Valor ($):</label>
         <input type="number" id="arancel" name="arancel" step="0.01" required style="width: 100%; margin-bottom: 10px;"><br>
 
-        <button type="submit" class="btn" style="width: 100%;">Guarar Tutoría</button>
+        <button type="submit" class="btn" style="width: 100%;">Guardar Tutoría</button>
         <button type="button" id="cerrarVentanaBtn" class="btn" style="width: 100%; background-color: #ccc; margin-top: 5px;">Cancelar</button>
     </form>
 </div>

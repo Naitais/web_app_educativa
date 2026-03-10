@@ -4,13 +4,13 @@ const cerrarVentanaBtn = document.getElementById('cerrarVentanaBtn');
 const ventanaEmergente = document.getElementById('ventanaEmergente');
 
 
-//CREAR/EDITAR TUTORIA
+// CREAR/EDITAR TUTORIA
  async function submitTutoriaForm() {
-            // Get checked days
+            // Obtener dias chequeados
             const fileCheckboxes = document.querySelectorAll('input[name="dias"]:checked');
             const checkedDias = Array.from(fileCheckboxes).map(cb => cb.value);
             
-            // Get robust profile ID from hidden input
+            // Obtener el ID del perfil robusto desde el input oculto
             const profileId = document.getElementById('perfilId').value;
             const editId = document.getElementById('tutoriaIdEdit').value;
 
@@ -19,7 +19,6 @@ const ventanaEmergente = document.getElementById('ventanaEmergente');
                 horarioDesde: document.getElementById('horarioDesde').value,
                 horarioHasta: document.getElementById('horarioHasta').value,
                 fechaDesde: document.getElementById('fechaDesde') ? document.getElementById('fechaDesde').value : null,
-                fechaHasta: document.getElementById('fechaHasta') ? document.getElementById('fechaHasta').value : null,
                 dias: checkedDias,
                 tipoUbicaciones: document.getElementById('tipoUbicaciones').value,
                 disciplina: document.getElementById('disciplina').value,
@@ -49,24 +48,24 @@ const ventanaEmergente = document.getElementById('ventanaEmergente');
                 }
 
                 if (response.ok) {
-                    alert(editId ? "Tutoria actualizada!" : "Tutoria created successfully!");
+                    alert(editId ? "¡Tutoría actualizada!" : "¡Tutoría creada correctamente!");
                     document.getElementById("tutoriaForm").reset();
                     document.getElementById("tutoriaIdEdit").value = "";
                     document.getElementById("modalTitle").innerText = "Nueva Tutoría";
-                    ventanaEmergente.style.display = 'none'; // Hide modal
-                    location.reload(); // Reload to show new item
+                    ventanaEmergente.style.display = 'none'; // Ocultar modal
+                    location.reload(); // Recargar para mostrar el nuevo item
                 } else {
                     const errorText = await response.text();
-                    alert("Failed to save Tutoria: " + errorText);
+                    alert("Fallo al guardar la Tutoría: " + errorText);
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("An error occurred while saving the Tutoria.");
+                alert("Ocurrió un error al guardar la Tutoría.");
             }
         }
 
 document.getElementById("tutoriaForm").addEventListener("submit", async function(event) {
-    event.preventDefault();  // Prevent form submission
+    event.preventDefault();  // Prevenir envio del formulario
     await submitTutoriaForm();
 });
 
@@ -103,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .then(response => {
                     if (response.ok) {
-                        location.reload();  // Reload the page to reflect changes
+                        location.reload();  // Recargar la pagina para ver los cambios
                     } else {
-                        alert('Failed to toggle tutoria estado');
+                        alert('Fallo al cambiar el estado de la tutoría');
                     }
                 })
                 .catch(error => {
@@ -127,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('horarioDesde').value = btn.getAttribute('data-horariodesde');
             document.getElementById('horarioHasta').value = btn.getAttribute('data-horariohasta');
             if(document.getElementById('fechaDesde')) document.getElementById('fechaDesde').value = btn.getAttribute('data-fechadesde') || '';
-            if(document.getElementById('fechaHasta')) document.getElementById('fechaHasta').value = btn.getAttribute('data-fechahasta') || '';
             document.getElementById('disciplina').value = btn.getAttribute('data-disciplina');
             document.getElementById('tipoUbicaciones').value = btn.getAttribute('data-tipoubicaciones');
             document.getElementById('descripcion').value = btn.getAttribute('data-descripcion');
@@ -165,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const titleNode = document.getElementById('modalSolicitudesTitle');
                 if (titleNode) titleNode.innerText = modalTitle;
                 
-                listaSolicitudesContainer.innerHTML = ''; // Clear previous
+                listaSolicitudesContainer.innerHTML = ''; // Limpiar anterior
 
                 if (dataContainer) {
                     const solicitudes = dataContainer.querySelectorAll('.solicitud-item');
@@ -216,3 +214,39 @@ document.addEventListener('DOMContentLoaded', function () {
     attachModalLogic('.verAceptadosBtn', 'ACEPTADA', 'Alumnos Aceptados');
 
 });
+
+    function abrirModalEditarPerfil() {
+        var modal = document.getElementById('editarPerfilModal');
+        // Pre-fill fields con los valores actuales recuperados del DOM
+        var currentBio = document.getElementById('biografia-text').innerText;
+        var currentFoto = document.getElementById('foto-url').innerText;
+        
+        // No pre-llenar con el texto de contingencia "Biografía no disponible..."
+        if (currentBio && !currentBio.includes('Biografía no disponible')) {
+            document.getElementById('biografia').value = currentBio;
+        }
+        
+        if (currentFoto && currentFoto.trim() !== '') {
+            document.getElementById('foto').value = currentFoto.trim();
+        }
+        
+        modal.style.display = 'flex';
+    }
+
+    function cerrarModalEditarPerfil() {
+        document.getElementById('editarPerfilModal').style.display = 'none';
+    }
+
+    function abrirModalEditarExp(id) {
+        document.getElementById('editarExpModal_' + id).style.display = 'flex';
+    }
+    function cerrarModalEditarExp(id) {
+        document.getElementById('editarExpModal_' + id).style.display = 'none';
+    }
+
+    function abrirModalEditarCert(id) {
+        document.getElementById('editarCertModal_' + id).style.display = 'flex';
+    }
+    function cerrarModalEditarCert(id) {
+        document.getElementById('editarCertModal_' + id).style.display = 'none';
+    }
